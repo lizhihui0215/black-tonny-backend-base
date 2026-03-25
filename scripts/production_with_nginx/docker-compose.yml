@@ -1,0 +1,68 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: gunicorn src.app.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000
+    env_file:
+      - ./src/.env
+    expose:
+      - "8000"
+    depends_on:
+      - capture-db
+      - serving-db
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: arq src.app.core.worker.settings.WorkerSettings
+    env_file:
+      - ./src/.env
+    depends_on:
+      - serving-db
+      - redis
+    profiles:
+      - queue
+
+  capture-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: capture
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - capture-postgres-data:/var/lib/postgresql/data
+    expose:
+      - "5432"
+
+  serving-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: serving
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - serving-postgres-data:/var/lib/postgresql/data
+    expose:
+      - "5432"
+
+  redis:
+    image: redis:7-alpine
+    profiles:
+      - queue
+    expose:
+      - "6379"
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - web
+
+volumes:
+  capture-postgres-data:
+  serving-postgres-data:

@@ -1,0 +1,65 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: uvicorn src.app.main:app --host 0.0.0.0 --port 8000 --reload
+    env_file:
+      - ./src/.env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - capture-db
+      - serving-db
+    volumes:
+      - ./src:/code/src
+      - ./src/.env:/code/.env
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: arq src.app.core.worker.settings.WorkerSettings
+    env_file:
+      - ./src/.env
+    depends_on:
+      - serving-db
+      - redis
+    profiles:
+      - queue
+    volumes:
+      - ./src:/code/src
+      - ./src/.env:/code/.env
+
+  capture-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: capture
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - capture-postgres-data:/var/lib/postgresql/data
+    expose:
+      - "5432"
+
+  serving-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: serving
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - serving-postgres-data:/var/lib/postgresql/data
+    expose:
+      - "5432"
+
+  redis:
+    image: redis:7-alpine
+    profiles:
+      - queue
+    expose:
+      - "6379"
+
+volumes:
+  capture-postgres-data:
+  serving-postgres-data:

@@ -1,0 +1,8 @@
+Generic dual-database migration environment.
+
+Preferred commands:
+- `uv run alembic -c src/alembic_capture.ini upgrade head`
+- `uv run alembic -c src/alembic_serving.ini upgrade head`
+
+`ALEMBIC_DB_TARGET=capture|serving` is still supported for generic tooling, but the target-specific ini files are the
+safe default because they keep capture and serving revision paths separate.
