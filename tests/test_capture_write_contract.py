@@ -12,8 +12,12 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from src.app.core.db.database import CaptureBase
-from src.app.crud.crud_capture_batches import crud_capture_batches
-from src.app.crud.crud_capture_endpoint_payloads import crud_capture_endpoint_payloads
+from src.app.crud.crud_capture_batches import crud_capture_batches, get_capture_batch_read, list_capture_batch_reads
+from src.app.crud.crud_capture_endpoint_payloads import (
+    crud_capture_endpoint_payloads,
+    get_capture_endpoint_payload_read,
+    list_capture_endpoint_payload_reads,
+)
 from src.app.models.capture_batch import CaptureBatch
 from src.app.models.capture_endpoint_payload import CaptureEndpointPayload  # noqa: F401
 from src.app.schemas.capture import (
@@ -190,3 +194,101 @@ async def test_capture_batch_status_constraint_rejects_unknown_value(capture_db_
         await capture_db_session.commit()
 
     await capture_db_session.rollback()
+
+
+@pytest.mark.asyncio
+async def test_capture_batch_read_helpers_return_models_and_stable_list_shape(
+    capture_db_session: AsyncSession,
+) -> None:
+    for capture_batch_id, batch_status in (
+        ("batch-010", "queued"),
+        ("batch-020", "captured"),
+        ("batch-030", "queued"),
+    ):
+        await crud_capture_batches.create(
+            db=capture_db_session,
+            object=CaptureBatchCreate(
+                capture_batch_id=capture_batch_id,
+                batch_status=batch_status,
+                source_name="erp-report",
+            ),
+            schema_to_select=CaptureBatchRead,
+        )
+
+    batch_read = await get_capture_batch_read(db=capture_db_session, capture_batch_id="batch-020")
+    queued_batches = await list_capture_batch_reads(
+        db=capture_db_session,
+        batch_status="queued",
+    )
+    missing_batch = await get_capture_batch_read(db=capture_db_session, capture_batch_id="missing-batch")
+
+    assert isinstance(batch_read, CaptureBatchRead)
+    assert batch_read.capture_batch_id == "batch-020"
+    assert batch_read.batch_status == "captured"
+
+    assert queued_batches["total_count"] == 2
+    assert [item.capture_batch_id for item in queued_batches["data"]] == ["batch-010", "batch-030"]
+    assert all(isinstance(item, CaptureBatchRead) for item in queued_batches["data"])
+
+    assert missing_batch is None
+
+
+@pytest.mark.asyncio
+async def test_capture_payload_read_helpers_return_models_with_filtered_sorted_results(
+    capture_db_session: AsyncSession,
+) -> None:
+    pulled_at = datetime.now(UTC)
+    for capture_batch_id in ("batch-100", "batch-200"):
+        await crud_capture_batches.create(
+            db=capture_db_session,
+            object=CaptureBatchCreate(
+                capture_batch_id=capture_batch_id,
+                batch_status="queued",
+                source_name="erp-report",
+                pulled_at=pulled_at,
+            ),
+            schema_to_select=CaptureBatchRead,
+        )
+
+    payload_ids: list[int] = []
+    for capture_batch_id, source_endpoint, checksum in (
+        ("batch-100", "/erp/report/a", "checksum-a"),
+        ("batch-100", "/erp/report/b", "checksum-b"),
+        ("batch-200", "/erp/report/c", "checksum-c"),
+    ):
+        created_payload = await crud_capture_endpoint_payloads.create(
+            db=capture_db_session,
+            object=CaptureEndpointPayloadCreate(
+                capture_batch_id=capture_batch_id,
+                source_endpoint=source_endpoint,
+                payload_json='{"rows":[1]}',
+                checksum=checksum,
+                pulled_at=pulled_at,
+            ),
+            schema_to_select=CaptureEndpointPayloadRead,
+        )
+        payload_ids.append(normalize(created_payload)["id"])
+
+    payload_read = await get_capture_endpoint_payload_read(db=capture_db_session, id=payload_ids[0])
+    batch_payloads = await list_capture_endpoint_payload_reads(
+        db=capture_db_session,
+        capture_batch_id="batch-100",
+    )
+    filtered_payloads = await list_capture_endpoint_payload_reads(
+        db=capture_db_session,
+        source_endpoint="/erp/report/c",
+    )
+    missing_payload = await get_capture_endpoint_payload_read(db=capture_db_session, id=999999)
+
+    assert isinstance(payload_read, CaptureEndpointPayloadRead)
+    assert payload_read.id == payload_ids[0]
+    assert payload_read.capture_batch_id == "batch-100"
+
+    assert batch_payloads["total_count"] == 2
+    assert [item.id for item in batch_payloads["data"]] == payload_ids[:2]
+    assert all(isinstance(item, CaptureEndpointPayloadRead) for item in batch_payloads["data"])
+
+    assert filtered_payloads["total_count"] == 1
+    assert filtered_payloads["data"][0].checksum == "checksum-c"
+
+    assert missing_payload is None
