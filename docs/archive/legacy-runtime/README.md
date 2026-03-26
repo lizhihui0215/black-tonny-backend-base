@@ -2,6 +2,8 @@
 
 这个目录预留给 `black-tonny-backend` 中已经不再适合作为新仓库真源的历史文档。
 
+当前正式文档请先看 [docs/README.md](../../README.md)。
+
 典型内容包括：
 - 旧仓库入口文档
 - 旧 split frontend/backend 运行时 API 说明

@@ -2,35 +2,51 @@
 
 This directory contains topic-level documentation for `black-tonny-backend-base`.
 
-## Current Scope
+## How To Use This Index
 
-`black-tonny-backend-base` is the only source of truth for ongoing backend migration work.
+Start from the repository [README](../README.md), then use the sections below based on the kind of document you need:
+- formal docs for current repository truth
+- migration planning docs for scoped planning work
+- reference docs for legacy inputs that are intentionally non-runtime
+- archive docs for superseded legacy context
 
-The current documentation phase is intentionally narrow:
-- audit legacy documentation from `black-tonny-backend`
-- classify what can become formal documentation here
-- keep research material reference-only
-- keep superseded runtime material in archive-only planning
-
-This phase does not migrate business code, scripts, or runtime wiring.
+Only the formal docs define current repository behavior.
 
 ## Language Note
 
 Top-level public entry docs remain in English:
 - [`../README.md`](../README.md)
 
-Internal working docs under `docs/` can stay in Chinese when they are migration-planning material.
+Formal docs in this directory are maintained in English.
+Internal planning, reference, and archive material can stay in Chinese when it is migration-supporting content.
 
-## Current Docs
+## Formal Docs
+
+- [`runtime-boundaries.md`](./runtime-boundaries.md)
+  - Current runtime structure, route groups, package boundaries, and migration guardrails
+  - Language: English
+  - Status: `Source of truth`
+- [`capture-serving-boundary.md`](./capture-serving-boundary.md)
+  - Current dual-database responsibilities and the serving-only runtime read rule
+  - Language: English
+  - Status: `Source of truth`
+
+## Migration Planning
 
 - [`legacy-backend-migration-mapping.md`](./legacy-backend-migration-mapping.md)
   - PR-1 inventory, classification, old-path to new-path mapping, capture scope list, and research/runtime boundary notes
   - Language: Chinese working doc
   - Status: `Source of truth for PR-1 migration planning`
+
+## Reference Docs
+
 - [`reference/legacy-backend/README.md`](./reference/legacy-backend/README.md)
   - Reserved reference-only area for selectively retained legacy research material
   - Language: Chinese working doc
   - Status: `Reference`
+
+## Archive Docs
+
 - [`archive/legacy-runtime/README.md`](./archive/legacy-runtime/README.md)
   - Reserved archive area for superseded legacy runtime documentation
   - Language: Chinese working doc
