@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Literal, TypeAlias
+from typing import Literal, TypedDict
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -83,5 +83,11 @@ class CaptureEndpointPayloadUpdate(BaseModel):
     pulled_at: datetime | None = None
 
 
-CaptureBatchReadListResponse: TypeAlias = dict[str, list[CaptureBatchRead] | int]
-CaptureEndpointPayloadReadListResponse: TypeAlias = dict[str, list[CaptureEndpointPayloadRead] | int]
+class CaptureBatchReadListResponse(TypedDict):
+    data: list[CaptureBatchRead]
+    total_count: int
+
+
+class CaptureEndpointPayloadReadListResponse(TypedDict):
+    data: list[CaptureEndpointPayloadRead]
+    total_count: int
