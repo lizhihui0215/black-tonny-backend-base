@@ -278,6 +278,54 @@ async def test_capture_batch_list_read_helper_handles_pagination_and_empty_resul
 
 
 @pytest.mark.asyncio
+async def test_capture_batch_list_read_helper_handles_combined_filters_with_default_and_explicit_limits(
+    capture_db_session: AsyncSession,
+) -> None:
+    for capture_batch_id, batch_status, source_name in (
+        ("batch-410", "queued", "erp-report"),
+        ("batch-420", "queued", "erp-report"),
+        ("batch-430", "captured", "erp-report"),
+        ("batch-440", "queued", "erp-other"),
+    ):
+        await crud_capture_batches.create(
+            db=capture_db_session,
+            object=CaptureBatchCreate(
+                capture_batch_id=capture_batch_id,
+                batch_status=batch_status,
+                source_name=source_name,
+            ),
+            schema_to_select=CaptureBatchRead,
+        )
+
+    default_limited_batches = await list_capture_batch_reads(
+        db=capture_db_session,
+        batch_status="queued",
+        source_name="erp-report",
+    )
+    paginated_batches = await list_capture_batch_reads(
+        db=capture_db_session,
+        batch_status="queued",
+        source_name="erp-report",
+        offset=1,
+        limit=1,
+    )
+    empty_combined_batches = await list_capture_batch_reads(
+        db=capture_db_session,
+        batch_status="captured",
+        source_name="erp-other",
+    )
+
+    assert default_limited_batches["total_count"] == 2
+    assert [item.capture_batch_id for item in default_limited_batches["data"]] == ["batch-410", "batch-420"]
+
+    assert paginated_batches["total_count"] == 2
+    assert [item.capture_batch_id for item in paginated_batches["data"]] == ["batch-420"]
+
+    assert empty_combined_batches["total_count"] == 0
+    assert empty_combined_batches["data"] == []
+
+
+@pytest.mark.asyncio
 async def test_capture_payload_read_helpers_return_models_with_filtered_sorted_results(
     capture_db_session: AsyncSession,
 ) -> None:
@@ -400,3 +448,69 @@ async def test_capture_payload_list_read_helper_handles_pagination_and_empty_res
 
     assert empty_payloads["total_count"] == 0
     assert empty_payloads["data"] == []
+
+
+@pytest.mark.asyncio
+async def test_capture_payload_list_read_helper_handles_combined_filters_with_default_and_explicit_limits(
+    capture_db_session: AsyncSession,
+) -> None:
+    pulled_at = datetime.now(UTC)
+    for capture_batch_id in ("batch-500", "batch-600"):
+        await crud_capture_batches.create(
+            db=capture_db_session,
+            object=CaptureBatchCreate(
+                capture_batch_id=capture_batch_id,
+                batch_status="queued",
+                source_name="erp-query",
+                pulled_at=pulled_at,
+            ),
+            schema_to_select=CaptureBatchRead,
+        )
+
+    combined_ids: list[int] = []
+    for capture_batch_id, source_endpoint, checksum in (
+        ("batch-500", "/erp/query/a", "checksum-qa1"),
+        ("batch-500", "/erp/query/a", "checksum-qa2"),
+        ("batch-500", "/erp/query/b", "checksum-qb1"),
+        ("batch-600", "/erp/query/a", "checksum-qa3"),
+    ):
+        created_payload = await crud_capture_endpoint_payloads.create(
+            db=capture_db_session,
+            object=CaptureEndpointPayloadCreate(
+                capture_batch_id=capture_batch_id,
+                source_endpoint=source_endpoint,
+                payload_json='{"rows":[1]}',
+                checksum=checksum,
+                pulled_at=pulled_at,
+            ),
+            schema_to_select=CaptureEndpointPayloadRead,
+        )
+        if capture_batch_id == "batch-500" and source_endpoint == "/erp/query/a":
+            combined_ids.append(normalize(created_payload)["id"])
+
+    default_limited_payloads = await list_capture_endpoint_payload_reads(
+        db=capture_db_session,
+        capture_batch_id="batch-500",
+        source_endpoint="/erp/query/a",
+    )
+    paginated_payloads = await list_capture_endpoint_payload_reads(
+        db=capture_db_session,
+        capture_batch_id="batch-500",
+        source_endpoint="/erp/query/a",
+        offset=1,
+        limit=1,
+    )
+    empty_combined_payloads = await list_capture_endpoint_payload_reads(
+        db=capture_db_session,
+        capture_batch_id="batch-600",
+        source_endpoint="/erp/query/b",
+    )
+
+    assert default_limited_payloads["total_count"] == 2
+    assert [item.id for item in default_limited_payloads["data"]] == combined_ids
+
+    assert paginated_payloads["total_count"] == 2
+    assert [item.id for item in paginated_payloads["data"]] == [combined_ids[1]]
+
+    assert empty_combined_payloads["total_count"] == 0
+    assert empty_combined_payloads["data"] == []

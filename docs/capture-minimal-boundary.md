@@ -117,6 +117,19 @@ Current list-read shape:
 - filtered empty results keep `data=[]` and `total_count=0`
 - paginated results keep stable ordering while `total_count` remains the full filtered count
 
+Current supported query boundary:
+- `list_capture_batch_reads` supports equality filters on `batch_status` and `source_name`
+- `list_capture_endpoint_payload_reads` supports equality filters on `capture_batch_id` and `source_endpoint`
+- current list helpers support default `limit`, explicit `limit`, and `offset`
+- current list helpers keep a fixed ascending sort boundary through the helper implementation
+
+Current unsupported query boundary:
+- no OR-style filters
+- no fuzzy or full-text search
+- no range filters
+- no caller-supplied sort overrides
+- no joined reads or projection queries
+
 ## Current Verified Read/Write Closure
 
 The current minimal read/write closure is verified at the formal-layer test level, not through a runtime API.
@@ -126,10 +139,12 @@ The current coverage exercises:
 - list filtered `capture_batches` rows through a formal read helper with stable `capture_batch_id` ordering
 - verify paginated batch reads keep a stable subset while `total_count` still reflects the full filtered result
 - verify empty batch reads return `data=[]` with `total_count=0`
+- verify batch reads stay stable when `batch_status` and `source_name` are combined with default or explicit pagination
 - read one `capture_endpoint_payloads` row through a formal read helper that returns `CaptureEndpointPayloadRead`
 - list filtered `capture_endpoint_payloads` rows through a formal read helper with stable `id` ordering
 - verify paginated payload reads keep a stable subset while `total_count` still reflects the full filtered result
 - verify empty payload reads return `data=[]` with `total_count=0`
+- verify payload reads stay stable when `capture_batch_id` and `source_endpoint` are combined with default or explicit pagination
 - create one `capture_batches` row through the formal CRUD path
 - append one `capture_endpoint_payloads` row through the formal CRUD path
 - update the batch lifecycle row and confirm `updated_at` refreshes
