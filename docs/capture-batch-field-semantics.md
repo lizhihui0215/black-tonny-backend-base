@@ -44,6 +44,10 @@ Current non-meaning:
 - not a formal source-to-target transition graph
 - not proof that any current runtime transform flow exists
 
+Current narrow write behavior:
+- one formal helper may explicitly write `failed` for an already-selected batch row
+- that narrow write does not turn `batch_status` into a full transform state machine
+
 ### `capture_batches.transformed_at`
 
 Current meaning:
@@ -67,6 +71,10 @@ Current non-meaning:
 - not a canonical transform error taxonomy
 - not a retry policy signal
 - not evidence that a current transform failure path exists
+
+Current narrow write behavior:
+- one formal helper may overwrite this field with the current failure context for an already-selected batch row
+- the current helper does not append, merge, or preserve error-message history
 
 ### `capture_batches.updated_at`
 

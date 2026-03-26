@@ -69,3 +69,31 @@ async def list_capture_batch_reads(
             "total_count": response["total_count"],
         },
     )
+
+
+async def record_capture_batch_failure(
+    db: AsyncSession,
+    *,
+    capture_batch_id: str,
+    error_message: str,
+) -> CaptureBatchRead | None:
+    existing_batch = await get_capture_batch_read(
+        db=db,
+        capture_batch_id=capture_batch_id,
+    )
+    if existing_batch is None:
+        return None
+
+    updated_batch = await crud_capture_batches.update(
+        db=db,
+        object=CaptureBatchUpdate(
+            batch_status="failed",
+            error_message=error_message,
+        ),
+        capture_batch_id=capture_batch_id,
+        schema_to_select=CaptureBatchRead,
+        return_as_model=True,
+        one_or_none=True,
+    )
+
+    return cast(CaptureBatchRead, updated_batch)

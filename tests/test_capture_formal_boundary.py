@@ -12,7 +12,12 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from src.app.core.db.database import CaptureBase
-from src.app.crud.crud_capture_batches import crud_capture_batches, get_capture_batch_read, list_capture_batch_reads
+from src.app.crud.crud_capture_batches import (
+    crud_capture_batches,
+    get_capture_batch_read,
+    list_capture_batch_reads,
+    record_capture_batch_failure,
+)
 from src.app.crud.crud_capture_endpoint_payloads import (
     crud_capture_endpoint_payloads,
     get_capture_endpoint_payload_read,
@@ -155,6 +160,65 @@ async def test_capture_batch_update_refreshes_updated_at(capture_db_session: Asy
 
     assert updated_batch["batch_status"] == "captured"
     assert refreshed_updated_at > initial_updated_at
+
+
+@pytest.mark.asyncio
+async def test_record_capture_batch_failure_updates_failure_fields_and_preserves_transformed_at(
+    capture_db_session: AsyncSession,
+) -> None:
+    transformed_at = datetime(2026, 3, 27, 1, 2, 3, tzinfo=UTC)
+    created_batch = normalize(
+        await crud_capture_batches.create(
+            db=capture_db_session,
+            object=CaptureBatchCreate(
+                capture_batch_id="batch-failure-001",
+                batch_status="captured",
+                source_name="erp-transform",
+                transformed_at=transformed_at,
+                error_message="old failure context",
+            ),
+            schema_to_select=CaptureBatchRead,
+        )
+    )
+
+    initial_updated_at = as_datetime(created_batch["updated_at"])
+    original_transformed_at = as_datetime(created_batch["transformed_at"])
+    await asyncio.sleep(0.01)
+
+    failed_batch = await record_capture_batch_failure(
+        db=capture_db_session,
+        capture_batch_id="batch-failure-001",
+        error_message="new failure context",
+    )
+    persisted_batch = await get_capture_batch_read(
+        db=capture_db_session,
+        capture_batch_id="batch-failure-001",
+    )
+
+    assert isinstance(failed_batch, CaptureBatchRead)
+    assert failed_batch.capture_batch_id == "batch-failure-001"
+    assert failed_batch.batch_status == "failed"
+    assert failed_batch.error_message == "new failure context"
+    assert as_datetime(failed_batch.transformed_at) == original_transformed_at
+    assert failed_batch.updated_at > initial_updated_at
+
+    assert isinstance(persisted_batch, CaptureBatchRead)
+    assert persisted_batch.batch_status == "failed"
+    assert persisted_batch.error_message == "new failure context"
+    assert persisted_batch.error_message != "old failure context"
+    assert as_datetime(persisted_batch.transformed_at) == original_transformed_at
+    assert persisted_batch.updated_at == failed_batch.updated_at
+
+
+@pytest.mark.asyncio
+async def test_record_capture_batch_failure_returns_none_for_missing_batch(capture_db_session: AsyncSession) -> None:
+    missing_batch = await record_capture_batch_failure(
+        db=capture_db_session,
+        capture_batch_id="missing-batch",
+        error_message="failure context",
+    )
+
+    assert missing_batch is None
 
 
 @pytest.mark.asyncio

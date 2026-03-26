@@ -184,6 +184,9 @@ The current coverage exercises:
 - create one `capture_batches` row through the formal CRUD path
 - append one `capture_endpoint_payloads` row through the formal CRUD path
 - update the batch lifecycle row and confirm `updated_at` refreshes
+- record failure facts for one already-selected `capture_batches` row by explicitly writing `batch_status="failed"` and overwriting `error_message`
+- keep `transformed_at` unchanged when that narrow failure-recording helper is used
+- return `None` instead of introducing a new exception type when the failure-recording helper receives a missing `capture_batch_id`
 - reject caller attempts to override `updated_at` through `CaptureBatchUpdate`
 - reject invalid `batch_status` values at the database boundary layer
 - reject orphan payload writes that do not point at an existing `capture_batches.capture_batch_id`
