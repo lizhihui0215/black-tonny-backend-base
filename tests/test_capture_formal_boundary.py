@@ -43,7 +43,7 @@ def as_datetime(value: Any) -> datetime:
 
 @pytest_asyncio.fixture
 async def capture_db_session(tmp_path: Path) -> AsyncGenerator[AsyncSession, None]:
-    db_path = tmp_path / "capture_contract.sqlite3"
+    db_path = tmp_path / "capture_boundary.sqlite3"
     engine = create_async_engine(f"sqlite+aiosqlite:///{db_path}", future=True)
 
     @event.listens_for(engine.sync_engine, "connect")
