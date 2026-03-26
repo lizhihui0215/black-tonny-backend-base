@@ -48,6 +48,10 @@ Internal planning, reference, and archive material can stay in Chinese when it i
   - Minimal future transform readiness boundary derived from the narrower admitted transform input layer
   - Language: English
   - Status: `Source of truth`
+- [`transform-state-transition-boundary.md`](./transform-state-transition-boundary.md)
+  - Minimal future transform state-transition boundary derived from the narrower transform readiness layer
+  - Language: English
+  - Status: `Source of truth`
 
 ## Migration Planning
 

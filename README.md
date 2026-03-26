@@ -33,6 +33,7 @@ Current formal docs:
 - [docs/transform-input-boundary.md](./docs/transform-input-boundary.md)
 - [docs/admitted-transform-input-boundary.md](./docs/admitted-transform-input-boundary.md)
 - [docs/transform-readiness-boundary.md](./docs/transform-readiness-boundary.md)
+- [docs/transform-state-transition-boundary.md](./docs/transform-state-transition-boundary.md)
 
 Planning, reference, and archive material stays linked from [docs/README.md](./docs/README.md).
 
