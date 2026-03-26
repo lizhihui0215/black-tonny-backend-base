@@ -7,6 +7,7 @@ For the broader future transform input candidate edge, use [transform-input-boun
 For the narrower admitted transform input edge, use [admitted-transform-input-boundary.md](./admitted-transform-input-boundary.md).
 For the narrower transform readiness edge, use [transform-readiness-boundary.md](./transform-readiness-boundary.md).
 For the current semantics of transform-adjacent batch fields, use [capture-batch-field-semantics.md](./capture-batch-field-semantics.md).
+For the minimum future transform rule-set questions, use [transform-rule-set-questions.md](./transform-rule-set-questions.md).
 For the repository docs index, use [docs/README.md](./README.md).
 
 ## Current Truth
@@ -90,5 +91,7 @@ If a later scoped migration introduces transform state-transition behavior, it m
 - retry, failure, terminal-state, and idempotency rules
 - whether transition rules stay capture-side only or also coordinate with serving-side outputs
 - whether any new lifecycle fields or statuses are introduced, and why they are needed in the new repository
+
+Use [transform-rule-set-questions.md](./transform-rule-set-questions.md) as the minimum question list that still needs explicit answers before those rules become formal repository behavior.
 
 Until that later scoped migration happens, this document is only a formal boundary note.

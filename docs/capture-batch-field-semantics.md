@@ -4,6 +4,7 @@ This document defines the current formal semantics and ownership boundary of the
 
 For the overall capture persistence boundary, use [capture-minimal-boundary.md](./capture-minimal-boundary.md).
 For the future transform state-transition note, use [transform-state-transition-boundary.md](./transform-state-transition-boundary.md).
+For the minimum future transform rule-set questions, use [transform-rule-set-questions.md](./transform-rule-set-questions.md).
 For the repository docs index, use [docs/README.md](./README.md).
 
 ## Current Truth
@@ -92,6 +93,8 @@ Any later scoped migration must explicitly define:
 - which fields gain narrower lifecycle semantics
 - which writes are allowed or forbidden
 - whether any new fields are needed instead of overloading the current ones
+
+Use [transform-rule-set-questions.md](./transform-rule-set-questions.md) for the minimum future questions that still require explicit answers before those narrower semantics become formal behavior.
 
 ## What This Document Does Not Claim
 
