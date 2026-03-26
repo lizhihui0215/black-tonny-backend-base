@@ -4,6 +4,7 @@ This document defines the minimal future admitted transform input boundary for `
 
 For the current capture formal boundary, use [capture-minimal-boundary.md](./capture-minimal-boundary.md).
 For the broader future transform input candidate edge, use [transform-input-boundary.md](./transform-input-boundary.md).
+For the narrower transform readiness edge, use [transform-readiness-boundary.md](./transform-readiness-boundary.md).
 For the repository docs index, use [docs/README.md](./README.md).
 
 ## Current Truth
@@ -18,6 +19,9 @@ It only defines the narrowest future boundary a later scoped migration must resp
 The distinction stays explicit:
 - a future transform input candidate is any persisted capture-side material that satisfies the boundary in [transform-input-boundary.md](./transform-input-boundary.md)
 - admitted transform input is the narrower future subset that a later scoped migration is allowed to accept into transform scope
+
+Admitted transform input is still broader than transform-ready input.
+A later scoped migration may treat only a narrower subset of admitted input as ready for transform behavior.
 
 This document only defines the smallest admitted-input floor.
 It does not define when transform execution starts, how batches become ready, or how serving-side outputs are produced.
@@ -40,6 +44,8 @@ On top of that, the minimum admitted conditions are:
 
 These admitted conditions are intentionally structural.
 They define the minimum persisted shape that a later scoped migration may choose to admit, but they do not define readiness policy or transform behavior.
+
+If later work needs the narrower readiness edge, that scope must continue into [transform-readiness-boundary.md](./transform-readiness-boundary.md) rather than being inferred from this admitted-input layer alone.
 
 ## What Is Still Not Defined
 

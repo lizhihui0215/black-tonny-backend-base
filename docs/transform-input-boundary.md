@@ -4,6 +4,7 @@ This document defines the minimal future transform input boundary for `black-ton
 
 For the current capture formal boundary, use [capture-minimal-boundary.md](./capture-minimal-boundary.md).
 For the narrower admitted transform input edge, use [admitted-transform-input-boundary.md](./admitted-transform-input-boundary.md).
+For the narrower transform readiness edge, use [transform-readiness-boundary.md](./transform-readiness-boundary.md).
 For the current dual-database split, use [capture-serving-boundary.md](./capture-serving-boundary.md).
 For the repository docs index, use [docs/README.md](./README.md).
 
@@ -20,6 +21,7 @@ Future transform work may only treat persisted capture-side rows as formal trans
 
 This candidate boundary is broader than admitted transform input.
 A later scoped migration may admit only a narrower subset of these candidates into transform scope.
+That admitted subset may itself still be broader than transform-ready input.
 
 The minimal allowed input boundary is:
 - one persisted `capture_batches` row
@@ -55,7 +57,7 @@ Future transform input must not come from:
 - legacy repo samples, scripts, or research notes
 - temporary files or ad hoc payload copies outside the formal capture tables
 
-If later work needs the narrower admitted-input edge, that scope must continue into [admitted-transform-input-boundary.md](./admitted-transform-input-boundary.md) rather than being inferred from this broader candidate layer alone.
+If later work needs the narrower admitted-input edge or the even narrower readiness edge, those scopes must continue into [admitted-transform-input-boundary.md](./admitted-transform-input-boundary.md) and [transform-readiness-boundary.md](./transform-readiness-boundary.md) rather than being inferred from this broader candidate layer alone.
 
 ## What This Document Does Not Claim
 
