@@ -11,7 +11,7 @@ Start from the repository [README](../README.md), then use the sections below ba
 - archive docs for superseded legacy context
 
 Only the formal docs define current repository behavior.
-That includes the current capture formal contract under `src/app/**` and `src/migrations/**`.
+That includes the current capture formal boundary under `src/app/**` and `src/migrations/**`.
 `docs/reference/**` and `src/examples/**` are reference-only areas for research, traceability, samples, troubleshooting, and transition patterns.
 
 ## Language Note
@@ -32,8 +32,8 @@ Internal planning, reference, and archive material can stay in Chinese when it i
   - Current dual-database responsibilities and the serving-only runtime read rule
   - Language: English
   - Status: `Source of truth`
-- [`capture-minimal-contract.md`](./capture-minimal-contract.md)
-  - Minimal formal capture models, CRUD contracts, and migration-target boundary
+- [`capture-minimal-boundary.md`](./capture-minimal-boundary.md)
+  - Minimal formal capture boundary across models, schemas, CRUD helpers, and migration targets
   - Language: English
   - Status: `Source of truth`
 

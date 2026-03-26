@@ -29,7 +29,7 @@ Start with the [docs index](./docs/README.md).
 Current formal docs:
 - [docs/runtime-boundaries.md](./docs/runtime-boundaries.md)
 - [docs/capture-serving-boundary.md](./docs/capture-serving-boundary.md)
-- [docs/capture-minimal-contract.md](./docs/capture-minimal-contract.md)
+- [docs/capture-minimal-boundary.md](./docs/capture-minimal-boundary.md)
 
 Planning, reference, and archive material stays linked from [docs/README.md](./docs/README.md).
 
@@ -178,11 +178,11 @@ uv run alembic -c alembic_serving.ini upgrade head
 ```
 
 The serving side includes the baseline auth / user / tier / rate-limit migration.
-The capture side now includes the minimal formal capture contract tables:
+The capture side now includes the minimal formal capture boundary tables:
 - `capture_batches`
 - `capture_endpoint_payloads`
 
-These capture tables establish persistence contracts and migration targets only.
+These capture tables establish a persistence boundary and migration targets only.
 They are not mounted into runtime routers and do not change current API behavior.
 The generic [alembic.ini](./src/alembic.ini) keeps both revision branches visible, but the target-specific ini files are
 the safe default because they keep capture
@@ -224,10 +224,10 @@ These files are intentionally isolated:
 - they are not mounted into runtime routers
 - they do not appear in `/docs`
 - they are not imported by the app
-- they are not the long-term formal home for capture or serving contracts
+- they are not the long-term formal home for capture or serving boundaries
 
 Current ownership stays explicit:
-- formal capture contracts live under `src/app/**`, `src/migrations/**`, and the formal docs linked from [docs/README.md](./docs/README.md)
+- the formal capture boundary lives under `src/app/**`, `src/migrations/**`, and the formal docs linked from [docs/README.md](./docs/README.md)
 - `src/examples/**` is a transition reference-pattern area only
 - research notes, traceability samples, and troubleshooting templates belong under `docs/reference/**`, not under formal runtime modules
 

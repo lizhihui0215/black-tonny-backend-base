@@ -1,16 +1,16 @@
-# Capture Minimal Contract
+# Capture Minimal Boundary
 
-This document defines the minimal formal capture contract currently landed in `black-tonny-backend-base`.
+This document defines the minimal formal capture boundary currently landed in `black-tonny-backend-base`.
 
 For the dual-database boundary, use [capture-serving-boundary.md](./capture-serving-boundary.md).
 For the repository docs index, use [docs/README.md](./README.md).
 
 ## Scope
 
-This contract is intentionally narrow.
+This boundary is intentionally narrow.
 It only formalizes:
 - capture-side ORM models
-- capture-side CRUD contracts
+- capture-side schemas and CRUD helpers
 - capture target metadata loading
 - capture Alembic migration targets
 
@@ -38,7 +38,7 @@ It does not belong to:
 - `docs/archive/**`
 
 `src/examples/**` can still hold transition reference patterns, but it is not the formal home for capture.
-Research notes, traceability samples, and troubleshooting templates belong in `docs/reference/**`, not in the formal capture contract.
+Research notes, traceability samples, and troubleshooting templates belong in `docs/reference/**`, not in the formal capture boundary.
 
 ## Landed Tables
 
@@ -48,7 +48,7 @@ The current formal capture tables are:
 
 ### `capture_batches`
 
-Current contract fields:
+Current formal fields:
 - `capture_batch_id`
 - `batch_status`
 - `source_name`
@@ -65,11 +65,11 @@ Current purpose:
 
 Current integrity guardrails:
 - `batch_status` is constrained by the formal schema and by a database check constraint
-- `updated_at` is system-managed and is not part of the caller-supplied update contract
+- `updated_at` is system-managed and is not part of the caller-supplied update shape
 
 ### `capture_endpoint_payloads`
 
-Current contract fields:
+Current formal fields:
 - `id`
 - `capture_batch_id`
 - `source_endpoint`
@@ -85,14 +85,14 @@ Current contract fields:
 Current purpose:
 - persist raw or near-raw endpoint payload snapshots
 - keep enough page-level metadata for replay, audit, and later scoped transforms
-- avoid admitting any research or serving projection logic into the contract itself
+- avoid admitting any research or serving projection logic into the boundary itself
 
 Current formal association:
 - `capture_endpoint_payloads.capture_batch_id` references `capture_batches.capture_batch_id`
 
 ## Code Locations
 
-The current formal capture contract is landed in:
+The current formal capture boundary is implemented in:
 - `src/app/models/capture_batch.py`
 - `src/app/models/capture_endpoint_payload.py`
 - `src/app/schemas/capture.py`
@@ -102,9 +102,9 @@ The current formal capture contract is landed in:
 - `src/migrations/capture_versions/20260326_02_add_capture_contract_tables.py`
 - `src/migrations/capture_versions/20260326_03_add_capture_batch_status_check.py`
 
-These files define persistence contracts only.
+These files define the formal persistence boundary only.
 They do not wire capture into routers, workers, or API handlers.
-The example code under `src/examples/` can mirror this shape for transition reference purposes, but it does not define this contract.
+The example code under `src/examples/` can mirror this shape for transition reference purposes, but it does not define this boundary.
 
 Current formal read helpers:
 - `get_capture_batch_read`
@@ -114,18 +114,18 @@ Current formal read helpers:
 
 ## Current Verified Read/Write Closure
 
-The current minimal read/write closure is verified at the contract/test layer, not through a runtime API.
+The current minimal read/write closure is verified at the formal-layer test level, not through a runtime API.
 
 The current coverage exercises:
 - read one `capture_batches` row through a formal read helper that returns `CaptureBatchRead`
 - list filtered `capture_batches` rows through a formal read helper with stable `capture_batch_id` ordering
 - read one `capture_endpoint_payloads` row through a formal read helper that returns `CaptureEndpointPayloadRead`
 - list filtered `capture_endpoint_payloads` rows through a formal read helper with stable `id` ordering
-- create one `capture_batches` row through the formal CRUD contract
-- append one `capture_endpoint_payloads` row through the formal CRUD contract
+- create one `capture_batches` row through the formal CRUD path
+- append one `capture_endpoint_payloads` row through the formal CRUD path
 - update the batch lifecycle row and confirm `updated_at` refreshes
 - reject caller attempts to override `updated_at` through `CaptureBatchUpdate`
-- reject invalid `batch_status` values at the database contract layer
+- reject invalid `batch_status` values at the database boundary layer
 - reject orphan payload writes that do not point at an existing `capture_batches.capture_batch_id`
 
 The current verification file is:
