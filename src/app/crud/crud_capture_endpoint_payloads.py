@@ -1,3 +1,5 @@
+from typing import cast
+
 from fastcrud import FastCRUD
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -47,7 +49,7 @@ async def list_capture_endpoint_payload_reads(
     if source_endpoint is not None:
         filters["source_endpoint"] = source_endpoint
 
-    return await crud_capture_endpoint_payloads.get_multi(
+    response = await crud_capture_endpoint_payloads.get_multi(
         db=db,
         offset=offset,
         limit=limit,
@@ -57,4 +59,12 @@ async def list_capture_endpoint_payload_reads(
         return_as_model=True,
         return_total_count=True,
         **filters,
+    )
+
+    return cast(
+        CaptureEndpointPayloadReadListResponse,
+        {
+            "data": response["data"],
+            "total_count": response["total_count"],
+        },
     )
