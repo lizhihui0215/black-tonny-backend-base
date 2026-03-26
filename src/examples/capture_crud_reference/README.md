@@ -2,7 +2,7 @@
 
 This directory is a transition reference pattern for capture-side modules.
 
-The formal capture contract already lives under:
+The formal capture boundary already lives under:
 - `src/app/models/`
 - `src/app/schemas/`
 - `src/app/crud/`
@@ -20,4 +20,4 @@ Important:
 - it is not mounted into runtime routers
 - it does not appear in `/docs`
 - it is only a transition reference pattern under `src/examples/`
-- future scoped capture work should start from the formal contract under `src/app/**`, not by treating this directory as capture's long-term home
+- future scoped capture work should start from the formal boundary under `src/app/**`, not by treating this directory as capture's long-term home

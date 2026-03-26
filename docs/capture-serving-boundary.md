@@ -4,7 +4,7 @@ This document defines the current dual-database boundary for `black-tonny-backen
 
 For the overall runtime structure, use [runtime-boundaries.md](./runtime-boundaries.md).
 For the full docs index, use [docs/README.md](./README.md).
-For the minimal capture persistence contract, use [capture-minimal-contract.md](./capture-minimal-contract.md).
+For the minimal capture persistence boundary, use [capture-minimal-boundary.md](./capture-minimal-boundary.md).
 
 ## Current Truth
 
@@ -28,14 +28,14 @@ Current serving-side runtime tables include:
 - `rate_limit`
 - `token_blacklist`
 
-These capture tables establish persistence contracts only.
+These capture tables establish a persistence boundary only.
 They are not mounted into runtime routers and they do not make business APIs read capture.
 Their formal ownership stays under `src/app/**` and `src/migrations/**`, not under `src/examples/**` and not under research/reference material.
 
 ## Boundary Rules
 
 The current boundary is:
-- capture now has a minimal formal contract for raw or near-raw intake metadata
+- capture now has a minimal formal boundary for raw or near-raw intake metadata
 - serving is the runtime database for the repository's current auth and management APIs
 - runtime and business-serving APIs read serving, not capture
 - future transform or projection paths may read capture and write serving only after a later scoped migration
