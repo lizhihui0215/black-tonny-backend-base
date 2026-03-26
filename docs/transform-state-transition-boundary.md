@@ -94,4 +94,9 @@ If a later scoped migration introduces transform state-transition behavior, it m
 
 Use [transform-rule-set-questions.md](./transform-rule-set-questions.md) as the minimum question list that still needs explicit answers before those rules become formal repository behavior.
 
+For the first transform behavior PR in particular, the minimum entry condition is narrower but still explicit:
+- it must say whether it is changing only one transition edge or a broader lifecycle slice
+- it must say whether `batch_status`, `transformed_at`, `error_message`, or `updated_at` are being written, and under what rule
+- it must say what remains intentionally out of scope for a later scoped migration
+
 Until that later scoped migration happens, this document is only a formal boundary note.

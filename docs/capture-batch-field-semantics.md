@@ -96,6 +96,11 @@ Any later scoped migration must explicitly define:
 
 Use [transform-rule-set-questions.md](./transform-rule-set-questions.md) for the minimum future questions that still require explicit answers before those narrower semantics become formal behavior.
 
+For the first transform behavior PR, any touched field must be called out explicitly:
+- which current meanings stay unchanged
+- which current non-meanings stop being true
+- which new writes are being introduced now versus deferred to a later scoped migration
+
 ## What This Document Does Not Claim
 
 This document does not claim that:
