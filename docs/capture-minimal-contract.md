@@ -63,6 +63,10 @@ Current purpose:
 - record minimal capture lifecycle state
 - keep failure and timing metadata without introducing orchestration logic
 
+Current integrity guardrails:
+- `batch_status` is constrained by the formal schema and by a database check constraint
+- `updated_at` is system-managed and is not part of the caller-supplied update contract
+
 ### `capture_endpoint_payloads`
 
 Current contract fields:
@@ -96,6 +100,7 @@ The current formal capture contract is landed in:
 - `src/app/crud/crud_capture_endpoint_payloads.py`
 - `src/app/core/migration_targets.py`
 - `src/migrations/capture_versions/20260326_02_add_capture_contract_tables.py`
+- `src/migrations/capture_versions/20260326_03_add_capture_batch_status_check.py`
 
 These files define persistence contracts only.
 They do not wire capture into routers, workers, or API handlers.
@@ -109,6 +114,8 @@ The current coverage exercises:
 - create one `capture_batches` row through the formal CRUD contract
 - append one `capture_endpoint_payloads` row through the formal CRUD contract
 - update the batch lifecycle row and confirm `updated_at` refreshes
+- reject caller attempts to override `updated_at` through `CaptureBatchUpdate`
+- reject invalid `batch_status` values at the database contract layer
 - reject orphan payload writes that do not point at an existing `capture_batches.capture_batch_id`
 
 The current verification file is:

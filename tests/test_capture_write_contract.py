@@ -6,6 +6,7 @@ from typing import Any
 
 import pytest
 import pytest_asyncio
+from pydantic import ValidationError
 from sqlalchemy import event
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
@@ -13,7 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 from src.app.core.db.database import CaptureBase
 from src.app.crud.crud_capture_batches import crud_capture_batches
 from src.app.crud.crud_capture_endpoint_payloads import crud_capture_endpoint_payloads
-from src.app.models.capture_batch import CaptureBatch  # noqa: F401
+from src.app.models.capture_batch import CaptureBatch
 from src.app.models.capture_endpoint_payload import CaptureEndpointPayload  # noqa: F401
 from src.app.schemas.capture import (
     CaptureBatchCreate,
@@ -166,5 +167,26 @@ async def test_capture_payload_write_rejects_missing_batch(capture_db_session: A
             ),
             schema_to_select=CaptureEndpointPayloadRead,
         )
+
+    await capture_db_session.rollback()
+
+
+def test_capture_batch_update_schema_rejects_updated_at_override() -> None:
+    with pytest.raises(ValidationError):
+        CaptureBatchUpdate(updated_at=datetime.now(UTC))
+
+
+@pytest.mark.asyncio
+async def test_capture_batch_status_constraint_rejects_unknown_value(capture_db_session: AsyncSession) -> None:
+    capture_db_session.add(
+        CaptureBatch(
+            capture_batch_id="batch-invalid",
+            batch_status="unexpected",
+            source_name="erp-report",
+        )
+    )
+
+    with pytest.raises(IntegrityError):
+        await capture_db_session.commit()
 
     await capture_db_session.rollback()

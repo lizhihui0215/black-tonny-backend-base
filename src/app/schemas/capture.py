@@ -3,7 +3,6 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-
 CaptureBatchStatus = Literal["queued", "captured", "partial", "failed", "transformed"]
 
 
@@ -36,7 +35,6 @@ class CaptureBatchUpdate(BaseModel):
     source_name: str | None = Field(default=None, min_length=1, max_length=128)
     pulled_at: datetime | None = None
     transformed_at: datetime | None = None
-    updated_at: datetime | None = None
     error_message: str | None = None
 
 
