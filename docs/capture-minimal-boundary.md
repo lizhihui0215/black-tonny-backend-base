@@ -112,27 +112,31 @@ Current formal read helpers:
 - `get_capture_endpoint_payload_read`
 - `list_capture_endpoint_payload_reads`
 
+## Current Read/List Boundary
+
 Current list-read shape:
 - list helpers return a fixed boundary shape with `data` and `total_count`
 - filtered empty results keep `data=[]` and `total_count=0`
 - paginated results keep stable ordering while `total_count` remains the full filtered count
 
-Current supported query boundary:
+### Supported Query Boundary
+
 - `list_capture_batch_reads` supports equality filters on `batch_status` and `source_name`
 - `list_capture_endpoint_payload_reads` supports equality filters on `capture_batch_id` and `source_endpoint`
 - current list helpers support default `limit`, explicit `limit`, and `offset`
 - current list helpers keep a fixed ascending sort boundary through the helper implementation
 
-Current unsupported query boundary:
+### Unsupported Query Boundary
+
 - no OR-style filters
 - no fuzzy or full-text search
 - no range filters
 - no caller-supplied sort overrides
 - no joined reads or projection queries
 
-## Current Verified Read/Write Closure
+## Current Verified Boundary Coverage
 
-The current minimal read/write closure is verified at the formal-layer test level, not through a runtime API.
+The current minimal boundary coverage is verified at the formal-layer test level, not through a runtime API.
 
 The current coverage exercises:
 - read one `capture_batches` row through a formal read helper that returns `CaptureBatchRead`
@@ -153,7 +157,7 @@ The current coverage exercises:
 - reject orphan payload writes that do not point at an existing `capture_batches.capture_batch_id`
 
 The current verification file is:
-- `tests/test_capture_write_contract.py`
+- `tests/test_capture_formal_boundary.py`
 
 ## Explicit Non-Goals
 
