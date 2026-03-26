@@ -24,6 +24,28 @@ It exists to make one thing explicit:
 
 This note does not provide the answers.
 
+## Minimum Entry Conditions For The First Transform Behavior PR
+
+The first PR that introduces any real transform behavior must stay narrow and must explicitly answer the minimum subset of rule questions it touches.
+
+At minimum, that PR must state:
+- whether admission and readiness are treated as the same gate in that PR or as two distinct gates
+- whether `batch_status` is reused unchanged, narrowed, or only partially interpreted by that PR
+- whether `transformed_at` is written by that PR, and if so, under exactly what condition
+- whether `error_message` is written, preserved, cleared, or left untouched by that PR's failure path
+- whether serving-side outputs are explicitly out of scope for that PR or part of the same rule sketch
+
+If that first behavior PR cannot answer those points explicitly, it should remain doc-only rather than imply behavior by omission.
+
+## What The First Behavior PR Must Not Assume By Default
+
+The first behavior PR must not assume by default that:
+- admission and readiness are automatically the same concept
+- `batch_status` can silently inherit legacy lifecycle meanings
+- `transformed_at` can be written whenever any transform-related code runs
+- `error_message` already answers retry, failure, or terminal-state policy
+- serving-side effects can be added later without affecting the capture-side rule sketch
+
 ## Minimum Future Rule-Set Questions
 
 Any later scoped migration that introduces transform behavior must explicitly answer at least these questions:
@@ -81,5 +103,6 @@ This document does not claim that:
 - readiness or transition rules are currently implemented
 - the current fields already answer the rule-set questions above
 - legacy answers should be accepted unless someone objects
+- the first transform behavior PR can defer every rule choice while still changing lifecycle behavior
 
 Until a later scoped migration defines explicit answers, these remain open future rule questions rather than current repository behavior.
