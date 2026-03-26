@@ -26,7 +26,7 @@ Internal working docs under `docs/` can stay in Chinese when they are migration-
 - [`legacy-backend-migration-mapping.md`](./legacy-backend-migration-mapping.md)
   - PR-1 inventory, classification, old-path to new-path mapping, capture scope list, and research/runtime boundary notes
   - Language: Chinese working doc
-  - Status: `Source of truth`
+  - Status: `Source of truth for PR-1 migration planning`
 - [`reference/legacy-backend/README.md`](./reference/legacy-backend/README.md)
   - Reserved reference-only area for selectively retained legacy research material
   - Language: Chinese working doc
