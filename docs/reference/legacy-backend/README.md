@@ -2,6 +2,8 @@
 
 这个目录预留给从 `black-tonny-backend` 选择性保留的 reference 资料。
 
+当前正式文档请先看 [docs/README.md](../../README.md)。
+
 这里可以放：
 - ERP 台账、成熟度面板、capture 路线注册表
 - 页面研究 runbook、tooling 说明

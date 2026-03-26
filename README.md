@@ -22,31 +22,33 @@ What remains is the long-term base:
 - isolated reference example code for later migration work
 - an in-place `login` chain under `src/app` to preserve directory/style consistency
 
-## Legacy Migration Boundary
+## Documentation
+
+Start with the [docs index](./docs/README.md).
+
+Current formal docs:
+- [docs/runtime-boundaries.md](./docs/runtime-boundaries.md)
+- [docs/capture-serving-boundary.md](./docs/capture-serving-boundary.md)
+
+Planning, reference, and archive material stays linked from [docs/README.md](./docs/README.md).
+
+## Migration Guardrails
 
 `black-tonny-backend-base` is the only source of truth for ongoing backend migration work.
 
-PR-1 is intentionally documentation-only:
-- audit legacy documentation from `black-tonny-backend`
-- classify assets as formal docs, research references, or historical archive
-- record old-path to new-path mapping
-- define the next capture migration scope without moving business code
+The current migration boundary stays explicit:
+- do not copy whole directories from the legacy repo
+- do not migrate legacy `app/services`
+- do not migrate legacy `scripts`
+- do not wire `capture` into runtime business APIs
+- do not wire `research` into runtime
+- do not change public API behavior as part of documentation work
 
-PR-1 does not:
-- copy whole directories from the legacy repo
-- migrate legacy `app/services`
-- migrate legacy `scripts`
-- wire `capture` into runtime business APIs
-- wire `research` into runtime
-- change public API behavior
-
-Migration guardrails stay explicit:
+Current long-term rules:
 - business APIs read `serving`, not `capture`
-- research and evidence remain reference-only until a later scoped migration admits them
+- reference and archive docs do not define runtime behavior
 - future migration work should land in the base layering instead of recreating a flat service-heavy structure
-
-Use [docs/README.md](./docs/README.md) for the new documentation index and
-[docs/legacy-backend-migration-mapping.md](./docs/legacy-backend-migration-mapping.md) for the PR-1 audit and mapping register.
+- legacy planning material remains planning-only unless it is rewritten into the formal docs listed above
 
 ## Quick Start
 
