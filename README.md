@@ -34,6 +34,7 @@ Current formal docs:
 - [docs/admitted-transform-input-boundary.md](./docs/admitted-transform-input-boundary.md)
 - [docs/transform-readiness-boundary.md](./docs/transform-readiness-boundary.md)
 - [docs/transform-state-transition-boundary.md](./docs/transform-state-transition-boundary.md)
+- [docs/capture-batch-field-semantics.md](./docs/capture-batch-field-semantics.md)
 
 Planning, reference, and archive material stays linked from [docs/README.md](./docs/README.md).
 

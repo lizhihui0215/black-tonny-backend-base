@@ -52,6 +52,10 @@ Internal planning, reference, and archive material can stay in Chinese when it i
   - Minimal future transform state-transition boundary derived from the narrower transform readiness layer
   - Language: English
   - Status: `Source of truth`
+- [`capture-batch-field-semantics.md`](./capture-batch-field-semantics.md)
+  - Current semantics and ownership boundary of transform-adjacent fields on `capture_batches`
+  - Language: English
+  - Status: `Source of truth`
 
 ## Migration Planning
 

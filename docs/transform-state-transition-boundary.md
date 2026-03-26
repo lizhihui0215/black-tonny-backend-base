@@ -6,6 +6,7 @@ For the current capture formal boundary, use [capture-minimal-boundary.md](./cap
 For the broader future transform input candidate edge, use [transform-input-boundary.md](./transform-input-boundary.md).
 For the narrower admitted transform input edge, use [admitted-transform-input-boundary.md](./admitted-transform-input-boundary.md).
 For the narrower transform readiness edge, use [transform-readiness-boundary.md](./transform-readiness-boundary.md).
+For the current semantics of transform-adjacent batch fields, use [capture-batch-field-semantics.md](./capture-batch-field-semantics.md).
 For the repository docs index, use [docs/README.md](./README.md).
 
 ## Current Truth
@@ -37,6 +38,9 @@ On top of that, the minimum state-transition conditions are:
   - `capture_batches.error_message`
   - `capture_batches.updated_at`
 - any future transition rule must be defined from repository-owned formal docs and code in a later scoped migration, not inferred from external samples, copied payloads, or legacy orchestration behavior
+
+The current field semantics for those lifecycle facts stay narrower than any future transform policy.
+That means `batch_status`, `transformed_at`, `error_message`, and `updated_at` must first be read through [capture-batch-field-semantics.md](./capture-batch-field-semantics.md), not through assumed legacy behavior.
 
 These conditions are intentionally narrow.
 They only constrain where future transform state transitions may start and which current persisted lifecycle facts they may depend on.

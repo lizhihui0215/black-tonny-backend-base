@@ -7,6 +7,7 @@ For the future transform input edge, use [transform-input-boundary.md](./transfo
 For the narrower admitted transform input edge, use [admitted-transform-input-boundary.md](./admitted-transform-input-boundary.md).
 For the narrower transform readiness edge, use [transform-readiness-boundary.md](./transform-readiness-boundary.md).
 For the narrower transform state-transition edge, use [transform-state-transition-boundary.md](./transform-state-transition-boundary.md).
+For the current semantics of transform-adjacent batch fields, use [capture-batch-field-semantics.md](./capture-batch-field-semantics.md).
 For the repository docs index, use [docs/README.md](./README.md).
 
 ## Scope
@@ -70,6 +71,14 @@ Current purpose:
 Current integrity guardrails:
 - `batch_status` is constrained by the formal schema and by a database check constraint
 - `updated_at` is system-managed and is not part of the caller-supplied update shape
+
+Current transform-adjacent field semantics stay intentionally restrained:
+- `batch_status` is a persisted lifecycle label, not current transform policy
+- `transformed_at` is a nullable persisted fact, not current transform completion proof
+- `error_message` is optional persisted diagnostic context, not current terminal-state policy
+- `updated_at` is a system-managed modification timestamp, not current transform progress or reservation state
+
+Use [capture-batch-field-semantics.md](./capture-batch-field-semantics.md) for the full field-level note.
 
 ### `capture_endpoint_payloads`
 
