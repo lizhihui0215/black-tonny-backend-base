@@ -1,6 +1,6 @@
-# Serving Read Reference
+# Serving Read Transition Reference
 
-This directory is a reference-only example for future serving-side read modules.
+This directory is a transition reference pattern for future serving-side read modules.
 
 What it shows:
 - a read-focused schema
@@ -8,7 +8,9 @@ What it shows:
 - a simple SQL query pattern for read models
 
 Important:
+- this directory is not the source of truth for serving runtime contracts
 - this code is not imported by the app
 - it is not mounted into runtime routers
 - it does not appear in `/docs`
-- adapt the query shape and naming before using it in a real serving module
+- it is only a transition reference pattern under `src/examples/`
+- adapt the query shape and naming only after deciding a formal serving home outside `src/examples/`

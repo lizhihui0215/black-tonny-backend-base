@@ -7,7 +7,7 @@ from src.app.core.db.database import CaptureBase
 
 
 class ExampleRecord(CaptureBase):
-    """Reference-only SQLAlchemy model for future capture-side CRUD modules."""
+    """Transition reference-only model that mirrors the capture-side formal layout."""
 
     __tablename__ = "example_record"
 

@@ -21,6 +21,25 @@ It does not introduce:
 - legacy `scripts`
 - admission or research-driven capture logic
 
+## Formal Ownership
+
+`capture` belongs to the formal mainline in this repository.
+
+That means the current formal ownership is:
+- `src/app/models/`
+- `src/app/schemas/`
+- `src/app/crud/`
+- `src/app/core/migration_targets.py`
+- `src/migrations/capture_versions/`
+
+It does not belong to:
+- `src/examples/`
+- `docs/reference/**`
+- `docs/archive/**`
+
+`src/examples/**` can still hold transition reference patterns, but it is not the formal home for capture.
+Research notes, traceability samples, and troubleshooting templates belong in `docs/reference/**`, not in the formal capture contract.
+
 ## Landed Tables
 
 The current formal capture tables are:
@@ -80,6 +99,7 @@ The current formal capture contract is landed in:
 
 These files define persistence contracts only.
 They do not wire capture into routers, workers, or API handlers.
+The example code under `src/examples/` can mirror this shape for transition reference purposes, but it does not define this contract.
 
 ## Explicit Non-Goals
 

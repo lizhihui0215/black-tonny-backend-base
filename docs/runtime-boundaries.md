@@ -19,6 +19,7 @@ Its current runtime keeps only the capabilities that already exist in this repos
 
 It does not claim that legacy business modules, capture flows, or research pipelines have already landed here.
 The repository now also contains minimal capture persistence contracts, but they are not mounted into runtime routes.
+Those capture contracts belong to the formal mainline, not to `src/examples/` and not to research/reference material.
 
 ## Current Route Organization
 
@@ -52,7 +53,7 @@ Legacy runtime APIs from `black-tonny-backend` are not part of the current repos
 - `src/app/middleware/`
   - runtime middleware
 - `src/examples/`
-  - reference-only examples for future scoped migrations
+  - transition reference patterns only, not a formal home for capture or serving contracts
 
 `src/examples/` is intentionally not part of the runtime import path or mounted route tree.
 The capture contract modules under `src/app/models/`, `src/app/schemas/`, and `src/app/crud/` do not add new runtime APIs by themselves.
