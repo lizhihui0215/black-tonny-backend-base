@@ -6,6 +6,7 @@ For the dual-database boundary, use [capture-serving-boundary.md](./capture-serv
 For the future transform input edge, use [transform-input-boundary.md](./transform-input-boundary.md).
 For the narrower admitted transform input edge, use [admitted-transform-input-boundary.md](./admitted-transform-input-boundary.md).
 For the narrower transform readiness edge, use [transform-readiness-boundary.md](./transform-readiness-boundary.md).
+For the narrower transform state-transition edge, use [transform-state-transition-boundary.md](./transform-state-transition-boundary.md).
 For the repository docs index, use [docs/README.md](./README.md).
 
 ## Scope
@@ -105,6 +106,9 @@ It cannot be widened through `docs/reference/**`, `src/examples/**`, `docs/archi
 
 If a later scoped migration defines transform-ready input, that ready subset must also be derived from this same persisted capture boundary through the narrower admitted-input layer.
 It cannot be widened through reference material, transition examples, archive material, legacy samples, or temporary files.
+
+If a later scoped migration defines transform state transitions, those lifecycle rules must also stay anchored to this same persisted capture boundary through the narrower admitted-input and ready-input layers.
+They must not be inherited from legacy orchestration or widened through reference material, transition examples, archive material, legacy samples, or temporary files.
 
 Current fields such as `transformed_at`, `route_kind`, `page_cursor`, and `request_params` may support later scoped transform work,
 but they do not imply that transform behavior is already implemented.

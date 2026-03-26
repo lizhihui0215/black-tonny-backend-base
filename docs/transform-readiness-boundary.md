@@ -5,6 +5,7 @@ This document defines the minimal future transform readiness boundary for `black
 For the current capture formal boundary, use [capture-minimal-boundary.md](./capture-minimal-boundary.md).
 For the broader future transform input candidate edge, use [transform-input-boundary.md](./transform-input-boundary.md).
 For the narrower admitted transform input edge, use [admitted-transform-input-boundary.md](./admitted-transform-input-boundary.md).
+For the narrower transform state-transition edge, use [transform-state-transition-boundary.md](./transform-state-transition-boundary.md).
 For the repository docs index, use [docs/README.md](./README.md).
 
 ## Current Truth
@@ -19,6 +20,8 @@ It only defines the narrowest future boundary a later scoped migration must resp
 The distinction stays explicit:
 - admitted transform input is the narrower future subset that a later scoped migration is allowed to accept into transform scope
 - transform-ready input is the even narrower future subset that a later scoped migration is allowed to treat as ready for transform behavior
+
+Transform-ready input may still be broader than the future set of lifecycle transitions that a later scoped migration chooses to formalize.
 
 This document only defines the minimum readiness floor.
 It does not define how readiness is checked, when transform runs, or how serving-side outputs are produced.
@@ -36,6 +39,8 @@ On top of that, the minimum readiness conditions are:
 These readiness conditions are intentionally narrow.
 They only constrain where future readiness may start and what kind of persisted truth it may depend on.
 They do not define a readiness policy, checker, or state machine.
+
+If later work needs the narrower state-transition edge, that scope must continue into [transform-state-transition-boundary.md](./transform-state-transition-boundary.md) rather than being inferred from this readiness layer alone.
 
 ## What Is Still Not Defined
 
