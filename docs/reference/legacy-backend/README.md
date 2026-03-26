@@ -8,12 +8,14 @@
 - ERP 台账、成熟度面板、capture 路线注册表
 - 页面研究 runbook、tooling 说明
 - capture 到 serving 的字段映射草案
+- 追溯说明、样本清单、排障模板、研究记录
 
 这里不能变成：
 - 新仓库 runtime 的正式真源
 - app import 入口
 - router 挂载入口
 - schema、CRUD、模型或 API 契约的替代品
+- capture 正式契约的长期归属地
 
 迁移规则：
 - 只允许按需挑选，不允许整目录复制

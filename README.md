@@ -19,7 +19,7 @@ What remains is the long-term base:
 - preserved `exceptions` / `utils` / `worker` extension packages
 - preserved `api/dependencies.py` as a shared auth dependency location
 - Alembic baseline
-- isolated reference example code for later migration work
+- isolated transition reference patterns under `src/examples/` for later migration work
 - an in-place `login` chain under `src/app` to preserve directory/style consistency
 
 ## Documentation
@@ -211,18 +211,25 @@ The baseline seed intentionally stays small:
 Rate-limit rows are not auto-seeded because they are policy-specific. Add them through the runtime API once you know the
 real serving limits you want.
 
-## Reference Examples
+## Transition Reference Patterns
 
-Reference code lives under `src/examples/`:
+Transition reference code lives under `src/examples/`:
 
 - `capture_crud_reference`
 - `serving_read_reference`
+
+See [src/examples/README.md](./src/examples/README.md) for the ownership boundary of this directory.
 
 These files are intentionally isolated:
 - they are not mounted into runtime routers
 - they do not appear in `/docs`
 - they are not imported by the app
-- they are only examples for future migration work
+- they are not the long-term formal home for capture or serving contracts
+
+Current ownership stays explicit:
+- formal capture contracts live under `src/app/**`, `src/migrations/**`, and the formal docs linked from [docs/README.md](./docs/README.md)
+- `src/examples/**` is a transition reference-pattern area only
+- research notes, traceability samples, and troubleshooting templates belong under `docs/reference/**`, not under formal runtime modules
 
 The auth chain is kept in the original app layout:
 

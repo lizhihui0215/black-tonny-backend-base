@@ -30,6 +30,7 @@ Current serving-side runtime tables include:
 
 These capture tables establish persistence contracts only.
 They are not mounted into runtime routers and they do not make business APIs read capture.
+Their formal ownership stays under `src/app/**` and `src/migrations/**`, not under `src/examples/**` and not under research/reference material.
 
 ## Boundary Rules
 
@@ -48,6 +49,7 @@ Reference docs, archive docs, and reference examples can help plan future migrat
 That means:
 - `docs/reference/**` is not a runtime schema source
 - `docs/archive/**` is not a runtime schema source
+- `src/examples/**` is a transition reference-pattern area, not a formal owner of capture truth
 - `src/examples/**` is not mounted into runtime routers and is not imported by the app
 
 ## What This Document Does Not Claim

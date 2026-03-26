@@ -11,6 +11,8 @@ Start from the repository [README](../README.md), then use the sections below ba
 - archive docs for superseded legacy context
 
 Only the formal docs define current repository behavior.
+That includes the current capture formal contract under `src/app/**` and `src/migrations/**`.
+`docs/reference/**` and `src/examples/**` are reference-only areas for research, traceability, samples, troubleshooting, and transition patterns.
 
 ## Language Note
 
