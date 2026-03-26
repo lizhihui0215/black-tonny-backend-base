@@ -30,6 +30,7 @@ Current formal docs:
 - [docs/runtime-boundaries.md](./docs/runtime-boundaries.md)
 - [docs/capture-serving-boundary.md](./docs/capture-serving-boundary.md)
 - [docs/capture-minimal-boundary.md](./docs/capture-minimal-boundary.md)
+- [docs/transform-input-boundary.md](./docs/transform-input-boundary.md)
 
 Planning, reference, and archive material stays linked from [docs/README.md](./docs/README.md).
 

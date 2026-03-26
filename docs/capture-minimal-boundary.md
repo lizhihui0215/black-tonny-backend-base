@@ -3,6 +3,7 @@
 This document defines the minimal formal capture boundary currently landed in `black-tonny-backend-base`.
 
 For the dual-database boundary, use [capture-serving-boundary.md](./capture-serving-boundary.md).
+For the future transform input edge, use [transform-input-boundary.md](./transform-input-boundary.md).
 For the repository docs index, use [docs/README.md](./README.md).
 
 ## Scope
@@ -89,6 +90,16 @@ Current purpose:
 
 Current formal association:
 - `capture_endpoint_payloads.capture_batch_id` references `capture_batches.capture_batch_id`
+
+## Relation To Future Transform Input
+
+The current capture boundary is the only formal source for any future transform input candidate.
+
+That means a later scoped transform migration may only start from persisted rows that already exist under this boundary.
+Reference material, archive material, examples, legacy scripts, and copied payload files are outside the formal transform input edge.
+
+Current fields such as `transformed_at`, `route_kind`, `page_cursor`, and `request_params` may support later scoped transform work,
+but they do not imply that transform behavior is already implemented.
 
 ## Code Locations
 

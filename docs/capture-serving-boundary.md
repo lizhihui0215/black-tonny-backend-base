@@ -5,6 +5,7 @@ This document defines the current dual-database boundary for `black-tonny-backen
 For the overall runtime structure, use [runtime-boundaries.md](./runtime-boundaries.md).
 For the full docs index, use [docs/README.md](./README.md).
 For the minimal capture persistence boundary, use [capture-minimal-boundary.md](./capture-minimal-boundary.md).
+For the future transform input edge, use [transform-input-boundary.md](./transform-input-boundary.md).
 
 ## Current Truth
 
@@ -39,6 +40,9 @@ The current boundary is:
 - serving is the runtime database for the repository's current auth and management APIs
 - runtime and business-serving APIs read serving, not capture
 - future transform or projection paths may read capture and write serving only after a later scoped migration
+
+This document does not define the future transform input shape by itself.
+That input edge is scoped separately in [transform-input-boundary.md](./transform-input-boundary.md) so current serving truth and future transform scope do not get conflated.
 
 The readiness path is the current exception that checks both databases for health, but it is still a probe path rather than a business data read path.
 
