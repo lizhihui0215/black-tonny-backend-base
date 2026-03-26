@@ -234,6 +234,50 @@ async def test_capture_batch_read_helpers_return_models_and_stable_list_shape(
 
 
 @pytest.mark.asyncio
+async def test_capture_batch_list_read_helper_handles_pagination_and_empty_results(
+    capture_db_session: AsyncSession,
+) -> None:
+    for capture_batch_id in ("batch-110", "batch-120", "batch-130"):
+        await crud_capture_batches.create(
+            db=capture_db_session,
+            object=CaptureBatchCreate(
+                capture_batch_id=capture_batch_id,
+                batch_status="queued",
+                source_name="erp-paginated",
+            ),
+            schema_to_select=CaptureBatchRead,
+        )
+
+    paginated_batches = await list_capture_batch_reads(
+        db=capture_db_session,
+        source_name="erp-paginated",
+        offset=1,
+        limit=1,
+    )
+    out_of_range_batches = await list_capture_batch_reads(
+        db=capture_db_session,
+        source_name="erp-paginated",
+        offset=5,
+        limit=2,
+    )
+    empty_batches = await list_capture_batch_reads(
+        db=capture_db_session,
+        source_name="missing-source",
+        offset=0,
+        limit=2,
+    )
+
+    assert paginated_batches["total_count"] == 3
+    assert [item.capture_batch_id for item in paginated_batches["data"]] == ["batch-120"]
+
+    assert out_of_range_batches["total_count"] == 3
+    assert out_of_range_batches["data"] == []
+
+    assert empty_batches["total_count"] == 0
+    assert empty_batches["data"] == []
+
+
+@pytest.mark.asyncio
 async def test_capture_payload_read_helpers_return_models_with_filtered_sorted_results(
     capture_db_session: AsyncSession,
 ) -> None:
@@ -292,3 +336,67 @@ async def test_capture_payload_read_helpers_return_models_with_filtered_sorted_r
     assert filtered_payloads["data"][0].checksum == "checksum-c"
 
     assert missing_payload is None
+
+
+@pytest.mark.asyncio
+async def test_capture_payload_list_read_helper_handles_pagination_and_empty_results(
+    capture_db_session: AsyncSession,
+) -> None:
+    pulled_at = datetime.now(UTC)
+    await crud_capture_batches.create(
+        db=capture_db_session,
+        object=CaptureBatchCreate(
+            capture_batch_id="batch-300",
+            batch_status="queued",
+            source_name="erp-report",
+            pulled_at=pulled_at,
+        ),
+        schema_to_select=CaptureBatchRead,
+    )
+
+    paginated_ids: list[int] = []
+    for source_endpoint, checksum in (
+        ("/erp/paginated/a", "checksum-pa"),
+        ("/erp/paginated/b", "checksum-pb"),
+        ("/erp/paginated/c", "checksum-pc"),
+    ):
+        created_payload = await crud_capture_endpoint_payloads.create(
+            db=capture_db_session,
+            object=CaptureEndpointPayloadCreate(
+                capture_batch_id="batch-300",
+                source_endpoint=source_endpoint,
+                payload_json='{"rows":[1]}',
+                checksum=checksum,
+                pulled_at=pulled_at,
+            ),
+            schema_to_select=CaptureEndpointPayloadRead,
+        )
+        paginated_ids.append(normalize(created_payload)["id"])
+
+    paginated_payloads = await list_capture_endpoint_payload_reads(
+        db=capture_db_session,
+        capture_batch_id="batch-300",
+        offset=1,
+        limit=1,
+    )
+    out_of_range_payloads = await list_capture_endpoint_payload_reads(
+        db=capture_db_session,
+        capture_batch_id="batch-300",
+        offset=8,
+        limit=2,
+    )
+    empty_payloads = await list_capture_endpoint_payload_reads(
+        db=capture_db_session,
+        source_endpoint="/missing-endpoint",
+        offset=0,
+        limit=2,
+    )
+
+    assert paginated_payloads["total_count"] == 3
+    assert [item.id for item in paginated_payloads["data"]] == [paginated_ids[1]]
+
+    assert out_of_range_payloads["total_count"] == 3
+    assert out_of_range_payloads["data"] == []
+
+    assert empty_payloads["total_count"] == 0
+    assert empty_payloads["data"] == []

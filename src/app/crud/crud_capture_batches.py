@@ -1,3 +1,5 @@
+from typing import cast
+
 from fastcrud import FastCRUD
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -48,7 +50,7 @@ async def list_capture_batch_reads(
     if source_name is not None:
         filters["source_name"] = source_name
 
-    return await crud_capture_batches.get_multi(
+    response = await crud_capture_batches.get_multi(
         db=db,
         offset=offset,
         limit=limit,
@@ -58,4 +60,12 @@ async def list_capture_batch_reads(
         return_as_model=True,
         return_total_count=True,
         **filters,
+    )
+
+    return cast(
+        CaptureBatchReadListResponse,
+        {
+            "data": response["data"],
+            "total_count": response["total_count"],
+        },
     )

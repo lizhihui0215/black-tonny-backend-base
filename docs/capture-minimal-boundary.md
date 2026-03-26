@@ -112,6 +112,11 @@ Current formal read helpers:
 - `get_capture_endpoint_payload_read`
 - `list_capture_endpoint_payload_reads`
 
+Current list-read shape:
+- list helpers return a fixed boundary shape with `data` and `total_count`
+- filtered empty results keep `data=[]` and `total_count=0`
+- paginated results keep stable ordering while `total_count` remains the full filtered count
+
 ## Current Verified Read/Write Closure
 
 The current minimal read/write closure is verified at the formal-layer test level, not through a runtime API.
@@ -119,8 +124,12 @@ The current minimal read/write closure is verified at the formal-layer test leve
 The current coverage exercises:
 - read one `capture_batches` row through a formal read helper that returns `CaptureBatchRead`
 - list filtered `capture_batches` rows through a formal read helper with stable `capture_batch_id` ordering
+- verify paginated batch reads keep a stable subset while `total_count` still reflects the full filtered result
+- verify empty batch reads return `data=[]` with `total_count=0`
 - read one `capture_endpoint_payloads` row through a formal read helper that returns `CaptureEndpointPayloadRead`
 - list filtered `capture_endpoint_payloads` rows through a formal read helper with stable `id` ordering
+- verify paginated payload reads keep a stable subset while `total_count` still reflects the full filtered result
+- verify empty payload reads return `data=[]` with `total_count=0`
 - create one `capture_batches` row through the formal CRUD path
 - append one `capture_endpoint_payloads` row through the formal CRUD path
 - update the batch lifecycle row and confirm `updated_at` refreshes
