@@ -30,6 +30,10 @@ Internal planning, reference, and archive material can stay in Chinese when it i
   - Current dual-database responsibilities and the serving-only runtime read rule
   - Language: English
   - Status: `Source of truth`
+- [`capture-minimal-contract.md`](./capture-minimal-contract.md)
+  - Minimal formal capture models, CRUD contracts, and migration-target boundary
+  - Language: English
+  - Status: `Source of truth`
 
 ## Migration Planning
 

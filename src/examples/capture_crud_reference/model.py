@@ -3,10 +3,10 @@ from datetime import UTC, datetime
 from sqlalchemy import DateTime, String
 from sqlalchemy.orm import Mapped, mapped_column
 
-from src.app.core.db.database import Base
+from src.app.core.db.database import CaptureBase
 
 
-class ExampleRecord(Base):
+class ExampleRecord(CaptureBase):
     """Reference-only SQLAlchemy model for future capture-side CRUD modules."""
 
     __tablename__ = "example_record"

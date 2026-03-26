@@ -1,10 +1,9 @@
 from pathlib import Path
 from typing import Literal, cast
 
-from sqlalchemy import MetaData
 from sqlalchemy.sql.schema import MetaData as MetaDataType
 
-from .db.database import Base
+from .db.database import CaptureBase, ServingBase
 
 AlembicTarget = Literal["capture", "serving"]
 
@@ -35,11 +34,14 @@ def get_version_table(target: AlembicTarget) -> str:
 
 def load_target_metadata(target: AlembicTarget) -> MetaDataType:
     if target == "capture":
-        return MetaData()
+        from ..models.capture_batch import CaptureBatch  # noqa: F401
+        from ..models.capture_endpoint_payload import CaptureEndpointPayload  # noqa: F401
+
+        return CaptureBase.metadata
 
     from ..models.rate_limit import RateLimit  # noqa: F401
     from ..models.tier import Tier  # noqa: F401
     from ..models.user import User  # noqa: F401
     from .db.token_blacklist import TokenBlacklist  # noqa: F401
 
-    return Base.metadata
+    return ServingBase.metadata

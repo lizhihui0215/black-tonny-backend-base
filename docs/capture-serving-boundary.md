@@ -4,6 +4,7 @@ This document defines the current dual-database boundary for `black-tonny-backen
 
 For the overall runtime structure, use [runtime-boundaries.md](./runtime-boundaries.md).
 For the full docs index, use [docs/README.md](./README.md).
+For the minimal capture persistence contract, use [capture-minimal-contract.md](./capture-minimal-contract.md).
 
 ## Current Truth
 
@@ -11,11 +12,15 @@ The repository keeps two database targets:
 - `CAPTURE_DB_URL`
 - `SERVING_DB_URL`
 
-The current runtime facts are:
+The current repository facts are:
 - `/api/v1/ready` checks both capture and serving database connectivity
-- the capture migration target is still empty in the current mainline metadata
+- the capture migration target now contains the minimal formal capture tables
 - the serving migration target already contains the current runtime tables
 - the current auth and management-style runtime APIs use serving database sessions
+
+Current capture-side formal tables include:
+- `capture_batches`
+- `capture_endpoint_payloads`
 
 Current serving-side runtime tables include:
 - `user`
@@ -23,12 +28,13 @@ Current serving-side runtime tables include:
 - `rate_limit`
 - `token_blacklist`
 
-Current capture-side runtime tables have not been landed yet in the mainline metadata.
+These capture tables establish persistence contracts only.
+They are not mounted into runtime routers and they do not make business APIs read capture.
 
 ## Boundary Rules
 
 The current boundary is:
-- capture is reserved for raw or near-raw intake once future scoped migrations introduce formal capture models
+- capture now has a minimal formal contract for raw or near-raw intake metadata
 - serving is the runtime database for the repository's current auth and management APIs
 - runtime and business-serving APIs read serving, not capture
 - future transform or projection paths may read capture and write serving only after a later scoped migration
@@ -48,6 +54,7 @@ That means:
 
 This document does not claim that:
 - legacy capture services have already been migrated
+- capture admission or research coupling has entered the runtime
 - research scripts have entered runtime
 - future serving projections have already landed
 - old runtime business modules are current repository behavior

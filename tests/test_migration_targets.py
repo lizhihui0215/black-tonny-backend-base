@@ -11,14 +11,28 @@ def test_resolve_alembic_target_from_config_filename() -> None:
     assert resolve_alembic_target(None, "/tmp/src/alembic_serving.ini") == "serving"
 
 
-def test_capture_metadata_is_empty() -> None:
+def test_capture_metadata_contains_minimal_capture_tables() -> None:
     metadata = load_target_metadata("capture")
-    assert metadata.tables == {}
+    assert {"capture_batches", "capture_endpoint_payloads"}.issubset(metadata.tables.keys())
+
+
+def test_capture_metadata_excludes_serving_tables() -> None:
+    metadata = load_target_metadata("capture")
+    assert "user" not in metadata.tables
+    assert "tier" not in metadata.tables
+    assert "rate_limit" not in metadata.tables
+    assert "token_blacklist" not in metadata.tables
 
 
 def test_serving_metadata_contains_serving_tables() -> None:
     metadata = load_target_metadata("serving")
     assert {"user", "tier", "rate_limit", "token_blacklist"}.issubset(metadata.tables.keys())
+
+
+def test_serving_metadata_excludes_capture_tables() -> None:
+    metadata = load_target_metadata("serving")
+    assert "capture_batches" not in metadata.tables
+    assert "capture_endpoint_payloads" not in metadata.tables
 
 
 def test_version_table_names_are_target_specific() -> None:
