@@ -56,6 +56,10 @@ Internal planning, reference, and archive material can stay in Chinese when it i
   - Current semantics and ownership boundary of transform-adjacent fields on `capture_batches`
   - Language: English
   - Status: `Source of truth`
+- [`transform-rule-set-questions.md`](./transform-rule-set-questions.md)
+  - Minimum future question list that a scoped transform rule-set must answer explicitly
+  - Language: English
+  - Status: `Source of truth`
 
 ## Migration Planning
 
