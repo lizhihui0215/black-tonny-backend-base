@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Literal
+from typing import Literal, TypedDict
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -18,6 +18,8 @@ class CaptureBatchCreate(BaseModel):
 
 
 class CaptureBatchRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True, extra="forbid")
+
     capture_batch_id: str
     batch_status: CaptureBatchStatus
     source_name: str
@@ -53,6 +55,8 @@ class CaptureEndpointPayloadCreate(BaseModel):
 
 
 class CaptureEndpointPayloadRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True, extra="forbid")
+
     id: int
     capture_batch_id: str
     source_endpoint: str
@@ -77,3 +81,13 @@ class CaptureEndpointPayloadUpdate(BaseModel):
     payload_json: str | None = Field(default=None, min_length=1)
     checksum: str | None = Field(default=None, min_length=1, max_length=128)
     pulled_at: datetime | None = None
+
+
+class CaptureBatchReadListResponse(TypedDict):
+    data: list[CaptureBatchRead]
+    total_count: int
+
+
+class CaptureEndpointPayloadReadListResponse(TypedDict):
+    data: list[CaptureEndpointPayloadRead]
+    total_count: int

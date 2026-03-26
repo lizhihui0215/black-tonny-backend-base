@@ -106,11 +106,21 @@ These files define persistence contracts only.
 They do not wire capture into routers, workers, or API handlers.
 The example code under `src/examples/` can mirror this shape for transition reference purposes, but it does not define this contract.
 
-## Current Verified Write Closure
+Current formal read helpers:
+- `get_capture_batch_read`
+- `list_capture_batch_reads`
+- `get_capture_endpoint_payload_read`
+- `list_capture_endpoint_payload_reads`
 
-The current minimal write closure is verified at the contract/test layer, not through a runtime API.
+## Current Verified Read/Write Closure
+
+The current minimal read/write closure is verified at the contract/test layer, not through a runtime API.
 
 The current coverage exercises:
+- read one `capture_batches` row through a formal read helper that returns `CaptureBatchRead`
+- list filtered `capture_batches` rows through a formal read helper with stable `capture_batch_id` ordering
+- read one `capture_endpoint_payloads` row through a formal read helper that returns `CaptureEndpointPayloadRead`
+- list filtered `capture_endpoint_payloads` rows through a formal read helper with stable `id` ordering
 - create one `capture_batches` row through the formal CRUD contract
 - append one `capture_endpoint_payloads` row through the formal CRUD contract
 - update the batch lifecycle row and confirm `updated_at` refreshes
