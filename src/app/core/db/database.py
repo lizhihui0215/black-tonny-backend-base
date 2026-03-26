@@ -5,8 +5,16 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import DeclarativeBase, MappedAsDataclass
 
 
-class Base(DeclarativeBase, MappedAsDataclass):
+class ServingBase(DeclarativeBase, MappedAsDataclass):
     pass
+
+
+class CaptureBase(DeclarativeBase, MappedAsDataclass):
+    pass
+
+
+# Backward-compatible alias for current serving-side models.
+Base = ServingBase
 
 
 def create_engine_and_session(database_url: str) -> tuple[AsyncEngine, async_sessionmaker[AsyncSession]]:

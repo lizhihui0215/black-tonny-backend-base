@@ -4,6 +4,7 @@ This document defines the current runtime structure and migration guardrails for
 
 For the docs entrypoint, use [docs/README.md](./README.md).
 For the database split, use [capture-serving-boundary.md](./capture-serving-boundary.md).
+For the minimal capture persistence contract, use [capture-minimal-contract.md](./capture-minimal-contract.md).
 
 ## Repository Role
 
@@ -17,6 +18,7 @@ Its current runtime keeps only the capabilities that already exist in this repos
 - optional Redis-backed cache, queue, and rate-limiting infrastructure
 
 It does not claim that legacy business modules, capture flows, or research pipelines have already landed here.
+The repository now also contains minimal capture persistence contracts, but they are not mounted into runtime routes.
 
 ## Current Route Organization
 
@@ -42,17 +44,18 @@ Legacy runtime APIs from `black-tonny-backend` are not part of the current repos
 - `src/app/core/`
   - config, database setup, security, health, logging, shared utilities, and worker settings
 - `src/app/models/`
-  - current runtime ORM models
+  - current serving runtime ORM models plus minimal capture persistence models
 - `src/app/schemas/`
-  - current request and response models
+  - current request and response models plus capture CRUD contract schemas
 - `src/app/crud/`
-  - current persistence access for serving-side runtime tables
+  - current persistence access for serving-side runtime tables and minimal capture contract tables
 - `src/app/middleware/`
   - runtime middleware
 - `src/examples/`
   - reference-only examples for future scoped migrations
 
 `src/examples/` is intentionally not part of the runtime import path or mounted route tree.
+The capture contract modules under `src/app/models/`, `src/app/schemas/`, and `src/app/crud/` do not add new runtime APIs by themselves.
 
 ## Migration Guardrails
 

@@ -29,6 +29,7 @@ Start with the [docs index](./docs/README.md).
 Current formal docs:
 - [docs/runtime-boundaries.md](./docs/runtime-boundaries.md)
 - [docs/capture-serving-boundary.md](./docs/capture-serving-boundary.md)
+- [docs/capture-minimal-contract.md](./docs/capture-minimal-contract.md)
 
 Planning, reference, and archive material stays linked from [docs/README.md](./docs/README.md).
 
@@ -176,8 +177,13 @@ cd src
 uv run alembic -c alembic_serving.ini upgrade head
 ```
 
-The serving side includes the baseline auth / user / tier / rate-limit migration. The capture side remains empty until
-future capture models are introduced.
+The serving side includes the baseline auth / user / tier / rate-limit migration.
+The capture side now includes the minimal formal capture contract tables:
+- `capture_batches`
+- `capture_endpoint_payloads`
+
+These capture tables establish persistence contracts and migration targets only.
+They are not mounted into runtime routers and do not change current API behavior.
 The generic [alembic.ini](./src/alembic.ini) keeps both revision branches visible, but the target-specific ini files are
 the safe default because they keep capture
 and serving revision paths separate.
