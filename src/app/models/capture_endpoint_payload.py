@@ -1,6 +1,6 @@
 from datetime import UTC, datetime
 
-from sqlalchemy import DateTime, Integer, String, Text
+from sqlalchemy import DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from ..core.db.database import CaptureBase
@@ -10,7 +10,7 @@ class CaptureEndpointPayload(CaptureBase):
     __tablename__ = "capture_endpoint_payloads"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, init=False)
-    capture_batch_id: Mapped[str] = mapped_column(String(64), index=True)
+    capture_batch_id: Mapped[str] = mapped_column(ForeignKey("capture_batches.capture_batch_id"), index=True)
     source_endpoint: Mapped[str] = mapped_column(String(128), index=True)
     payload_json: Mapped[str] = mapped_column(Text)
     checksum: Mapped[str] = mapped_column(String(128), index=True)

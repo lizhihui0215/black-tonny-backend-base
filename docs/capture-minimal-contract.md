@@ -64,6 +64,9 @@ Current purpose:
 - keep enough page-level metadata for replay, audit, and later scoped transforms
 - avoid admitting any research or serving projection logic into the contract itself
 
+Current formal association:
+- `capture_endpoint_payloads.capture_batch_id` references `capture_batches.capture_batch_id`
+
 ## Code Locations
 
 The current formal capture contract is landed in:

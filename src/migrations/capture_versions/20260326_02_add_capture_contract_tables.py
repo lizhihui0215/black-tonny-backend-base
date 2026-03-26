@@ -43,6 +43,7 @@ def upgrade() -> None:
         sa.Column("checksum", sa.String(length=128), nullable=False),
         sa.Column("pulled_at", sa.DateTime(timezone=True), nullable=False),
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
+        sa.ForeignKeyConstraint(["capture_batch_id"], ["capture_batches.capture_batch_id"]),
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(
