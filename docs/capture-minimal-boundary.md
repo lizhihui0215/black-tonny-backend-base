@@ -4,6 +4,7 @@ This document defines the minimal formal capture boundary currently landed in `b
 
 For the dual-database boundary, use [capture-serving-boundary.md](./capture-serving-boundary.md).
 For the future transform input edge, use [transform-input-boundary.md](./transform-input-boundary.md).
+For the narrower admitted transform input edge, use [admitted-transform-input-boundary.md](./admitted-transform-input-boundary.md).
 For the repository docs index, use [docs/README.md](./README.md).
 
 ## Scope
@@ -97,6 +98,9 @@ The current capture boundary is the only formal source for any future transform 
 
 That means a later scoped transform migration may only start from persisted rows that already exist under this boundary.
 Reference material, archive material, examples, legacy scripts, and copied payload files are outside the formal transform input edge.
+
+If a later scoped migration defines admitted transform input, that admitted subset must still be derived from this same persisted capture boundary.
+It cannot be widened through `docs/reference/**`, `src/examples/**`, `docs/archive/**`, legacy samples, or temporary files.
 
 Current fields such as `transformed_at`, `route_kind`, `page_cursor`, and `request_params` may support later scoped transform work,
 but they do not imply that transform behavior is already implemented.
