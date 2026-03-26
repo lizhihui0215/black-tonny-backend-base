@@ -101,6 +101,19 @@ These files define persistence contracts only.
 They do not wire capture into routers, workers, or API handlers.
 The example code under `src/examples/` can mirror this shape for transition reference purposes, but it does not define this contract.
 
+## Current Verified Write Closure
+
+The current minimal write closure is verified at the contract/test layer, not through a runtime API.
+
+The current coverage exercises:
+- create one `capture_batches` row through the formal CRUD contract
+- append one `capture_endpoint_payloads` row through the formal CRUD contract
+- update the batch lifecycle row and confirm `updated_at` refreshes
+- reject orphan payload writes that do not point at an existing `capture_batches.capture_batch_id`
+
+The current verification file is:
+- `tests/test_capture_write_contract.py`
+
 ## Explicit Non-Goals
 
 This document does not claim that:
