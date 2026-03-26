@@ -1,6 +1,6 @@
 from datetime import UTC, datetime
 
-from sqlalchemy import DateTime, String, Text
+from sqlalchemy import CheckConstraint, DateTime, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from ..core.db.database import CaptureBase
@@ -8,6 +8,12 @@ from ..core.db.database import CaptureBase
 
 class CaptureBatch(CaptureBase):
     __tablename__ = "capture_batches"
+    __table_args__ = (
+        CheckConstraint(
+            "batch_status IN ('queued', 'captured', 'partial', 'failed', 'transformed')",
+            name="ck_capture_batches_batch_status",
+        ),
+    )
 
     capture_batch_id: Mapped[str] = mapped_column(String(64), primary_key=True)
     batch_status: Mapped[str] = mapped_column(String(32), default="queued", index=True)
