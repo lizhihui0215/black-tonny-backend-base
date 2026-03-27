@@ -1,5 +1,5 @@
 import os
-from enum import Enum
+from enum import StrEnum
 from typing import Literal
 
 from pydantic import SecretStr, computed_field
@@ -150,7 +150,7 @@ class WorkerScheduleSettings(BaseSettings):
     WORKER_SCHEDULE_ENABLED: bool = False
 
 
-class EnvironmentOption(str, Enum):
+class EnvironmentOption(StrEnum):
     LOCAL = "local"
     STAGING = "staging"
     PRODUCTION = "production"
