@@ -3,7 +3,7 @@
 This file defines the long-term collaboration rules for any coding agent working in `black-tonny-backend-base`.
 
 If direct task instructions or source-of-truth repository docs differ, follow them first.
-If context is incomplete, read this file and the directly related repository files before making claims about repository facts or boundaries.
+If context is incomplete, read this file and the directly related repository files before making repository-fact judgments or change recommendations.
 
 ## Repository Facts
 
@@ -31,14 +31,15 @@ If context is incomplete, read this file and the directly related repository fil
 
 - Do not keep repeating repository background once it is established.
 - Do not reprint full PR descriptions unless the user explicitly asks for them.
-- If repo-local scripts can generate a diff, changed-file list, PR draft, or migration anchors, use those outputs instead of hand-rebuilding them.
-- Treat diff, changed-file list, PR draft, and migration anchors as mechanical outputs that should come from local scripts whenever available.
+- Treat diffs, changed-file lists, PR drafts, and migration anchors as mechanical outputs; use repo-local scripts to generate them whenever practical instead of hand-rebuilding them.
 - Default to the smallest useful output set: plan, validation summary, diff, and minimal PR template draft.
 
-## Local Script Convention
+## Local Scripts
 
-- Prefer collaboration helper scripts under `scripts/` for mechanical review output.
-- Do not invent script names or workflows that do not exist in the current checkout.
+- `scripts/copy-pr-diff`
+- `scripts/copy-changed-files`
+- `scripts/copy-pr-template-draft`
+- `scripts/copy-migration-anchors`
 
 ## PR Template Alignment
 
