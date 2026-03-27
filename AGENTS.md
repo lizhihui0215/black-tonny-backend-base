@@ -32,6 +32,7 @@ If context is incomplete, read this file and the directly related repository fil
 - Do not keep repeating repository background once it is established.
 - Do not reprint full PR descriptions unless the user explicitly asks for them.
 - Treat diffs, changed-file lists, PR drafts, and migration anchors as mechanical outputs; use repo-local scripts to generate them whenever practical instead of hand-rebuilding them.
+- For review handoff, do not default to inline diffs or raw logs. Prefer command-first output: give the user a small executable command, let them run it, and review the returned result. On macOS, prefer `pbcopy` when practical. Only inline large raw output when the user explicitly requests it.
 - Default to the smallest useful output set: plan, validation summary, diff, and minimal PR template draft.
 
 ## Local Scripts
