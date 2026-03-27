@@ -6,6 +6,7 @@ from uuid import uuid4
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from ..constants.capture import CAPTURE_BATCH_DEFAULT_STATUS
 from ..crud.crud_capture_batches import crud_capture_batches, get_capture_batch_read
 from ..crud.crud_capture_endpoint_payloads import crud_capture_endpoint_payloads, get_capture_endpoint_payload_read
 from ..schemas.capture import (
@@ -40,7 +41,7 @@ async def create_capture_batch(
     *,
     source_name: str,
     capture_batch_id: str | None = None,
-    batch_status: CaptureBatchStatus = "queued",
+    batch_status: CaptureBatchStatus = CAPTURE_BATCH_DEFAULT_STATUS,
     pulled_at: datetime | None = None,
     transformed_at: datetime | None = None,
     error_message: str | None = None,
