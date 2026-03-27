@@ -1,0 +1,101 @@
+#!/usr/bin/env python3
+"""Generate a fixed six-section PR draft from the current changed-file list."""
+
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(SCRIPT_DIR))
+
+from _collab_common import boundary_flags, build_common_parser, emit_output, format_bullets, get_changed_paths, resolve_comparison, run_cli
+
+
+def render_boundary_section(paths: list[str]) -> str:
+    flags = boundary_flags(paths)
+    lines = [
+        f"- 是否涉及 research：{'是' if flags['research'] else '否'}",
+        f"- 是否涉及 capture：{'是' if flags['capture'] else '否'}",
+        f"- 是否涉及 serving：{'是' if flags['serving'] else '否'}",
+        f"- 是否涉及 runtime：{'是' if flags['runtime'] else '否'}",
+        f"- 是否改动对外 API 行为：{'是' if flags['api_behavior'] else '否'}",
+    ]
+
+    if any(flags.values()):
+        lines.append("- 边界说明：以上判断仅按路径做保守归类，请人工复核。")
+    else:
+        lines.append("- 边界说明：当前改动未命中 formal runtime / capture / serving / research 路径。")
+    return "\n".join(lines)
+
+
+def render_not_migrated(paths: list[str]) -> str:
+    lines: list[str] = []
+    if not any(path.startswith("src/app/") for path in paths):
+        lines.append("未触碰 `src/app/**`：本次没有改正式 runtime 代码。")
+    if not any(path.startswith("src/migrations/") for path in paths):
+        lines.append("未触碰 `src/migrations/**`：本次没有改 schema 或 migration。")
+    if not any(path.startswith("docs/") for path in paths):
+        lines.append("未触碰 `docs/**`：本次没有改正式 docs 正文。")
+    lines.append("待人工补充：列出这次明确排除的旧仓内容或迁移边界。")
+    return format_bullets(lines)
+
+
+def render_risks() -> str:
+    return format_bullets(
+        [
+            "base ref 选择错误会直接影响 diff、改动文件和草稿内容。",
+            "这份草稿只做保守路径归纳，语义和边界仍需要人工复核。",
+            "若当前 worktree 已混入其他未提交改动，生成内容会一并反映出来。",
+        ]
+    )
+
+
+def render_validation() -> str:
+    return format_bullets(
+        [
+            "运行 `./scripts/copy-pr-diff --help`，确认 CLI 帮助可用。",
+            "运行 `./scripts/copy-changed-files --mode head --no-clipboard`，确认改动范围符合预期。",
+            "待人工补充：补充本次实际执行的验证命令或结果。",
+        ]
+    )
+
+
+def main() -> int:
+    parser = build_common_parser("Copy a fixed six-section PR draft based on current changed files.")
+    parser.add_argument(
+        "--goal-hint",
+        help="Optional one-line PR goal hint. Defaults to a conservative TODO line.",
+    )
+    args = parser.parse_args()
+
+    spec = resolve_comparison(args.base, args.mode)
+    paths = get_changed_paths(spec)
+    goal = args.goal_hint or "待人工补充：一句话说明本次 PR 只做什么，不做什么。"
+    changed_files = format_bullets(paths)
+
+    sections = [
+        "## PR Goal",
+        goal,
+        "",
+        "## Changed Files",
+        changed_files,
+        "",
+        "## Boundary Check",
+        render_boundary_section(paths),
+        "",
+        "## Not Migrated",
+        render_not_migrated(paths),
+        "",
+        "## Risks",
+        render_risks(),
+        "",
+        "## Validation",
+        render_validation(),
+    ]
+    output = "\n".join(sections).rstrip() + "\n"
+    return emit_output(output, spec, clipboard_enabled=not args.no_clipboard)
+
+
+if __name__ == "__main__":
+    raise SystemExit(run_cli(main))

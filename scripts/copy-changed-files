@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+"""Copy a conservative changed-file list for local boundary checks."""
+
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(SCRIPT_DIR))
+
+from _collab_common import (
+    build_common_parser,
+    emit_output,
+    format_metadata_block,
+    get_changed_paths,
+    get_changed_status_lines,
+    resolve_comparison,
+    run_cli,
+)
+
+
+def main() -> int:
+    parser = build_common_parser("Copy changed files relative to the selected base ref.")
+    parser.add_argument(
+        "--with-status",
+        action="store_true",
+        help="Include git name-status codes instead of path-only output.",
+    )
+    args = parser.parse_args()
+
+    spec = resolve_comparison(args.base, args.mode)
+    if args.with_status:
+        lines = get_changed_status_lines(spec)
+    else:
+        lines = get_changed_paths(spec)
+
+    body = "\n".join(lines) if lines else "# no changed files found for the selected base and mode"
+    output = f"{format_metadata_block(spec, 'copy-changed-files')}\n\n{body}\n"
+    return emit_output(output, spec, clipboard_enabled=not args.no_clipboard)
+
+
+if __name__ == "__main__":
+    raise SystemExit(run_cli(main))
