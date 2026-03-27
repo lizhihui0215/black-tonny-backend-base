@@ -10,6 +10,8 @@ For the narrower transform state-transition edge, use [transform-state-transitio
 For the current semantics of transform-adjacent batch fields, use [capture-batch-field-semantics.md](./capture-batch-field-semantics.md).
 For the repository docs index, use [docs/README.md](./README.md).
 
+The current repository database premise for this formal capture boundary is PostgreSQL.
+
 ## Scope
 
 This boundary is intentionally narrow.
@@ -77,6 +79,7 @@ Current transform-adjacent field semantics stay intentionally restrained:
 - `transformed_at` is a nullable persisted fact, not current transform completion proof
 - `error_message` is optional persisted diagnostic context, not current terminal-state policy
 - `updated_at` is a system-managed modification timestamp, not current transform progress or reservation state
+- under the current PostgreSQL boundary, `error_message` is stored as `TEXT`
 
 Use [capture-batch-field-semantics.md](./capture-batch-field-semantics.md) for the full field-level note.
 
@@ -99,6 +102,7 @@ Current purpose:
 - persist raw or near-raw endpoint payload snapshots
 - keep enough page-level metadata for replay, audit, and later scoped transforms
 - avoid admitting any research or serving projection logic into the boundary itself
+- under the current PostgreSQL boundary, `payload_json` and `request_params` are stored as `TEXT`
 
 Current formal association:
 - `capture_endpoint_payloads.capture_batch_id` references `capture_batches.capture_batch_id`
@@ -184,6 +188,9 @@ The current coverage exercises:
 - create one `capture_batches` row through the formal CRUD path
 - append one `capture_endpoint_payloads` row through the formal CRUD path
 - update the batch lifecycle row and confirm `updated_at` refreshes
+- verify PostgreSQL dialect compilation keeps `error_message`, `request_params`, and `payload_json` at `TEXT`
+- verify the current formal create/update schemas do not add explicit `maxLength` caps around those fields
+- exercise one focused large-text round-trip through the current formal-layer test base
 - reject caller attempts to override `updated_at` through `CaptureBatchUpdate`
 - reject invalid `batch_status` values at the database boundary layer
 - reject orphan payload writes that do not point at an existing `capture_batches.capture_batch_id`

@@ -8,11 +8,16 @@ import pytest
 import pytest_asyncio
 from pydantic import ValidationError
 from sqlalchemy import event
+from sqlalchemy.dialects import postgresql
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from src.app.core.db.database import CaptureBase
-from src.app.crud.crud_capture_batches import crud_capture_batches, get_capture_batch_read, list_capture_batch_reads
+from src.app.crud.crud_capture_batches import (
+    crud_capture_batches,
+    get_capture_batch_read,
+    list_capture_batch_reads,
+)
 from src.app.crud.crud_capture_endpoint_payloads import (
     crud_capture_endpoint_payloads,
     get_capture_endpoint_payload_read,
@@ -26,6 +31,7 @@ from src.app.schemas.capture import (
     CaptureBatchUpdate,
     CaptureEndpointPayloadCreate,
     CaptureEndpointPayloadRead,
+    CaptureEndpointPayloadUpdate,
 )
 
 
@@ -39,6 +45,21 @@ def as_datetime(value: Any) -> datetime:
     if isinstance(value, datetime):
         return value
     return datetime.fromisoformat(value)
+
+
+def make_large_json_payload(key: str, content_char: str, *, content_length: int) -> str:
+    return f'{{"{key}":"{content_char * content_length}"}}'
+
+
+def extract_string_schema(property_schema: dict[str, Any]) -> dict[str, Any]:
+    if property_schema.get("type") == "string":
+        return property_schema
+
+    for variant in property_schema.get("anyOf", []):
+        if variant.get("type") == "string":
+            return variant
+
+    raise AssertionError(f"could not find string schema in {property_schema!r}")
 
 
 @pytest_asyncio.fixture
@@ -119,6 +140,79 @@ async def test_capture_formal_crud_can_create_batch_and_payload(capture_db_sessi
     assert payload_data["source_endpoint"] == "/erp/report"
     assert fetched_payload["checksum"] == "checksum-001"
     assert fetched_payload["page_no"] == 1
+
+
+def test_capture_large_text_columns_compile_to_text_for_postgresql() -> None:
+    postgresql_dialect = postgresql.dialect()
+
+    assert CaptureBatch.__table__.c.error_message.type.compile(dialect=postgresql_dialect) == "TEXT"
+    assert CaptureEndpointPayload.__table__.c.payload_json.type.compile(dialect=postgresql_dialect) == "TEXT"
+    assert CaptureEndpointPayload.__table__.c.request_params.type.compile(dialect=postgresql_dialect) == "TEXT"
+
+
+def test_capture_large_text_fields_do_not_declare_explicit_max_length_in_formal_schemas() -> None:
+    batch_create_schema = CaptureBatchCreate.model_json_schema()["properties"]["error_message"]
+    batch_update_schema = CaptureBatchUpdate.model_json_schema()["properties"]["error_message"]
+    payload_create_request_schema = CaptureEndpointPayloadCreate.model_json_schema()["properties"]["request_params"]
+    payload_create_payload_schema = CaptureEndpointPayloadCreate.model_json_schema()["properties"]["payload_json"]
+    payload_update_request_schema = CaptureEndpointPayloadUpdate.model_json_schema()["properties"]["request_params"]
+    payload_update_payload_schema = CaptureEndpointPayloadUpdate.model_json_schema()["properties"]["payload_json"]
+
+    assert "maxLength" not in extract_string_schema(batch_create_schema)
+    assert "maxLength" not in extract_string_schema(batch_update_schema)
+    assert "maxLength" not in extract_string_schema(payload_create_request_schema)
+    assert "maxLength" not in extract_string_schema(payload_create_payload_schema)
+    assert "maxLength" not in extract_string_schema(payload_update_request_schema)
+    assert "maxLength" not in extract_string_schema(payload_update_payload_schema)
+
+
+@pytest.mark.asyncio
+async def test_capture_formal_boundary_accepts_large_text_fields(capture_db_session: AsyncSession) -> None:
+    large_error_message = "E" * 70000
+    large_request_params = make_large_json_payload("search", "r", content_length=70000)
+    large_payload_json = make_large_json_payload("blob", "p", content_length=80000)
+    pulled_at = datetime.now(UTC)
+
+    await crud_capture_batches.create(
+        db=capture_db_session,
+        object=CaptureBatchCreate(
+            capture_batch_id="batch-large-text-001",
+            batch_status="queued",
+            source_name="erp-large-text",
+            error_message=large_error_message,
+        ),
+        schema_to_select=CaptureBatchRead,
+    )
+
+    created_payload = normalize(
+        await crud_capture_endpoint_payloads.create(
+            db=capture_db_session,
+            object=CaptureEndpointPayloadCreate(
+                capture_batch_id="batch-large-text-001",
+                source_endpoint="/erp/large-payload",
+                request_params=large_request_params,
+                payload_json=large_payload_json,
+                checksum="checksum-large-text-001",
+                pulled_at=pulled_at,
+            ),
+            schema_to_select=CaptureEndpointPayloadRead,
+        )
+    )
+
+    persisted_batch = await get_capture_batch_read(
+        db=capture_db_session,
+        capture_batch_id="batch-large-text-001",
+    )
+    persisted_payload = await get_capture_endpoint_payload_read(
+        db=capture_db_session,
+        id=created_payload["id"],
+    )
+
+    assert isinstance(persisted_batch, CaptureBatchRead)
+    assert isinstance(persisted_payload, CaptureEndpointPayloadRead)
+    assert len(persisted_batch.error_message or "") == len(large_error_message)
+    assert len(persisted_payload.request_params or "") == len(large_request_params)
+    assert len(persisted_payload.payload_json) == len(large_payload_json)
 
 
 @pytest.mark.asyncio
