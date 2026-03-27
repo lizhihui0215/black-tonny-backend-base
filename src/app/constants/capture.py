@@ -1,4 +1,6 @@
-CAPTURE_BATCH_DEFAULT_STATUS = "queued"
+from typing import Final, Literal
+
+CAPTURE_BATCH_DEFAULT_STATUS: Final[Literal["queued"]] = "queued"
 
 CAPTURE_BATCH_ID_MAX_LENGTH = 64
 CAPTURE_SOURCE_NAME_MAX_LENGTH = 128
