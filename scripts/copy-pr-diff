@@ -1,0 +1,27 @@
+#!/usr/bin/env python3
+"""Copy the current branch diff for review while keeping stdout as a fallback."""
+
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(SCRIPT_DIR))
+
+from _collab_common import build_common_parser, emit_output, format_metadata_block, get_diff_text, resolve_comparison, run_cli
+
+
+def main() -> int:
+    parser = build_common_parser("Copy the current PR diff to stdout and, when available, to the clipboard.")
+    args = parser.parse_args()
+
+    spec = resolve_comparison(args.base, args.mode)
+    diff_text = get_diff_text(spec).rstrip()
+    body = diff_text or "# no diff found for the selected base and mode"
+    output = f"{format_metadata_block(spec, 'copy-pr-diff')}\n\n{body}\n"
+    return emit_output(output, spec, clipboard_enabled=not args.no_clipboard)
+
+
+if __name__ == "__main__":
+    raise SystemExit(run_cli(main))

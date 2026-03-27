@@ -1,0 +1,114 @@
+#!/usr/bin/env python3
+"""Generate conservative migration-review anchors from the current changed-file list."""
+
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(SCRIPT_DIR))
+
+from _collab_common import (
+    build_common_parser,
+    default_old_repo,
+    emit_output,
+    format_bullets,
+    get_changed_paths,
+    resolve_comparison,
+    run_cli,
+)
+
+
+def existing_or_manual(candidate: str | None, old_repo: Path | None) -> str:
+    if not candidate:
+        return "待人工补充"
+    if old_repo is None:
+        return candidate
+    if (old_repo / candidate).exists():
+        return candidate
+    return "待人工补充"
+
+
+def guess_old_path(new_path: str, old_repo: Path | None) -> str:
+    candidate: str | None = None
+    if new_path.startswith("src/app/models/"):
+        candidate = "app/db/base.py"
+    elif new_path.startswith("src/app/crud/"):
+        filename = Path(new_path).name
+        if filename.startswith("crud_"):
+            candidate = f"app/crud/{filename.removeprefix('crud_')}"
+    elif new_path.startswith("src/migrations/capture_versions/"):
+        candidate = "app/db/base.py"
+    elif new_path.startswith("docs/"):
+        candidate = new_path
+    elif new_path.startswith("tests/"):
+        candidate = new_path
+    return existing_or_manual(candidate, old_repo)
+
+
+def related_docs_candidates(new_path: str) -> list[str]:
+    if new_path.startswith(("src/app/models/capture", "src/app/crud/crud_capture", "src/migrations/capture_versions/")):
+        return ["docs/capture-minimal-boundary.md", "docs/capture-serving-boundary.md"]
+    if new_path.startswith("docs/"):
+        return [new_path, "docs/README.md"]
+    return ["待人工补充"]
+
+
+def related_tests_candidates(new_path: str) -> list[str]:
+    if new_path.startswith(("src/app/models/capture", "src/app/crud/crud_capture", "src/migrations/capture_versions/")):
+        return ["tests/test_capture_formal_boundary.py", "tests/test_migration_targets.py"]
+    if new_path.startswith("tests/"):
+        return [new_path]
+    return ["待人工补充"]
+
+
+def note_for_path(new_path: str, guessed_old_path: str) -> str:
+    if new_path.startswith("scripts/"):
+        return "repo-local collaboration script; likely new in backend-base."
+    if guessed_old_path == "待人工补充":
+        return "old path guess is conservative; needs manual review."
+    return "candidate mapping generated from a simple path rule; verify before review."
+
+
+def render_anchor(new_path: str, old_repo: Path | None) -> str:
+    guessed_old_path = guess_old_path(new_path, old_repo)
+    lines = [
+        f"- new path: {new_path}",
+        f"- guessed old path: {guessed_old_path}",
+        "- related docs candidates:",
+        format_bullets(related_docs_candidates(new_path)),
+        "- related tests candidates:",
+        format_bullets(related_tests_candidates(new_path)),
+        f"- note: {note_for_path(new_path, guessed_old_path)}",
+    ]
+    return "\n".join(lines)
+
+
+def main() -> int:
+    parser = build_common_parser("Copy conservative migration anchors for the current changed files.")
+    parser.add_argument(
+        "--old-repo",
+        help="Optional path to the legacy backend repo. Defaults to ../black-tonny-backend when present.",
+    )
+    args = parser.parse_args()
+
+    spec = resolve_comparison(args.base, args.mode)
+    paths = get_changed_paths(spec)
+    old_repo = Path(args.old_repo).resolve() if args.old_repo else default_old_repo()
+
+    anchors = ["## Migration Anchors", ""]
+    if not paths:
+        anchors.extend(["- new path: 待人工补充", "- guessed old path: 待人工补充", "- related docs candidates:", "- 待人工补充", "- related tests candidates:", "- 待人工补充", "- note: no changed files found for the selected base and mode."])
+    else:
+        for index, path in enumerate(paths):
+            if index:
+                anchors.append("")
+            anchors.append(render_anchor(path, old_repo))
+
+    output = "\n".join(anchors).rstrip() + "\n"
+    return emit_output(output, spec, clipboard_enabled=not args.no_clipboard)
+
+
+if __name__ == "__main__":
+    raise SystemExit(run_cli(main))
