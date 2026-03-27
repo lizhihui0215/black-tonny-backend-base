@@ -1,8 +1,9 @@
 # Backend Base Agent Guide
 
-This file defines the long-term collaboration rules for agents working in `black-tonny-backend-base`.
+This file defines the long-term collaboration rules for any coding agent working in `black-tonny-backend-base`.
 
 If direct task instructions or source-of-truth repository docs differ, follow them first.
+If context is incomplete, read this file and the directly related repository files before making claims about repository facts or boundaries.
 
 ## Repository Facts
 
@@ -22,6 +23,7 @@ If direct task instructions or source-of-truth repository docs differ, follow th
 ## Workflow
 
 - Use the default sequence: implement -> review -> submit.
+- Keep follow-up work for an existing PR inside that PR's current goal unless the user explicitly approves a scope change or asks for a new PR.
 - Do not commit, push, or create a PR until the user has clearly said the change is approved for submission.
 - If the current branch or worktree is dirty, prefer a clean branch or clean worktree for final PR preparation.
 
@@ -29,15 +31,14 @@ If direct task instructions or source-of-truth repository docs differ, follow th
 
 - Do not keep repeating repository background once it is established.
 - Do not reprint full PR descriptions unless the user explicitly asks for them.
-- If local scripts can generate a diff, changed-file list, PR draft, or migration anchors, prefer using those outputs instead of hand-rebuilding them.
+- If repo-local scripts can generate a diff, changed-file list, PR draft, or migration anchors, use those outputs instead of hand-rebuilding them.
+- Treat diff, changed-file list, PR draft, and migration anchors as mechanical outputs that should come from local scripts whenever available.
 - Default to the smallest useful output set: plan, validation summary, diff, and minimal PR template draft.
 
-## Local Scripts
+## Local Script Convention
 
-- `scripts/copy-pr-diff`
-- `scripts/copy-changed-files`
-- `scripts/copy-pr-template-draft`
-- `scripts/copy-migration-anchors`
+- Prefer collaboration helper scripts under `scripts/` for mechanical review output.
+- Do not invent script names or workflows that do not exist in the current checkout.
 
 ## PR Template Alignment
 
