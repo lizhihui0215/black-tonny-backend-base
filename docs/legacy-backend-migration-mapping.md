@@ -159,6 +159,16 @@
 
 ## 7. research 相关仅保留 reference、不进入 runtime 的清单
 
+当前 research support 的阅读路径先看新仓库已落地的最小正式表面，再按需回看旧仓库 legacy reference：
+
+- 先看 [Research Support Current Surface](./research-support-current-surface.md)
+- 再看 [Legacy Research Bridge Note](./legacy-research-bridge-note.md)
+
+这里的含义是：
+- 新仓库当前已经落地 minimal formal surface
+- 旧仓库 legacy research docs / assets 仍然是参考真源
+- 这不代表 legacy research 已全量迁入 `black-tonny-backend-base`
+
 以下内容后续即使保留，也只能停留在 reference 层：
 - `docs/erp/**`
 - `docs/tooling/**`
