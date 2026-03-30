@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Literal
 
 from .menu_coverage import MenuCoverageSnapshot, MenuCoverageSupport
 from .page_research import PageResearchSnapshot, PageResearchSupport
+
+ERPResearchAggregationStatus = Literal["stub", "partial", "collected"]
 
 
 @dataclass(frozen=True, slots=True)
@@ -13,6 +16,7 @@ class ERPResearchSupportSnapshot:
     source_name: str
     page_research: PageResearchSnapshot | None = None
     menu_coverage: MenuCoverageSnapshot | None = None
+    aggregation_status: ERPResearchAggregationStatus = "stub"
 
 
 @dataclass(slots=True)
@@ -43,8 +47,15 @@ class ERPResearchService:
                 menu_key=menu_key,
             )
 
+        aggregation_status: ERPResearchAggregationStatus = "stub"
+        if page_research is not None and menu_coverage is not None:
+            aggregation_status = "collected"
+        elif page_research is not None or menu_coverage is not None:
+            aggregation_status = "partial"
+
         return ERPResearchSupportSnapshot(
             source_name=source_name,
             page_research=page_research,
             menu_coverage=menu_coverage,
+            aggregation_status=aggregation_status,
         )
