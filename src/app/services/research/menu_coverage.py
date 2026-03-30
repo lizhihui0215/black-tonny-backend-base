@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Protocol
+from typing import Literal, Protocol
+
+MenuCoverageStatus = Literal["stub", "noted"]
 
 
 @dataclass(frozen=True, slots=True)
@@ -10,6 +12,8 @@ class MenuCoverageSnapshot:
 
     source_name: str
     menu_key: str
+    menu_title: str | None = None
+    coverage_status: MenuCoverageStatus = "stub"
     notes: tuple[str, ...] = ()
 
 
