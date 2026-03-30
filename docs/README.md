@@ -67,6 +67,10 @@ Internal planning, reference, and archive material can stay in Chinese when it i
   - Current research support code surface and its minimal formal contract boundary
   - Language: English
   - Status: `Current surface note`
+- [`legacy-research-bridge-note.md`](./legacy-research-bridge-note.md)
+  - Bridge note between legacy research reference and the current minimal surface
+  - Language: English
+  - Status: `Current surface note`
 
 ## Migration Planning
 
