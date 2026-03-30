@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Protocol
+from typing import Literal, Protocol
+
+PageResearchStatus = Literal["stub", "noted"]
 
 
 @dataclass(frozen=True, slots=True)
@@ -10,6 +12,8 @@ class PageResearchSnapshot:
 
     source_name: str
     page_key: str
+    page_title: str | None = None
+    research_status: PageResearchStatus = "stub"
     notes: tuple[str, ...] = ()
 
 
