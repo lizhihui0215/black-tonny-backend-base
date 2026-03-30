@@ -61,6 +61,13 @@ Internal planning, reference, and archive material can stay in Chinese when it i
   - Language: English
   - Status: `Source of truth`
 
+## Current Surface Notes
+
+- [`research-support-current-surface.md`](./research-support-current-surface.md)
+  - Current research support code surface and its minimal formal contract boundary
+  - Language: English
+  - Status: `Current surface note`
+
 ## Migration Planning
 
 - [`legacy-backend-migration-mapping.md`](./legacy-backend-migration-mapping.md)
