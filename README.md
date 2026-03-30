@@ -39,6 +39,9 @@ Current formal docs:
 
 Planning, reference, and archive material stays linked from [docs/README.md](./docs/README.md).
 
+Current research support remains a minimal formal surface only.
+For the current state and reading path, use the research support entries linked from [docs/README.md](./docs/README.md).
+
 ## Migration Guardrails
 
 `black-tonny-backend-base` is the only source of truth for ongoing backend migration work.
