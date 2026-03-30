@@ -18,6 +18,8 @@ This boundary is intentionally narrow.
 It only formalizes:
 - capture-side ORM models
 - capture-side schemas and CRUD helpers
+- a minimal capture write helper
+- a minimal capture constants module
 - capture target metadata loading
 - capture Alembic migration targets
 
@@ -36,6 +38,8 @@ That means the current formal ownership is:
 - `src/app/models/`
 - `src/app/schemas/`
 - `src/app/crud/`
+- `src/app/services/capture_write.py`
+- `src/app/constants/capture.py`
 - `src/app/core/migration_targets.py`
 - `src/migrations/capture_versions/`
 
@@ -134,6 +138,8 @@ The current formal capture boundary is implemented in:
 - `src/app/schemas/capture.py`
 - `src/app/crud/crud_capture_batches.py`
 - `src/app/crud/crud_capture_endpoint_payloads.py`
+- `src/app/services/capture_write.py`
+- `src/app/constants/capture.py`
 - `src/app/core/migration_targets.py`
 - `src/migrations/capture_versions/20260326_02_add_capture_contract_tables.py`
 - `src/migrations/capture_versions/20260326_03_add_capture_batch_status_check.py`
@@ -147,6 +153,15 @@ Current formal read helpers:
 - `list_capture_batch_reads`
 - `get_capture_endpoint_payload_read`
 - `list_capture_endpoint_payload_reads`
+
+Current formal minimal write/helper surface:
+- `create_capture_batch`
+- `update_capture_batch`
+- `append_capture_payload`
+
+Current formal minimal constants surface:
+- `CAPTURE_BATCH_DEFAULT_STATUS`
+- capture string-length constants used by the current models and schemas
 
 ## Current Read/List Boundary
 
