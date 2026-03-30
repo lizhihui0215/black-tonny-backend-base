@@ -4,6 +4,13 @@
 
 当前正式文档请先看 [docs/README.md](../../README.md)。
 
+关于 research support，当前阅读顺序应先看：
+- [docs/research-support-current-surface.md](../../research-support-current-surface.md)
+- [docs/legacy-research-bridge-note.md](../../legacy-research-bridge-note.md)
+
+这里的 reference 区不是 legacy research 全量正文迁移区。
+旧仓 `black-tonny-backend` 中的 legacy research docs / assets 仍然是当前参考真源。
+
 这里可以放：
 - ERP 台账、成熟度面板、capture 路线注册表
 - 页面研究 runbook、tooling 说明
