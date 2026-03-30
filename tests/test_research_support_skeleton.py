@@ -91,6 +91,7 @@ async def test_research_service_collects_minimal_support_snapshot() -> None:
         menu_key="report-root",
         notes=("menu skeleton",),
     )
+    assert snapshot.aggregation_status == "collected"
 
 
 def test_research_support_skeleton_does_not_import_runtime_or_capture_layers() -> None:
