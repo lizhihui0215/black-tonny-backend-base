@@ -56,6 +56,7 @@ Research notes, traceability samples, and troubleshooting templates belong in `d
 The current formal capture tables are:
 - `capture_batches`
 - `capture_endpoint_payloads`
+- `analysis_batches`
 
 ### `capture_batches`
 
@@ -111,6 +112,23 @@ Current purpose:
 Current formal association:
 - `capture_endpoint_payloads.capture_batch_id` references `capture_batches.capture_batch_id`
 
+### `analysis_batches`
+
+Current formal fields:
+- `analysis_batch_id`
+- `capture_batch_id`
+- `batch_status`
+- `source_endpoint`
+- `pulled_at`
+- `transformed_at`
+- `created_at`
+- `updated_at`
+
+Current purpose:
+- persist one minimal analysis-batch identity and its batch-level persisted facts
+- keep `capture_batch_id` linkage optional at the current minimal persistence stage
+- avoid admitting transform, serving, or orchestration behavior into the boundary itself
+
 ## Relation To Future Transform Input
 
 The current capture boundary is the only formal source for any future transform input candidate.
@@ -135,14 +153,18 @@ but they do not imply that transform behavior is already implemented.
 The current formal capture boundary is implemented in:
 - `src/app/models/capture_batch.py`
 - `src/app/models/capture_endpoint_payload.py`
+- `src/app/models/analysis_batch.py`
 - `src/app/schemas/capture.py`
+- `src/app/schemas/analysis.py`
 - `src/app/crud/crud_capture_batches.py`
 - `src/app/crud/crud_capture_endpoint_payloads.py`
+- `src/app/crud/crud_analysis_batches.py`
 - `src/app/services/capture_write.py`
 - `src/app/constants/capture.py`
 - `src/app/core/migration_targets.py`
 - `src/migrations/capture_versions/20260326_02_add_capture_contract_tables.py`
 - `src/migrations/capture_versions/20260326_03_add_capture_batch_status_check.py`
+- `src/migrations/capture_versions/20260401_01_add_analysis_batches_table.py`
 
 These files define the formal persistence boundary only.
 They do not wire capture into routers, workers, or API handlers.
@@ -153,6 +175,8 @@ Current formal read helpers:
 - `list_capture_batch_reads`
 - `get_capture_endpoint_payload_read`
 - `list_capture_endpoint_payload_reads`
+- `get_analysis_batch_read`
+- `list_analysis_batch_reads`
 
 Current formal minimal write/helper surface:
 - `create_capture_batch`
@@ -209,14 +233,20 @@ The current coverage exercises:
 - reject caller attempts to override `updated_at` through `CaptureBatchUpdate`
 - reject invalid `batch_status` values at the database boundary layer
 - reject orphan payload writes that do not point at an existing `capture_batches.capture_batch_id`
+- read one `analysis_batches` row through a formal read helper that returns `AnalysisBatchRead`
+- list filtered `analysis_batches` rows through a formal read helper with stable `analysis_batch_id` ordering
+- verify paginated analysis-batch reads keep a stable subset while `total_count` still reflects the full filtered result
+- verify empty analysis-batch reads return `data=[]` with `total_count=0`
+- create one `analysis_batches` row through the formal CRUD path
+- update one `analysis_batches` row and confirm `updated_at` refreshes
 
 The current verification file is:
 - `tests/test_capture_formal_boundary.py`
+- `tests/test_analysis_batches_formal_surface.py`
 
 ## Explicit Non-Goals
 
 This document does not claim that:
-- `analysis_batches` has been migrated in this step
 - serving projections have been migrated in this step
 - legacy `*_capture_admission_service.py` files belong in the new repository
 - research or evidence-chain logic belongs in the runtime path
