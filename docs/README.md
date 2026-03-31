@@ -71,6 +71,10 @@ Internal planning, reference, and archive material can stay in Chinese when it i
   - Bridge note between legacy research reference and the current minimal surface
   - Language: English
   - Status: `Current surface note`
+- [`legacy-capture-bridge-note.md`](./legacy-capture-bridge-note.md)
+  - Bridge note between legacy capture reference and the current minimal capture surface
+  - Language: English
+  - Status: `Current surface note`
 
 ## Migration Planning
 
