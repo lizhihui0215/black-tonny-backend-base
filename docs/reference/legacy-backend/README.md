@@ -14,6 +14,7 @@
 关于 capture，当前阅读顺序应先看：
 - [docs/capture-minimal-boundary.md](../../capture-minimal-boundary.md)
 - 如需双库职责边界，再看 [docs/capture-serving-boundary.md](../../capture-serving-boundary.md)
+- 如需理解当前 minimal formal surface 与 legacy capture reference 的关系，再看 [docs/legacy-capture-bridge-note.md](../../legacy-capture-bridge-note.md)
 
 这里的 reference 区不是 legacy capture 全量正文迁移区。
 旧仓 `black-tonny-backend` 中的 legacy capture docs / assets 仍然是当前参考来源之一。
