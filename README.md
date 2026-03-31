@@ -39,6 +39,9 @@ Current formal docs:
 
 Planning, reference, and archive material stays linked from [docs/README.md](./docs/README.md).
 
+Current capture already has a minimal formal surface and formal capture docs.
+For the current capture state and reading path, start from [docs/README.md](./docs/README.md) and the formal capture docs linked there.
+
 Current research support remains a minimal formal surface only.
 For the current state and reading path, use the research support entries linked from [docs/README.md](./docs/README.md).
 
