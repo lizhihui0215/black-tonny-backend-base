@@ -111,9 +111,11 @@
 
 - [Capture Minimal Boundary](./capture-minimal-boundary.md)
 - 如需双库职责边界，再看 [Capture Serving Boundary](./capture-serving-boundary.md)
+- 如需理解当前 minimal formal surface 与 legacy capture reference 的关系，再看 [Legacy Capture Bridge Note](./legacy-capture-bridge-note.md)
 
 这里的含义是：
 - 新仓库当前已经落地 capture minimal formal surface
+- 当前阅读路径应先看 formal capture docs，再按需回看 legacy capture bridge/reference
 - 这不代表 capture 主线已完整迁移完成
 
 以下内容只作为下一阶段准备范围，不在本 PR 实施：
