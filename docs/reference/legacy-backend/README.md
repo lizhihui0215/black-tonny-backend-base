@@ -11,6 +11,13 @@
 这里的 reference 区不是 legacy research 全量正文迁移区。
 旧仓 `black-tonny-backend` 中的 legacy research docs / assets 仍然是当前参考真源。
 
+关于 capture，当前阅读顺序应先看：
+- [docs/capture-minimal-boundary.md](../../capture-minimal-boundary.md)
+- 如需双库职责边界，再看 [docs/capture-serving-boundary.md](../../capture-serving-boundary.md)
+
+这里的 reference 区不是 legacy capture 全量正文迁移区。
+旧仓 `black-tonny-backend` 中的 legacy capture docs / assets 仍然是当前参考来源之一。
+
 这里可以放：
 - ERP 台账、成熟度面板、capture 路线注册表
 - 页面研究 runbook、tooling 说明
