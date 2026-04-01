@@ -30,6 +30,7 @@ Current formal docs:
 - [docs/runtime-boundaries.md](./docs/runtime-boundaries.md)
 - [docs/capture-serving-boundary.md](./docs/capture-serving-boundary.md)
 - [docs/capture-minimal-boundary.md](./docs/capture-minimal-boundary.md)
+- [docs/serving-projection-minimal-boundary.md](./docs/serving-projection-minimal-boundary.md)
 - [docs/transform-input-boundary.md](./docs/transform-input-boundary.md)
 - [docs/admitted-transform-input-boundary.md](./docs/admitted-transform-input-boundary.md)
 - [docs/transform-readiness-boundary.md](./docs/transform-readiness-boundary.md)
@@ -190,11 +191,15 @@ uv run alembic -c alembic_serving.ini upgrade head
 ```
 
 The serving side includes the baseline auth / user / tier / rate-limit migration.
+The serving side now also includes the minimal formal serving projection tables:
+- `sales_orders`
+- `sales_order_items`
 The capture side now includes the minimal formal capture boundary tables:
 - `capture_batches`
 - `capture_endpoint_payloads`
+ - `analysis_batches`
 
-These capture tables establish a persistence boundary and migration targets only.
+These capture and serving projection tables establish persistence boundaries and migration targets only.
 They are not mounted into runtime routers and do not change current API behavior.
 The generic [alembic.ini](./src/alembic.ini) keeps both revision branches visible, but the target-specific ini files are
 the safe default because they keep capture

@@ -13,7 +13,7 @@ def test_resolve_alembic_target_from_config_filename() -> None:
 
 def test_capture_metadata_contains_minimal_capture_tables() -> None:
     metadata = load_target_metadata("capture")
-    assert {"capture_batches", "capture_endpoint_payloads"}.issubset(metadata.tables.keys())
+    assert {"analysis_batches", "capture_batches", "capture_endpoint_payloads"}.issubset(metadata.tables.keys())
 
 
 def test_capture_metadata_excludes_serving_tables() -> None:
@@ -26,11 +26,14 @@ def test_capture_metadata_excludes_serving_tables() -> None:
 
 def test_serving_metadata_contains_serving_tables() -> None:
     metadata = load_target_metadata("serving")
-    assert {"user", "tier", "rate_limit", "token_blacklist"}.issubset(metadata.tables.keys())
+    assert {"user", "tier", "rate_limit", "token_blacklist", "sales_orders", "sales_order_items"}.issubset(
+        metadata.tables.keys()
+    )
 
 
 def test_serving_metadata_excludes_capture_tables() -> None:
     metadata = load_target_metadata("serving")
+    assert "analysis_batches" not in metadata.tables
     assert "capture_batches" not in metadata.tables
     assert "capture_endpoint_payloads" not in metadata.tables
 

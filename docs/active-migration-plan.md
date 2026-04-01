@@ -16,8 +16,8 @@ formal truth 仍以以下文档为准：
 | # | Package | Status | 一句话目标 |
 | --- | --- | --- | --- |
 | 1 | `docs: align root readme current state` | `merged` | 对齐顶层 README 的 current state 与当前阅读路径。 |
-| 2 | `feat: add analysis batches formal surface` | `in-progress` | 落 `analysis_batches` 的最小 formal persistence surface。 |
-| 3 | `feat: add sales projection persistence surface` | `todo` | 一起落 `sales_orders` 与 `sales_order_items` 的最小 persistence surface。 |
+| 2 | `feat: add analysis batches formal surface` | `merged` | `analysis_batches` 的最小 formal persistence surface 已在 main 落地。 |
+| 3 | `feat: add sales projection persistence surface` | `in-progress` | 一起落 `sales_orders` 与 `sales_order_items` 的最小 persistence surface。 |
 | 4 | `feat: add inventory persistence surface` | `todo` | 一起落 `inventory_current` 与 `inventory_daily_snapshot` 的最小 persistence surface。 |
 | 5 | `docs+test: align expanded capture formal surface` | `todo` | 把前面已落地的 capture 对象一次性同步到 docs、mapping 和 guardrail tests。 |
 | 6 | `docs: answer transform admission and readiness minimums` | `todo` | 在行为代码开始前，把 admitted input 与 readiness 的最小 docs truth 收紧。 |
@@ -30,14 +30,14 @@ formal truth 仍以以下文档为准：
 ## 当前包
 
 当前包：
-- `#2 feat: add analysis batches formal surface`
+- `#3 feat: add sales projection persistence surface`
 
 目标：
-- 落 `analysis_batches` 的最小 formal persistence surface。
+- 落 `sales_orders` 与 `sales_order_items` 的最小 formal persistence surface。
 
 边界：
-- 只按 capture formal persistence surface 处理
-- 这包不讨论 serving runtime placement
+- 只按 serving formal persistence surface 处理
+- 这包不讨论 serving runtime route
 - 不引入 transform behavior
 - 不引入 serving behavior
 - 不引入 admissions
@@ -46,12 +46,12 @@ formal truth 仍以以下文档为准：
 - 不引入 batch orchestration service
 
 当前已拍板规则：
+- `analysis_batch_id` 先作为 serving persistence side 的 required linkage fact
 - `capture_batch_id` 保持 nullable
 - 先不加 FK
-- `batch_status` 默认值是 `queued`
-- 先不加新的 `batch_status` check constraint
-- `transformed_at` 在这包里只表示 persisted fact
-- 只有当 current truth 会失真时，才最小同步 [capture-minimal-boundary.md](./capture-minimal-boundary.md)
+- `sales_orders.payment_status` 当前默认值是 `paid`，但只作为 minimal persistence placeholder，不代表已完成 serving business contract 定义
+- 这包只落 persistence contract，不提前定义 projection identity / upsert policy
+- 只有当 current truth 会失真时，才最小同步 formal docs
 
 ## 第 8-11 包最终执行底稿
 
@@ -223,7 +223,7 @@ admitted source status 真源约束：
   - CRUD
   - migration
   - targeted tests
-  - 只有 current truth 会失真时才最小同步 [capture-minimal-boundary.md](./capture-minimal-boundary.md)
+  - 只有 current truth 会失真时才最小同步相关 formal docs
 - 第 5 包只做收口：
   - 只同步已落地对象到 docs / mapping / tests
   - 不新增 persistence object
@@ -233,6 +233,12 @@ admitted source status 真源约束：
   - 不做什么
   - 依赖前面哪几包
 - 当前默认协作模式是“主题包推进”，不是继续拆过小 PR
+
+## 下一步候选
+
+- `#4 feat: add inventory persistence surface`
+  - 一起落 `inventory_current` 与 `inventory_daily_snapshot` 的最小 persistence surface
+  - 继续保持 persistence-only，不启动 transform 或 serving behavior
 
 ## 明确禁区 / 不做事项
 

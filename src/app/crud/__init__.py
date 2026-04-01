@@ -1,5 +1,7 @@
 from .crud_capture_batches import crud_capture_batches
 from .crud_capture_endpoint_payloads import crud_capture_endpoint_payloads
 from .crud_rate_limit import crud_rate_limits
+from .crud_sales_order_items import crud_sales_order_items
+from .crud_sales_orders import crud_sales_orders
 from .crud_tier import crud_tiers
 from .crud_users import crud_users
