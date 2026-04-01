@@ -12,6 +12,7 @@ For the repository docs index, use [docs/README.md](./README.md).
 ## Current Truth
 
 No transform readiness flow, readiness checker, or transform execution path is currently implemented in `black-tonny-backend-base`.
+A minimal admitted transform input selector may now exist upstream of this boundary, but it does not imply readiness behavior.
 
 That means this document does not describe current runtime behavior.
 It only defines the narrowest future boundary a later scoped migration must respect before any admitted transform input could be treated as transform-ready input.

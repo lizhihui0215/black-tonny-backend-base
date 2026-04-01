@@ -10,7 +10,8 @@ For the repository docs index, use [docs/README.md](./README.md).
 
 ## Current Truth
 
-No transform module, transform runtime path, or serving projection path is currently landed in `black-tonny-backend-base`.
+No transform runtime path or serving projection path is currently landed in `black-tonny-backend-base`.
+A minimal admitted transform input selector may now narrow this broader candidate layer, but it does not imply readiness, lifecycle-transition, or serving behavior.
 
 That means this document does not describe current runtime behavior.
 It only defines the smallest formal boundary that a later scoped migration must respect if transform work is introduced.

@@ -10,10 +10,11 @@ For the repository docs index, use [docs/README.md](./README.md).
 
 ## Current Truth
 
-No admitted transform input flow is currently implemented in `black-tonny-backend-base`.
+A minimal admitted transform input selector is now implemented in `black-tonny-backend-base`.
 
-That means this document does not describe a running admission path, transform path, or serving projection path.
-It only defines the narrowest future boundary a later scoped migration must respect before any persisted capture data could be treated as admitted transform input.
+That selector is intentionally narrow.
+It does not describe a running transform path, readiness path, lifecycle-transition path, or serving projection path.
+It only defines and selects the current minimum persisted capture-side bundle that may be treated as admitted transform input.
 
 ## Candidate Versus Admitted Input
 
@@ -53,6 +54,38 @@ If an `analysis_batches` row exists and links back through `capture_batch_id`, i
 No current `batch_status` value, including `captured`, is by itself a formal admission marker.
 Current admitted-input minimums also do not reinterpret `transformed_at` as admission proof.
 
+## Current Selector Boundary
+
+Current selector input:
+- `capture_batch_id`
+
+Current selector output:
+- one `AdmittedTransformInputSnapshot` bundle when the structural admitted-input minimum is satisfied
+- `None` when the batch row is missing
+- `None` when the batch row exists but no linked payload rows are currently readable
+
+Current selector behavior:
+- reads the persisted `capture_batches` row by `capture_batch_id`
+- reads linked `capture_endpoint_payloads` rows by `capture_batch_id`
+- keeps payload row ordering stable through the current read-helper boundary
+- does not require `analysis_batches`
+- does not gate on `batch_status`
+- does not gate on `transformed_at`
+- does not answer readiness or lifecycle-transition questions
+
+Current selector bundle shape:
+- batch snapshot:
+  - `capture_batch_id`
+  - `batch_status`
+  - `transformed_at`
+  - `error_message`
+- payload snapshots:
+  - `capture_batch_id`
+  - `source_endpoint`
+  - `payload_json`
+  - `checksum`
+  - `pulled_at`
+
 If later work needs the narrower readiness edge, that scope must continue into [transform-readiness-boundary.md](./transform-readiness-boundary.md) rather than being inferred from this admitted-input layer alone.
 
 ## What Is Still Not Defined
@@ -78,15 +111,32 @@ Future admitted transform input must not be defined from:
 
 Future admitted transform input must continue to originate from the current formal capture boundary under `src/app/**` and `src/migrations/**`.
 
+The current minimal selector implementation lives under:
+- `src/app/services/admitted_transform_selector.py`
+- `src/app/schemas/transform.py`
+- current capture-side CRUD/read helpers under `src/app/crud/`
+
 ## What This Document Does Not Claim
 
 This document does not claim that:
-- transform admission is currently implemented
-- any current batch is already marked as admitted transform input
+- every current batch is already admitted transform input
 - `batch_status` already encodes transform admission policy
 - readiness checks already exist for transform admission
 - legacy admission orchestration belongs in the new repository
 - research, evidence, or troubleshooting material can define admitted transform input
+
+## Current Verified Coverage
+
+The current admitted-input selector coverage is verified at the formal-layer test level.
+
+The current coverage exercises:
+- return one admitted bundle when one batch row and linked payload rows satisfy the current structural minimum
+- keep admitted selection independent from `analysis_batches`
+- return `None` when a batch row exists without linked payload rows
+- keep selection structural even when `batch_status` and `transformed_at` carry persisted values that are not current admission proof
+
+The current verification file is:
+- `tests/test_admitted_transform_input_selector.py`
 
 ## Future Scoped Migration Requirement
 
