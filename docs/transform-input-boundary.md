@@ -35,6 +35,9 @@ The minimum required persisted input fields are:
 - dedupe/audit trace: `capture_endpoint_payloads.checksum`
 - capture timing: `capture_endpoint_payloads.pulled_at`
 
+At the current minimum boundary, this candidate floor is capture-side only.
+`analysis_batches` is already a landed persisted context table, but it is not part of the current minimum transform input candidate boundary.
+
 The following fields may help later scoped transform work, but they do not by themselves imply that transform has landed:
 - `capture_batches.batch_status`
 - `capture_batches.transformed_at`
