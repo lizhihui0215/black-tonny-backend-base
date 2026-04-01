@@ -12,6 +12,7 @@ For the repository docs index, use [docs/README.md](./README.md).
 The current repository truth is still limited to persisted capture-side facts.
 
 No transform policy, readiness checker, state machine, or serving projection path currently owns the semantics of these fields.
+No selector, lifecycle helper, transition executor, or scheduler currently owns them either.
 That means the fields below must be read first as formal persisted facts under the capture boundary, not as already-landed transform behavior.
 
 ## Current Ownership
@@ -26,6 +27,9 @@ Their semantics are not currently owned by:
 - a transform module
 - a readiness checker
 - a state machine
+- a selector
+- a lifecycle helper or transition executor
+- a scheduler or orchestration layer
 - a serving projection path
 - legacy orchestration copied from the old repository
 
@@ -42,6 +46,7 @@ Current non-meaning:
 - not a formal transform admission policy
 - not a formal transform readiness policy
 - not a formal source-to-target transition graph
+- not proof that a formal lifecycle transition has occurred
 - not proof that any current runtime transform flow exists
 
 ### `capture_batches.transformed_at`
@@ -54,6 +59,7 @@ Current non-meaning:
 - not proof that transform is currently implemented
 - not proof of transform completion
 - not a formal readiness or admission marker
+- not proof of a formal lifecycle transition completion
 - not a formal serving-write completion marker
 
 ### `capture_batches.error_message`
@@ -66,6 +72,7 @@ Current non-meaning:
 - not a formal terminal-state declaration
 - not a canonical transform error taxonomy
 - not a retry policy signal
+- not proof that a failed or terminal lifecycle transition has been formally declared
 - not evidence that a current transform failure path exists
 
 ### `capture_batches.updated_at`
@@ -78,6 +85,7 @@ Current non-meaning:
 - not a transform progress timestamp
 - not a transform heartbeat
 - not a readiness checkpoint
+- not proof that a lifecycle transition was executed, scheduled, or reserved
 - not a worker-ownership or reservation signal
 
 ## Future Use Without Current Commitment

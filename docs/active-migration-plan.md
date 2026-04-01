@@ -20,8 +20,8 @@ formal truth 仍以以下文档为准：
 | 3 | `feat: add sales projection persistence surface` | `merged` | `sales_orders` 与 `sales_order_items` 的最小 persistence surface 已在 main 落地。 |
 | 4 | `feat: add inventory persistence surface` | `merged` | `inventory_current` 与 `inventory_daily_snapshot` 的最小 persistence surface 已在 main 落地。 |
 | 5 | `docs+test: align expanded capture formal surface` | `merged` | 已把前面已落地的 capture 对象同步到 docs、mapping 和 guardrail tests。 |
-| 6 | `docs: answer transform admission and readiness minimums` | `in-progress` | 在行为代码开始前，把 admitted input 与 readiness 的最小 docs truth 收紧。 |
-| 7 | `docs: answer transform lifecycle transition minimums` | `todo` | 在行为代码开始前，把 transform lifecycle transition 的最小 docs truth 收紧。 |
+| 6 | `docs: answer transform admission and readiness minimums` | `merged` | 已在行为代码开始前把 admitted input 与 readiness 的最小 docs truth 收紧。 |
+| 7 | `docs: answer transform lifecycle transition minimums` | `in-progress` | 在行为代码开始前，把 transform lifecycle transition 的最小 docs truth 收紧。 |
 | 8 | `feat: add admitted transform input selector` | `planning` | 基于 formal persisted facts 增加第一条 admitted input selector。 |
 | 9 | `feat: add transform readiness evaluator and batch lifecycle helper` | `planning` | 增加第一条 readiness evaluator 与窄职责 lifecycle helper。 |
 | 10 | `feat: add first serving projection contract` | `planning` | 增加第一条最窄 slice 的 serving projection contract。 |
@@ -30,25 +30,25 @@ formal truth 仍以以下文档为准：
 ## 当前包
 
 当前包：
-- `#6 docs: answer transform admission and readiness minimums`
+- `#7 docs: answer transform lifecycle transition minimums`
 
 目标：
-- 在不引入 transform behavior 的前提下，把 transform admission 与 readiness 的最小 docs truth 收紧。
+- 在不引入 transform behavior 的前提下，把 transform lifecycle transition 的最小 docs truth 收紧。
 
 边界：
-- 只按 transform admission / readiness minimums 做 docs-only 或 docs-first guardrail-only 收口
+- 只按 transform lifecycle transition minimums 做 docs-only 或 docs-first guardrail-only 收口
 - 不引入 transform behavior
 - 不引入 serving behavior
-- 不引入 admissions service 或 runtime behavior
+- 不引入 lifecycle executor / orchestration / admissions service / readiness executor
 - 不引入 route registry
 - 不引入 maturity board
 - 不引入 batch orchestration service
 
 当前已拍板规则：
 - 优先让 formal docs 精确描述当前最小 truth
-- readiness 在当前阶段只表示“满足最小正式输入条件”，不表示 transform 已执行
-- 当前 admitted / readiness minimums 只依赖已落地 persisted capture-side facts，不偷带行为实现
-- 不提前定义第 7 包之后才应定稿的 lifecycle / orchestration / overwrite contract
+- 当前字段语义边界先收敛为 persisted facts，不把它们解释成 lifecycle transition proof
+- lifecycle transition minimums 当前只是 future formal constraints，不表示状态机、执行器、调度器已落地
+- 不提前定义第 8 包之后才应定稿的 execution / retry / orchestration / overwrite contract
 - 只有当 current truth 会失真时，才最小同步 formal docs
 
 ## 第 8-11 包最终执行底稿
@@ -234,9 +234,9 @@ admitted source status 真源约束：
 
 ## 下一步候选
 
-- `#7 docs: answer transform lifecycle transition minimums`
-  - 在行为代码开始前，把 lifecycle transition 的最小 docs truth 收紧
-  - 继续保持 docs-only，不启动 transform behavior
+- `#8 feat: add admitted transform input selector`
+  - 基于已收紧的 docs truth，增加第一条 admitted transform input selector
+  - 仍保持最窄 slice，不引入 readiness evaluator 或 transition executor
 
 ## 明确禁区 / 不做事项
 

@@ -13,6 +13,7 @@ For the repository docs index, use [docs/README.md](./README.md).
 ## Current Truth
 
 No transform state-transition flow, state machine, or transition executor is currently implemented in `black-tonny-backend-base`.
+No selector, readiness evaluator, lifecycle helper, scheduler, or serving projection path currently owns a formal lifecycle transition contract either.
 
 That means this document does not describe current runtime behavior.
 It only defines the narrowest future boundary a later scoped migration must respect before any transform-related lifecycle transition could be treated as formal repository behavior.
@@ -43,6 +44,19 @@ On top of that, the minimum state-transition conditions are:
 The current field semantics for those lifecycle facts stay narrower than any future transform policy.
 That means `batch_status`, `transformed_at`, `error_message`, and `updated_at` must first be read through [capture-batch-field-semantics.md](./capture-batch-field-semantics.md), not through assumed legacy behavior.
 
+At the current minimum boundary, these lifecycle-transition minimums are future formal constraints only.
+They do not mean that any lifecycle transition has already been proven, executed, scheduled, reserved, or coordinated.
+`analysis_batches` is not a current minimum prerequisite or proof source for transform lifecycle transitions.
+
+The current fields above do not currently prove any formal source-to-target transition:
+- `capture_batches.batch_status` does not prove that a formal lifecycle transition has occurred
+- `capture_batches.transformed_at` does not prove that a formal completion transition has occurred
+- `capture_batches.error_message` does not prove that a formal failed or terminal transition has been declared
+- `capture_batches.updated_at` does not prove transition progress, transition ordering, reservation, or execution
+
+This document is not declaring that a selector, readiness evaluator, lifecycle helper, or transition executor already exists.
+It is only constraining how a later scoped migration may formalize those narrower behaviors.
+
 These conditions are intentionally narrow.
 They only constrain where future transform state transitions may start and which current persisted lifecycle facts they may depend on.
 They do not define the allowed transition graph.
@@ -54,8 +68,11 @@ The following points are intentionally left to a later scoped migration:
 - whether future transform behavior should keep the current `batch_status` vocabulary or formalize new semantics
 - when `transformed_at` may be written, preserved, cleared, or recomputed
 - when `error_message` is preserved, cleared, overwritten, or considered terminal evidence
+- whether a selector or readiness evaluator is required before any lifecycle transition write is allowed
+- whether a dedicated lifecycle helper or transition executor exists, and if so, what narrow write contract it owns
 - whether retries reopen failed or partial states
 - whether partial or failed transitions are terminal, recoverable, or resumable
+- whether scheduling or orchestration is required before any lifecycle transition write is allowed
 - whether transition rules require locking, reservation, idempotency, or concurrency coordination
 - whether transition completion depends on serving-side writes, and if so, how that relationship is formalized
 
@@ -78,8 +95,11 @@ Future transform state-transition rules must continue to originate from the curr
 This document does not claim that:
 - transform state transitions are currently implemented
 - a state machine already exists in code
+- a selector, readiness evaluator, lifecycle helper, or transition executor already exists in code
 - the current `batch_status` values already encode a formal transform transition graph
 - `transformed_at` already proves a formal transform completion transition
+- `error_message` or `updated_at` already proves that a formal lifecycle transition has occurred
+- overwrite, retry, failure-recovery, scheduling, or orchestration policy is already formalized
 - legacy orchestration belongs in the new repository
 - research, evidence, troubleshooting, or reference material can define transform state-transition rules
 
