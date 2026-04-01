@@ -199,7 +199,7 @@ The serving side now also includes the minimal formal serving projection tables:
 The capture side now includes the minimal formal capture boundary tables:
 - `capture_batches`
 - `capture_endpoint_payloads`
- - `analysis_batches`
+- `analysis_batches`
 
 These capture and serving projection tables establish persistence boundaries and migration targets only.
 They are not mounted into runtime routers and do not change current API behavior.
