@@ -9,11 +9,10 @@ For the repository docs index, use [docs/README.md](./README.md).
 
 ## Current Truth
 
-The current repository truth is still limited to persisted capture-side facts.
+The current repository truth is still anchored to persisted capture-side facts.
 
-No transform policy, readiness checker, state machine, or serving projection path currently owns the semantics of these fields.
-No selector, lifecycle helper, transition executor, or scheduler currently owns them either.
-That means the fields below must be read first as formal persisted facts under the capture boundary, not as already-landed transform behavior.
+A minimal transform readiness evaluator and a minimal capture-batch lifecycle helper now read or write a narrow subset of these fields for the current first transform slice.
+That narrower behavior does not turn these fields into a broad transform policy, state machine, scheduler, or serving projection contract.
 
 ## Current Ownership
 
@@ -21,14 +20,16 @@ The current formal ownership of these fields stays within:
 - `src/app/models/capture_batch.py`
 - `src/app/schemas/capture.py`
 - `src/app/crud/crud_capture_batches.py`
+- `src/app/services/transform_readiness_evaluator.py`
+- `src/app/services/capture_batch_lifecycle.py`
 - `src/migrations/capture_versions/`
 
-Their semantics are not currently owned by:
-- a transform module
-- a readiness checker
+Their broader semantics are not currently owned by:
+- a broad transform module
+- a general-purpose readiness checker
 - a state machine
 - a selector
-- a lifecycle helper or transition executor
+- a general transition executor
 - a scheduler or orchestration layer
 - a serving projection path
 - legacy orchestration copied from the old repository
@@ -41,12 +42,14 @@ Current meaning:
 - a persisted lifecycle label on the batch row
 - constrained by the current formal schema and database check constraint
 - readable through the current formal CRUD and read-helper boundary
+- used by the current first-slice readiness evaluator as a required `captured` source-state gate
+- writable by the current lifecycle helper only from `captured` to `transformed` or `failed`
 
 Current non-meaning:
 - not a formal transform admission policy
-- not a formal transform readiness policy
-- not a formal source-to-target transition graph
-- not proof that a formal lifecycle transition has occurred
+- not a general transform readiness policy
+- not a formal source-to-target transition graph beyond the current helper edge
+- not by itself proof that a formal lifecycle transition has occurred
 - not proof that any current runtime transform flow exists
 
 ### `capture_batches.transformed_at`
@@ -54,12 +57,13 @@ Current non-meaning:
 Current meaning:
 - a nullable persisted timestamp field on the batch row
 - a stored fact that may later become relevant to transform-related lifecycle rules
+- writable by the current lifecycle helper when one `captured` batch is marked `transformed`
 
 Current non-meaning:
 - not proof that transform is currently implemented
-- not proof of transform completion
-- not a formal readiness or admission marker
-- not proof of a formal lifecycle transition completion
+- not by itself proof of transform completion
+- not by itself a formal readiness or admission marker
+- not by itself proof of a formal lifecycle transition completion
 - not a formal serving-write completion marker
 
 ### `capture_batches.error_message`
@@ -67,19 +71,21 @@ Current non-meaning:
 Current meaning:
 - an optional persisted text field on the batch row
 - a place to retain failure or diagnostic context when the batch row is updated
+- overwritable by the current lifecycle helper when one `captured` batch is marked `failed`
+- preservable by the current transformed helper path when prior diagnostic text already exists
 
 Current non-meaning:
 - not a formal terminal-state declaration
 - not a canonical transform error taxonomy
 - not a retry policy signal
-- not proof that a failed or terminal lifecycle transition has been formally declared
+- not by itself proof that a failed or terminal lifecycle transition has been formally declared
 - not evidence that a current transform failure path exists
 
 ### `capture_batches.updated_at`
 
 Current meaning:
 - a system-managed modification timestamp on the batch row
-- refreshed by the current update path when the row changes
+- refreshed by the current update path when the row changes, including the current lifecycle helper writes
 
 Current non-meaning:
 - not a transform progress timestamp
@@ -101,6 +107,13 @@ Any later scoped migration must explicitly define:
 - which fields gain narrower lifecycle semantics
 - which writes are allowed or forbidden
 - whether any new fields are needed instead of overloading the current ones
+
+The current first-slice readiness evaluator and lifecycle helper already define one narrow exception:
+- `batch_status == "captured"` is required before admitted input is currently treated as ready for the first `sales_orders` slice
+- `transformed_at` is written only when the current helper marks one `captured` batch as `transformed`
+- `error_message` is overwritten only when the current helper marks one `captured` batch as `failed`
+
+Those narrow rules must not be silently expanded into retry, reopen, resume, scheduling, or serving-projection semantics.
 
 Use [transform-rule-set-questions.md](./transform-rule-set-questions.md) for the minimum future questions that still require explicit answers before those narrower semantics become formal behavior.
 

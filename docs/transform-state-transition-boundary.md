@@ -12,11 +12,15 @@ For the repository docs index, use [docs/README.md](./README.md).
 
 ## Current Truth
 
-No transform state-transition flow, state machine, or transition executor is currently implemented in `black-tonny-backend-base`.
-No selector, readiness evaluator, lifecycle helper, scheduler, or serving projection path currently owns a formal lifecycle transition contract either.
+A minimal capture-batch lifecycle helper is now implemented in `black-tonny-backend-base`.
+A selector and a minimal readiness evaluator may now exist upstream of this boundary, but the lifecycle helper remains a separate narrower step.
 
-That means this document does not describe current runtime behavior.
-It only defines the narrowest future boundary a later scoped migration must respect before any transform-related lifecycle transition could be treated as formal repository behavior.
+That helper is intentionally narrow.
+It only formalizes the current first two capture-side lifecycle writes:
+- `captured -> transformed`
+- `captured -> failed`
+
+It does not define a general transition executor, broader state machine, scheduler, or serving projection path.
 
 ## Ready Input Versus State-Transition Boundary
 
@@ -25,7 +29,8 @@ The distinction stays explicit:
 - transform state-transition boundary is the future rule boundary that constrains how persisted capture lifecycle facts may be advanced, failed, retried, or completed if transform behavior is introduced
 
 This document only defines the minimum transition floor.
-It does not define a state machine, transition executor, or serving projection behavior.
+It defines the current narrow lifecycle helper plus the minimum transition floor beyond it.
+It does not define a broader state machine, transition executor, or serving projection behavior.
 
 ## Minimum State-Transition Conditions
 
@@ -44,32 +49,59 @@ On top of that, the minimum state-transition conditions are:
 The current field semantics for those lifecycle facts stay narrower than any future transform policy.
 That means `batch_status`, `transformed_at`, `error_message`, and `updated_at` must first be read through [capture-batch-field-semantics.md](./capture-batch-field-semantics.md), not through assumed legacy behavior.
 
-At the current minimum boundary, these lifecycle-transition minimums are future formal constraints only.
-They do not mean that any lifecycle transition has already been proven, executed, scheduled, reserved, or coordinated.
+At the current minimum boundary, broader lifecycle-transition minimums remain future formal constraints beyond the current first helper.
+They do not mean that any broader lifecycle transition graph has already been proven, executed, scheduled, reserved, or coordinated.
 `analysis_batches` is not a current minimum prerequisite or proof source for transform lifecycle transitions.
 
 The current fields above do not currently prove any formal source-to-target transition:
-- `capture_batches.batch_status` does not prove that a formal lifecycle transition has occurred
-- `capture_batches.transformed_at` does not prove that a formal completion transition has occurred
-- `capture_batches.error_message` does not prove that a formal failed or terminal transition has been declared
+- `capture_batches.batch_status` does not by itself prove that a formal lifecycle transition has occurred
+- `capture_batches.transformed_at` does not by itself prove that a formal completion transition has occurred
+- `capture_batches.error_message` does not by itself prove that a formal failed or terminal transition has been declared
 - `capture_batches.updated_at` does not prove transition progress, transition ordering, reservation, or execution
 
-This document is not declaring that a selector, readiness evaluator, lifecycle helper, or transition executor already exists.
-It is only constraining how a later scoped migration may formalize those narrower behaviors.
+## Current Lifecycle Helper Boundary
+
+Current helper inputs:
+- `capture_batch_id`
+- one latest failure message for the failed edge
+- one optional explicit `transformed_at` override for the transformed edge
+
+Current helper output:
+- one updated `CaptureBatchRead`
+- `None` when the batch row is missing
+
+Current helper behavior:
+- `mark_capture_batch_transformed` requires the current batch row to keep `batch_status == "captured"`
+- `mark_capture_batch_transformed` writes only:
+  - `batch_status = "transformed"`
+  - `transformed_at = now` or one explicit override value
+- `mark_capture_batch_transformed` does not clear `error_message`
+- `mark_capture_batch_failed` requires the current batch row to keep `batch_status == "captured"`
+- `mark_capture_batch_failed` writes only:
+  - `batch_status = "failed"`
+  - `error_message` overwritten with the latest failure text
+- `mark_capture_batch_failed` does not write `transformed_at`
+- both helper functions raise `ValueError` when the current batch row is not in the `captured` source state
+- neither helper function retries, reopens, resumes, reserves, or schedules work
+- neither helper function writes serving projection rows
+- neither helper function acts as a general transition executor
+
+These current helper behaviors are intentionally narrow.
+They constrain only the first landed lifecycle write helper, not the broader future state-transition rule set.
 
 These conditions are intentionally narrow.
 They only constrain where future transform state transitions may start and which current persisted lifecycle facts they may depend on.
-They do not define the allowed transition graph.
+They do not define the allowed transition graph beyond the current two landed helper edges.
 
 ## What Is Still Not Defined
 
 The following points are intentionally left to a later scoped migration:
-- which source-to-target transitions are allowed among `queued`, `captured`, `partial`, `failed`, and `transformed`
+- which source-to-target transitions beyond the current `captured -> transformed` and `captured -> failed` edges are allowed among `queued`, `captured`, `partial`, `failed`, and `transformed`
 - whether future transform behavior should keep the current `batch_status` vocabulary or formalize new semantics
-- when `transformed_at` may be written, preserved, cleared, or recomputed
-- when `error_message` is preserved, cleared, overwritten, or considered terminal evidence
-- whether a selector or readiness evaluator is required before any lifecycle transition write is allowed
-- whether a dedicated lifecycle helper or transition executor exists, and if so, what narrow write contract it owns
+- when `transformed_at` may be written, preserved, cleared, or recomputed beyond the current helper edge
+- when `error_message` is preserved, cleared, overwritten, or considered terminal evidence beyond the current helper edge
+- whether a selector or readiness evaluator is required before any lifecycle transition write beyond the current helper contract is allowed
+- whether a broader lifecycle helper or transition executor exists, and if so, what narrower or broader write contract it owns
 - whether retries reopen failed or partial states
 - whether partial or failed transitions are terminal, recoverable, or resumable
 - whether scheduling or orchestration is required before any lifecycle transition write is allowed
@@ -90,18 +122,38 @@ If a later scoped migration intentionally adopts part of a legacy lifecycle rule
 
 Future transform state-transition rules must continue to originate from the current formal capture boundary under `src/app/**` and `src/migrations/**`, plus any later scoped migration that formally introduces transform behavior.
 
+## Current Code Locations
+
+The current minimal lifecycle helper implementation lives under:
+- `src/app/services/capture_batch_lifecycle.py`
+- `src/app/services/transform_readiness_evaluator.py`
+- `src/app/services/admitted_transform_selector.py`
+- `src/app/schemas/capture.py`
+
 ## What This Document Does Not Claim
 
 This document does not claim that:
-- transform state transitions are currently implemented
-- a state machine already exists in code
-- a selector, readiness evaluator, lifecycle helper, or transition executor already exists in code
+- a full transform state machine already exists in code
+- a general transition executor already exists in code
 - the current `batch_status` values already encode a formal transform transition graph
-- `transformed_at` already proves a formal transform completion transition
-- `error_message` or `updated_at` already proves that a formal lifecycle transition has occurred
+- `transformed_at` by itself already proves a formal transform completion transition
+- `error_message` or `updated_at` by itself already proves that a broader formal lifecycle transition has occurred
 - overwrite, retry, failure-recovery, scheduling, or orchestration policy is already formalized
 - legacy orchestration belongs in the new repository
 - research, evidence, troubleshooting, or reference material can define transform state-transition rules
+
+## Current Verified Coverage
+
+The current lifecycle helper coverage is verified at the formal-layer test level.
+
+The current coverage exercises:
+- mark one `captured` batch as `transformed` while writing `transformed_at` and preserving `error_message`
+- mark one `captured` batch as `failed` while overwriting `error_message` and leaving `transformed_at` untouched
+- reject lifecycle helper writes when the source state is not `captured`
+- return `None` when the target batch row is missing
+
+The current verification file is:
+- `tests/test_transform_readiness_and_lifecycle.py`
 
 ## Future Scoped Migration Requirement
 
@@ -119,4 +171,4 @@ For the first transform behavior PR in particular, the minimum entry condition i
 - it must say whether `batch_status`, `transformed_at`, `error_message`, or `updated_at` are being written, and under what rule
 - it must say what remains intentionally out of scope for a later scoped migration
 
-Until that later scoped migration happens, this document is only a formal boundary note.
+Beyond the current narrow lifecycle helper, later scoped migration work is still required before broader transform state-transition behavior becomes formal repository behavior.

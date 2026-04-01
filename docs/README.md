@@ -49,11 +49,11 @@ Internal planning, reference, and archive material can stay in Chinese when it i
   - Language: English
   - Status: `Source of truth`
 - [`transform-readiness-boundary.md`](./transform-readiness-boundary.md)
-  - Minimal future transform readiness boundary derived from the narrower admitted transform input layer
+  - Minimal transform readiness boundary and first readiness evaluator derived from the narrower admitted transform input layer
   - Language: English
   - Status: `Source of truth`
 - [`transform-state-transition-boundary.md`](./transform-state-transition-boundary.md)
-  - Minimal future transform state-transition boundary derived from the narrower transform readiness layer
+  - Minimal transform state-transition boundary and first narrow capture-batch lifecycle helper derived from the narrower transform readiness layer
   - Language: English
   - Status: `Source of truth`
 - [`capture-batch-field-semantics.md`](./capture-batch-field-semantics.md)
