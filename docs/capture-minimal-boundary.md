@@ -129,6 +129,11 @@ Current purpose:
 - keep `capture_batch_id` linkage optional at the current minimal persistence stage
 - avoid admitting transform, serving, or orchestration behavior into the boundary itself
 
+Current guardrails:
+- `capture_batch_id` stays nullable at the current minimal persistence stage
+- `batch_status` defaults to `queued`
+- `updated_at` is system-managed and is not part of the caller-supplied update shape
+
 ## Relation To Future Transform Input
 
 The current capture boundary is the only formal source for any future transform input candidate.
@@ -183,6 +188,10 @@ Current formal minimal write/helper surface:
 - `update_capture_batch`
 - `append_capture_payload`
 
+Current formal analysis-batch write boundary:
+- `analysis_batches` currently uses the formal CRUD path directly
+- no separate analysis-batch service helper is currently formalized
+
 Current formal minimal constants surface:
 - `CAPTURE_BATCH_DEFAULT_STATUS`
 - capture string-length constants used by the current models and schemas
@@ -198,6 +207,7 @@ Current list-read shape:
 
 - `list_capture_batch_reads` supports equality filters on `batch_status` and `source_name`
 - `list_capture_endpoint_payload_reads` supports equality filters on `capture_batch_id` and `source_endpoint`
+- `list_analysis_batch_reads` supports equality filters on `batch_status` and `capture_batch_id`
 - current list helpers support default `limit`, explicit `limit`, and `offset`
 - current list helpers keep a fixed ascending sort boundary through the helper implementation
 
@@ -227,6 +237,13 @@ The current coverage exercises:
 - create one `capture_batches` row through the formal CRUD path
 - append one `capture_endpoint_payloads` row through the formal CRUD path
 - update the batch lifecycle row and confirm `updated_at` refreshes
+- create one `capture_batches` row through the formal capture-write helper with a generated batch id
+- create one `capture_batches` row through the formal capture-write helper with an explicit batch id
+- update one batch through the formal capture-write helper and return `None` when the target batch is missing
+- append one `capture_endpoint_payloads` row through the formal capture-write helper with stable JSON serialization and checksum
+- default `pulled_at` when the formal capture-write helper appends a payload without an explicit timestamp
+- preserve the database integrity error when the formal capture-write helper appends a payload for a missing batch
+- reject non-JSON-serializable payload input before the payload row is persisted
 - verify PostgreSQL dialect compilation keeps `error_message`, `request_params`, and `payload_json` at `TEXT`
 - verify the current formal create/update schemas do not add explicit `maxLength` caps around those fields
 - exercise one focused large-text round-trip through the current formal-layer test base
@@ -237,12 +254,16 @@ The current coverage exercises:
 - list filtered `analysis_batches` rows through a formal read helper with stable `analysis_batch_id` ordering
 - verify paginated analysis-batch reads keep a stable subset while `total_count` still reflects the full filtered result
 - verify empty analysis-batch reads return `data=[]` with `total_count=0`
+- verify analysis-batch reads stay stable when `batch_status` and `capture_batch_id` are combined with default or explicit pagination
 - create one `analysis_batches` row through the formal CRUD path
 - update one `analysis_batches` row and confirm `updated_at` refreshes
+- verify capture target metadata includes the current formal capture tables and excludes serving tables
 
-The current verification file is:
+The current verification files are:
 - `tests/test_capture_formal_boundary.py`
+- `tests/test_capture_write_service.py`
 - `tests/test_analysis_batches_formal_surface.py`
+- `tests/test_migration_targets.py`
 
 ## Explicit Non-Goals
 

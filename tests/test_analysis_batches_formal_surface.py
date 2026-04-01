@@ -124,6 +124,13 @@ async def test_analysis_batch_list_reads_keep_filters_pagination_and_empty_shape
         offset=1,
         limit=1,
     )
+    combined_paginated_response = await list_analysis_batch_reads(
+        db=capture_db_session,
+        batch_status="queued",
+        capture_batch_id="capture-001",
+        offset=1,
+        limit=1,
+    )
     empty_response = await list_analysis_batch_reads(
         db=capture_db_session,
         capture_batch_id="missing-capture",
@@ -134,6 +141,9 @@ async def test_analysis_batch_list_reads_keep_filters_pagination_and_empty_shape
 
     assert [row.analysis_batch_id for row in paginated_response["data"]] == ["analysis-002"]
     assert paginated_response["total_count"] == 2
+
+    assert [row.analysis_batch_id for row in combined_paginated_response["data"]] == ["analysis-002"]
+    assert combined_paginated_response["total_count"] == 2
 
     assert empty_response["data"] == []
     assert empty_response["total_count"] == 0
