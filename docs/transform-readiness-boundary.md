@@ -6,6 +6,7 @@ For the current capture formal boundary, use [capture-minimal-boundary.md](./cap
 For the broader future transform input candidate edge, use [transform-input-boundary.md](./transform-input-boundary.md).
 For the narrower admitted transform input edge, use [admitted-transform-input-boundary.md](./admitted-transform-input-boundary.md).
 For the narrower transform state-transition edge, use [transform-state-transition-boundary.md](./transform-state-transition-boundary.md).
+For the current semantics of transform-adjacent batch fields, use [capture-batch-field-semantics.md](./capture-batch-field-semantics.md).
 For the repository docs index, use [docs/README.md](./README.md).
 
 ## Current Truth
@@ -36,6 +37,14 @@ On top of that, the minimum readiness conditions are:
 - any future readiness decision must be derived from persisted capture-side facts that already live under the formal capture boundary
 - readiness must not be inferred from external samples, copied payload files, reference docs, archive docs, or transition examples
 
+At the current minimum boundary, readiness is still capture-side only.
+`analysis_batches` is not a current minimum prerequisite for transform readiness.
+
+At this stage, readiness only means that the admitted input set satisfies the minimum formal persisted-input conditions.
+It does not mean that transform has run, been scheduled, been reserved, or will necessarily execute.
+No current `batch_status` value, including `captured`, is by itself a formal readiness marker.
+Current readiness minimums also do not reinterpret `transformed_at` as readiness proof.
+
 These readiness conditions are intentionally narrow.
 They only constrain where future readiness may start and what kind of persisted truth it may depend on.
 They do not define a readiness policy, checker, or state machine.
@@ -51,6 +60,7 @@ The following points are intentionally left to a later scoped migration:
 - whether duplicate payloads block readiness, are ignored, or are coalesced
 - whether freshness windows, replay rules, or retry semantics affect readiness
 - whether readiness requires locking, reservation, or concurrency coordination
+- whether `analysis_batches` later becomes required context, optional supporting context, or remains outside the first readiness slice
 - how readiness interacts with admission policy, state transitions, `transformed_at`, or failure recovery
 - what serving-side outputs are produced after readiness leads to transform behavior
 

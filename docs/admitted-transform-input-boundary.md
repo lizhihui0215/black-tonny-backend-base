@@ -5,6 +5,7 @@ This document defines the minimal future admitted transform input boundary for `
 For the current capture formal boundary, use [capture-minimal-boundary.md](./capture-minimal-boundary.md).
 For the broader future transform input candidate edge, use [transform-input-boundary.md](./transform-input-boundary.md).
 For the narrower transform readiness edge, use [transform-readiness-boundary.md](./transform-readiness-boundary.md).
+For the current semantics of transform-adjacent batch fields, use [capture-batch-field-semantics.md](./capture-batch-field-semantics.md).
 For the repository docs index, use [docs/README.md](./README.md).
 
 ## Current Truth
@@ -45,6 +46,13 @@ On top of that, the minimum admitted conditions are:
 These admitted conditions are intentionally structural.
 They define the minimum persisted shape that a later scoped migration may choose to admit, but they do not define readiness policy or transform behavior.
 
+At the current minimum boundary, the admitted-input floor is still capture-side only.
+`analysis_batches` is not a current minimum prerequisite for admitted transform input.
+If an `analysis_batches` row exists and links back through `capture_batch_id`, it remains optional persisted context rather than current admission truth.
+
+No current `batch_status` value, including `captured`, is by itself a formal admission marker.
+Current admitted-input minimums also do not reinterpret `transformed_at` as admission proof.
+
 If later work needs the narrower readiness edge, that scope must continue into [transform-readiness-boundary.md](./transform-readiness-boundary.md) rather than being inferred from this admitted-input layer alone.
 
 ## What Is Still Not Defined
@@ -56,6 +64,7 @@ The following points are intentionally left to a later scoped migration:
 - whether duplicate payloads are rejected, coalesced, or tolerated
 - whether any freshness window or replay rule is required
 - whether admitted input can be retried after failure
+- whether `analysis_batches` later becomes required context, optional supporting context, or remains outside the first admitted slice
 - how admitted input affects batch readiness, state transitions, or serving-side outputs
 
 ## Boundary Rules
