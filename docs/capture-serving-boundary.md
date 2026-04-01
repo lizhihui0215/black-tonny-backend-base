@@ -34,6 +34,8 @@ Current serving-side runtime tables include:
 Current serving-side formal projection tables include:
 - `sales_orders`
 - `sales_order_items`
+- `inventory_current`
+- `inventory_daily_snapshot`
 
 These capture and serving projection tables establish persistence boundaries only.
 They are not mounted into runtime routers and they do not change the current serving-only runtime read rule.

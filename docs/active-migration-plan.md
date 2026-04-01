@@ -17,8 +17,8 @@ formal truth 仍以以下文档为准：
 | --- | --- | --- | --- |
 | 1 | `docs: align root readme current state` | `merged` | 对齐顶层 README 的 current state 与当前阅读路径。 |
 | 2 | `feat: add analysis batches formal surface` | `merged` | `analysis_batches` 的最小 formal persistence surface 已在 main 落地。 |
-| 3 | `feat: add sales projection persistence surface` | `in-progress` | 一起落 `sales_orders` 与 `sales_order_items` 的最小 persistence surface。 |
-| 4 | `feat: add inventory persistence surface` | `todo` | 一起落 `inventory_current` 与 `inventory_daily_snapshot` 的最小 persistence surface。 |
+| 3 | `feat: add sales projection persistence surface` | `merged` | `sales_orders` 与 `sales_order_items` 的最小 persistence surface 已在 main 落地。 |
+| 4 | `feat: add inventory persistence surface` | `in-progress` | 一起落 `inventory_current` 与 `inventory_daily_snapshot` 的最小 persistence surface。 |
 | 5 | `docs+test: align expanded capture formal surface` | `todo` | 把前面已落地的 capture 对象一次性同步到 docs、mapping 和 guardrail tests。 |
 | 6 | `docs: answer transform admission and readiness minimums` | `todo` | 在行为代码开始前，把 admitted input 与 readiness 的最小 docs truth 收紧。 |
 | 7 | `docs: answer transform lifecycle transition minimums` | `todo` | 在行为代码开始前，把 transform lifecycle transition 的最小 docs truth 收紧。 |
@@ -30,10 +30,10 @@ formal truth 仍以以下文档为准：
 ## 当前包
 
 当前包：
-- `#3 feat: add sales projection persistence surface`
+- `#4 feat: add inventory persistence surface`
 
 目标：
-- 落 `sales_orders` 与 `sales_order_items` 的最小 formal persistence surface。
+- 落 `inventory_current` 与 `inventory_daily_snapshot` 的最小 formal persistence surface。
 
 边界：
 - 只按 serving formal persistence surface 处理
@@ -49,7 +49,8 @@ formal truth 仍以以下文档为准：
 - `analysis_batch_id` 先作为 serving persistence side 的 required linkage fact
 - `capture_batch_id` 保持 nullable
 - 先不加 FK
-- `sales_orders.payment_status` 当前默认值是 `paid`，但只作为 minimal persistence placeholder，不代表已完成 serving business contract 定义
+- `on_hand_qty` / `safe_stock_qty` 采用精确数值持久化
+- inventory classification flags 先保持 nullable persisted facts，不通过默认值隐式固化 business policy
 - 这包只落 persistence contract，不提前定义 projection identity / upsert policy
 - 只有当 current truth 会失真时，才最小同步 formal docs
 
@@ -236,9 +237,9 @@ admitted source status 真源约束：
 
 ## 下一步候选
 
-- `#4 feat: add inventory persistence surface`
-  - 一起落 `inventory_current` 与 `inventory_daily_snapshot` 的最小 persistence surface
-  - 继续保持 persistence-only，不启动 transform 或 serving behavior
+- `#5 docs+test: align expanded capture formal surface`
+  - 把已落地对象一次性同步到 docs / mapping / guardrail tests
+  - 不新增新的 persistence object
 
 ## 明确禁区 / 不做事项
 

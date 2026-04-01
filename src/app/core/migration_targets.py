@@ -40,6 +40,8 @@ def load_target_metadata(target: AlembicTarget) -> MetaDataType:
 
         return CaptureBase.metadata
 
+    from ..models.inventory_current import InventoryCurrent  # noqa: F401
+    from ..models.inventory_daily_snapshot import InventoryDailySnapshot  # noqa: F401
     from ..models.rate_limit import RateLimit  # noqa: F401
     from ..models.sales_order import SalesOrder  # noqa: F401
     from ..models.sales_order_item import SalesOrderItem  # noqa: F401

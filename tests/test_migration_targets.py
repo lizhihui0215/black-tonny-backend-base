@@ -26,9 +26,16 @@ def test_capture_metadata_excludes_serving_tables() -> None:
 
 def test_serving_metadata_contains_serving_tables() -> None:
     metadata = load_target_metadata("serving")
-    assert {"user", "tier", "rate_limit", "token_blacklist", "sales_orders", "sales_order_items"}.issubset(
-        metadata.tables.keys()
-    )
+    assert {
+        "user",
+        "tier",
+        "rate_limit",
+        "token_blacklist",
+        "sales_orders",
+        "sales_order_items",
+        "inventory_current",
+        "inventory_daily_snapshot",
+    }.issubset(metadata.tables.keys())
 
 
 def test_serving_metadata_excludes_capture_tables() -> None:
