@@ -11,11 +11,12 @@ For the repository docs index, use [docs/README.md](./README.md).
 
 ## Current Truth
 
-No transform readiness flow, readiness checker, or transform execution path is currently implemented in `black-tonny-backend-base`.
-A minimal admitted transform input selector may now exist upstream of this boundary, but it does not imply readiness behavior.
+A minimal transform readiness evaluator is now implemented in `black-tonny-backend-base`.
+A minimal admitted transform input selector may now exist upstream of this boundary, but the readiness evaluator remains a separate narrower step.
 
-That means this document does not describe current runtime behavior.
-It only defines the narrowest future boundary a later scoped migration must respect before any admitted transform input could be treated as transform-ready input.
+That evaluator is intentionally narrow.
+It decides only whether admitted input is ready for the current first `sales_orders` slice.
+It does not execute transform behavior, write serving-side outputs, schedule work, reserve work, or advance capture-side lifecycle fields.
 
 ## Admitted Versus Ready Input
 
@@ -25,8 +26,8 @@ The distinction stays explicit:
 
 Transform-ready input may still be broader than the future set of lifecycle transitions that a later scoped migration chooses to formalize.
 
-This document only defines the minimum readiness floor.
-It does not define how readiness is checked, when transform runs, or how serving-side outputs are produced.
+This document defines the current first readiness evaluator plus the minimum readiness floor beyond it.
+It does not define when transform runs or how serving-side outputs are produced.
 
 ## Minimum Transform Readiness Conditions
 
@@ -41,22 +42,50 @@ On top of that, the minimum readiness conditions are:
 At the current minimum boundary, readiness is still capture-side only.
 `analysis_batches` is not a current minimum prerequisite for transform readiness.
 
-At this stage, readiness only means that the admitted input set satisfies the minimum formal persisted-input conditions.
+At this stage, readiness only means that the admitted input set satisfies the current minimum formal persisted-input conditions for the current first slice.
 It does not mean that transform has run, been scheduled, been reserved, or will necessarily execute.
-No current `batch_status` value, including `captured`, is by itself a formal readiness marker.
-Current readiness minimums also do not reinterpret `transformed_at` as readiness proof.
+No current field, including `batch_status` and `transformed_at`, is by itself a formal readiness proof.
+
+## Current Readiness Evaluator Boundary
+
+Current evaluator input:
+- one `AdmittedTransformInputSnapshot`
+
+Current evaluator output:
+- one `TransformReadinessDecision`
+
+Current first-slice definition:
+- the narrow `sales_orders` source slice
+- identified only by one or more admitted payload snapshots whose `source_endpoint` equals `/erp/orders`
+
+Current evaluator behavior:
+- returns `is_ready=True` only when the current admitted bundle contains one or more `/erp/orders` payload snapshots
+- requires the admitted batch snapshot to keep `batch_status == "captured"`
+- requires the admitted batch snapshot to keep `transformed_at is None`
+- does not require `analysis_batches`
+- does not gate on `error_message`
+- does not write lifecycle fields
+- does not write serving projection rows
+- does not schedule, reserve, or execute transform work
+
+Current decision shape:
+- `capture_batch_id`
+- `slice_name`
+- `is_ready`
+- `reason`
+- `matched_payload_count`
 
 These readiness conditions are intentionally narrow.
 They only constrain where future readiness may start and what kind of persisted truth it may depend on.
-They do not define a readiness policy, checker, or state machine.
+They do not define a general-purpose readiness policy, scheduler, or state machine.
 
 If later work needs the narrower state-transition edge, that scope must continue into [transform-state-transition-boundary.md](./transform-state-transition-boundary.md) rather than being inferred from this readiness layer alone.
 
 ## What Is Still Not Defined
 
 The following points are intentionally left to a later scoped migration:
-- which `batch_status` values are eligible for transform-ready input
-- whether readiness requires full endpoint completeness, page completeness, or source-specific completeness rules
+- which statuses beyond the current first-slice `captured` gate are eligible for transform-ready input
+- whether slices beyond the current `/erp/orders` sales-orders slice require different endpoint, page, or source completeness rules
 - whether partial captures can ever become transform-ready input
 - whether duplicate payloads block readiness, are ignored, or are coalesced
 - whether freshness windows, replay rules, or retry semantics affect readiness
@@ -76,15 +105,34 @@ Future transform-ready input must not be defined from:
 
 Future transform-ready input must continue to originate from the current formal capture boundary under `src/app/**` and `src/migrations/**`.
 
+## Current Code Locations
+
+The current minimal readiness evaluator implementation lives under:
+- `src/app/services/transform_readiness_evaluator.py`
+- `src/app/schemas/transform.py`
+- `src/app/services/admitted_transform_selector.py`
+
 ## What This Document Does Not Claim
 
 This document does not claim that:
-- transform readiness is currently implemented
-- any current batch is already marked or known as transform-ready input
+- every current batch is already transform-ready input
 - `batch_status` already encodes transform readiness policy
-- a readiness checker already exists in code
+- a general-purpose readiness checker already exists in code
 - legacy readiness orchestration belongs in the new repository
 - research, evidence, troubleshooting, or reference material can define transform-ready input
+
+## Current Verified Coverage
+
+The current readiness evaluator coverage is verified at the formal-layer test level.
+
+The current coverage exercises:
+- return `ready` for the current first sales-orders slice when admitted input keeps `batch_status == "captured"` and `transformed_at is None`
+- return a non-ready decision when `/erp/orders` payload snapshots are missing
+- return a non-ready decision when the admitted batch snapshot is not `captured`
+- return a non-ready decision when the admitted batch snapshot already carries `transformed_at`
+
+The current verification file is:
+- `tests/test_transform_readiness_and_lifecycle.py`
 
 ## Future Scoped Migration Requirement
 
@@ -94,4 +142,4 @@ If a later scoped migration introduces transform readiness behavior, it must exp
 - how readiness interacts with state transitions and transform execution
 - whether transform-ready input writes only serving outputs or also updates capture-side lifecycle facts
 
-Until that later scoped migration happens, this document is only a formal boundary note.
+Beyond the current first readiness evaluator, later scoped migration work is still required before broader transform readiness behavior becomes formal repository behavior.

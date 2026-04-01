@@ -86,7 +86,8 @@ Current selector bundle shape:
   - `checksum`
   - `pulled_at`
 
-If later work needs the narrower readiness edge, that scope must continue into [transform-readiness-boundary.md](./transform-readiness-boundary.md) rather than being inferred from this admitted-input layer alone.
+The narrower readiness edge is defined separately in [transform-readiness-boundary.md](./transform-readiness-boundary.md).
+It must not be inferred from this admitted-input layer alone.
 
 ## What Is Still Not Defined
 
@@ -146,4 +147,4 @@ If a later scoped migration introduces admitted transform input behavior, it mus
 - how admission interacts with state transitions
 - whether admitted input is consumed only by transform or also by later serving projection paths
 
-Until that later scoped migration happens, this document is only a formal boundary note.
+Beyond the current minimal selector implementation, later scoped migration work is still required before broader admitted transform input behavior becomes formal repository behavior.

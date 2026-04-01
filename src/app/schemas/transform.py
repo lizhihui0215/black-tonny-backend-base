@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict
 
@@ -29,3 +30,22 @@ class AdmittedTransformInputSnapshot(BaseModel):
 
     batch: AdmittedTransformBatchSnapshot
     payloads: list[AdmittedTransformPayloadSnapshot]
+
+
+TransformProjectionSlice = Literal["sales_orders"]
+TransformReadinessReason = Literal[
+    "ready",
+    "missing_sales_orders_payloads",
+    "batch_status_not_captured",
+    "already_transformed",
+]
+
+
+class TransformReadinessDecision(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    capture_batch_id: str
+    slice_name: TransformProjectionSlice
+    is_ready: bool
+    reason: TransformReadinessReason
+    matched_payload_count: int
