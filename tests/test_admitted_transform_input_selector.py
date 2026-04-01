@@ -30,6 +30,10 @@ def dump_json(value: object) -> str:
     )
 
 
+def as_naive_utc(value: datetime) -> datetime:
+    return value.astimezone(UTC).replace(tzinfo=None) if value.tzinfo is not None else value
+
+
 @pytest_asyncio.fixture
 async def capture_db_session(tmp_path: Path) -> AsyncGenerator[AsyncSession, None]:
     db_path = tmp_path / "admitted_transform_selector.sqlite3"
@@ -179,6 +183,7 @@ async def test_select_admitted_transform_input_keeps_selection_structural_withou
 
     assert isinstance(selected, AdmittedTransformInputSnapshot)
     assert selected.batch.batch_status == "failed"
-    assert selected.batch.transformed_at == transformed_at.replace(tzinfo=None)
+    assert selected.batch.transformed_at is not None
+    assert as_naive_utc(selected.batch.transformed_at) == as_naive_utc(transformed_at)
     assert selected.batch.error_message == "kept for diagnostics"
     assert [payload.source_endpoint for payload in selected.payloads] == ["/erp/orders"]
