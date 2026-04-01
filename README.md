@@ -194,6 +194,8 @@ The serving side includes the baseline auth / user / tier / rate-limit migration
 The serving side now also includes the minimal formal serving projection tables:
 - `sales_orders`
 - `sales_order_items`
+- `inventory_current`
+- `inventory_daily_snapshot`
 The capture side now includes the minimal formal capture boundary tables:
 - `capture_batches`
 - `capture_endpoint_payloads`

@@ -43,6 +43,8 @@ It does not belong to:
 The current minimal formal serving projection tables are:
 - `sales_orders`
 - `sales_order_items`
+- `inventory_current`
+- `inventory_daily_snapshot`
 
 ### `sales_orders`
 
@@ -95,20 +97,91 @@ Current guardrails:
 - `order_id` is currently a non-enforced business reference that is intended to correspond to `sales_orders.order_id` when both tables are populated
 - the current boundary does not enforce that correspondence with a foreign key, uniqueness rule, or joined-read contract
 
+### `inventory_current`
+
+Current formal fields:
+- `id`
+- `analysis_batch_id`
+- `capture_batch_id`
+- `store_id`
+- `sku_id`
+- `style_code`
+- `color_code`
+- `size_code`
+- `on_hand_qty`
+- `safe_stock_qty`
+- `season_tag`
+- `is_all_season`
+- `is_target_size`
+- `is_active_sale`
+- `updated_at`
+
+Current purpose:
+- persist one minimal current-inventory projection row
+- keep quantitative inventory facts and optional inventory classification flags without admitting transform or runtime serving behavior
+
+Current guardrails:
+- `analysis_batch_id`, `sku_id`, `on_hand_qty`, and `safe_stock_qty` are required at the current minimal persistence stage
+- `on_hand_qty` and `safe_stock_qty` are stored as PostgreSQL `NUMERIC(18,2)` and are exposed through the current schemas as `Decimal`
+- `capture_batch_id`, `store_id`, `style_code`, `color_code`, `size_code`, `season_tag`, `is_all_season`, `is_target_size`, and `is_active_sale` stay nullable
+- nullable inventory flags are persisted facts only at this stage; a missing flag does not imply `true`, `false`, or any finalized inventory classification policy
+- `updated_at` is a system-managed modification timestamp, not current serving freshness or transform-policy truth
+
+### `inventory_daily_snapshot`
+
+Current formal fields:
+- `id`
+- `analysis_batch_id`
+- `capture_batch_id`
+- `snapshot_date`
+- `store_id`
+- `sku_id`
+- `style_code`
+- `color_code`
+- `size_code`
+- `on_hand_qty`
+- `safe_stock_qty`
+- `season_tag`
+- `is_all_season`
+- `is_target_size`
+- `is_active_sale`
+- `created_at`
+
+Current purpose:
+- persist one minimal daily inventory snapshot row
+- keep snapshot-date inventory facts without admitting transform or runtime serving behavior
+
+Current guardrails:
+- `analysis_batch_id`, `snapshot_date`, `sku_id`, `on_hand_qty`, and `safe_stock_qty` are required at the current minimal persistence stage
+- `on_hand_qty` and `safe_stock_qty` are stored as PostgreSQL `NUMERIC(18,2)` and are exposed through the current schemas as `Decimal`
+- `capture_batch_id`, `store_id`, `style_code`, `color_code`, `size_code`, `season_tag`, `is_all_season`, `is_target_size`, and `is_active_sale` stay nullable
+- nullable inventory flags are persisted facts only at this stage; a missing flag does not imply `true`, `false`, or any finalized inventory classification policy
+- `snapshot_date` is a persisted date fact, not a finalized reporting-window or delta-computation contract
+
 ## Code Locations
 
 The current formal serving projection boundary is implemented in:
+- `src/app/models/inventory_current.py`
+- `src/app/models/inventory_daily_snapshot.py`
 - `src/app/models/sales_order.py`
 - `src/app/models/sales_order_item.py`
+- `src/app/schemas/inventory.py`
 - `src/app/schemas/sales.py`
+- `src/app/crud/crud_inventory_current.py`
+- `src/app/crud/crud_inventory_daily_snapshots.py`
 - `src/app/crud/crud_sales_orders.py`
 - `src/app/crud/crud_sales_order_items.py`
 - `src/app/core/migration_targets.py`
 - `src/migrations/serving_versions/20260401_02_add_sales_projection_tables.py`
+- `src/migrations/serving_versions/20260401_03_add_inventory_projection_tables.py`
 
 ## Current Read/List Boundary
 
 Current formal read helpers:
+- `get_inventory_current_read`
+- `list_inventory_current_reads`
+- `get_inventory_daily_snapshot_read`
+- `list_inventory_daily_snapshot_reads`
 - `get_sales_order_read`
 - `list_sales_order_reads`
 - `get_sales_order_item_read`
@@ -120,6 +193,8 @@ Current list-read shape:
 - paginated results keep stable ascending `id` ordering while `total_count` remains the full filtered count
 
 Supported query boundary:
+- `list_inventory_current_reads` supports equality filters on `analysis_batch_id`, `store_id`, and `sku_id`
+- `list_inventory_daily_snapshot_reads` supports equality filters on `analysis_batch_id`, `snapshot_date`, and `sku_id`
 - `list_sales_order_reads` supports equality filters on `analysis_batch_id` and `order_id`
 - `list_sales_order_item_reads` supports equality filters on `analysis_batch_id`, `order_id`, and `sku_id`
 
@@ -135,14 +210,19 @@ Unsupported query boundary:
 The current minimal boundary coverage is verified at the formal-layer test level, not through a runtime API.
 
 The current coverage exercises:
+- create, read, and update one `inventory_current` row through the formal CRUD path
+- list filtered `inventory_current` rows with stable pagination and empty-result shape
+- create, read, and update one `inventory_daily_snapshot` row through the formal CRUD path
+- list filtered `inventory_daily_snapshot` rows with stable pagination and empty-result shape
 - create, read, and update one `sales_orders` row through the formal CRUD path
 - list filtered `sales_orders` rows with stable pagination and empty-result shape
 - create, read, and update one `sales_order_items` row through the formal CRUD path
 - list filtered `sales_order_items` rows with stable pagination and empty-result shape
-- verify minimal defaults and field-length constraints for both tables
+- verify minimal defaults and field-length constraints for all current serving projection tables
 - verify serving migration target metadata includes these tables while capture metadata does not
 
 The current verification files are:
+- `tests/test_inventory_projection_formal_surface.py`
 - `tests/test_sales_projection_formal_surface.py`
 - `tests/test_migration_targets.py`
 
@@ -153,3 +233,4 @@ This document does not claim that:
 - a projection identity or upsert contract is finalized
 - transform writes into these tables are implemented
 - dashboard or summary runtime APIs read these tables yet
+- low-stock, seasonal, target-size, or active-sale policy is finalized
