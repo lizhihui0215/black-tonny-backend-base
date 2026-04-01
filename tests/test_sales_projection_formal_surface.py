@@ -1,6 +1,7 @@
 import asyncio
 from collections.abc import AsyncGenerator
 from datetime import UTC, datetime
+from decimal import Decimal
 from pathlib import Path
 from typing import Any
 
@@ -59,7 +60,7 @@ async def test_sales_order_formal_crud_can_create_read_and_update(serving_db_ses
             store_id="store-001",
             order_id="order-001",
             paid_at=datetime.now(UTC),
-            paid_amount=188.5,
+            paid_amount=Decimal("188.50"),
         ),
         schema_to_select=SalesOrderRead,
     )
@@ -67,6 +68,7 @@ async def test_sales_order_formal_crud_can_create_read_and_update(serving_db_ses
     fetched_order = await get_sales_order_read(db=serving_db_session, id=created_data["id"])
 
     assert created_data["analysis_batch_id"] == "analysis-001"
+    assert created_data["paid_amount"] == Decimal("188.50")
     assert created_data["payment_status"] == "paid"
     assert fetched_order is not None
     assert fetched_order.order_id == "order-001"
@@ -78,7 +80,7 @@ async def test_sales_order_formal_crud_can_create_read_and_update(serving_db_ses
     await crud_sales_orders.update(
         db=serving_db_session,
         object=SalesOrderUpdate(
-            paid_amount=200.0,
+            paid_amount=Decimal("200.00"),
             payment_status="refunded",
         ),
         id=created_data["id"],
@@ -86,7 +88,7 @@ async def test_sales_order_formal_crud_can_create_read_and_update(serving_db_ses
 
     updated_order = await get_sales_order_read(db=serving_db_session, id=created_data["id"])
     assert updated_order is not None
-    assert updated_order.paid_amount == 200.0
+    assert updated_order.paid_amount == Decimal("200.00")
     assert updated_order.payment_status == "refunded"
     assert updated_order.updated_at > initial_updated_at
 
@@ -107,7 +109,7 @@ async def test_sales_order_list_reads_keep_filters_pagination_and_empty_shape(
                 analysis_batch_id=analysis_batch_id,
                 order_id=order_id,
                 paid_at=paid_at,
-                paid_amount=99.0,
+                paid_amount=Decimal("99.00"),
             ),
             schema_to_select=SalesOrderRead,
         )
@@ -225,14 +227,20 @@ def test_sales_projection_formal_surface_defaults_and_lengths_stay_minimal() -> 
     item_properties = SalesOrderItemCreate.model_json_schema()["properties"]
 
     assert SalesOrderCreate.model_fields["payment_status"].default == "paid"
+    assert SalesOrderCreate.model_fields["paid_amount"].annotation is Decimal
     assert SalesOrder.__table__.c.payment_status.default.arg == "paid"
+    assert SalesOrder.__table__.c.paid_amount.default.arg == Decimal("0.00")
     assert SalesOrder.__table__.c.capture_batch_id.nullable is True
     assert SalesOrder.__table__.c.store_id.nullable is True
     assert SalesOrder.__table__.c.order_id.type.length == 64
+    assert SalesOrder.__table__.c.paid_amount.type.precision == 18
+    assert SalesOrder.__table__.c.paid_amount.type.scale == 2
     assert order_properties["analysis_batch_id"]["maxLength"] == 64
     assert order_properties["capture_batch_id"]["anyOf"][0]["maxLength"] == 64
     assert order_properties["store_id"]["anyOf"][0]["maxLength"] == 64
     assert order_properties["order_id"]["maxLength"] == 64
+    assert order_properties["paid_amount"]["anyOf"][0]["type"] == "number"
+    assert order_properties["paid_amount"]["anyOf"][1]["type"] == "string"
     assert order_properties["payment_status"]["maxLength"] == 32
 
     assert SalesOrderItem.__table__.c.capture_batch_id.nullable is True

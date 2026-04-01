@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Decimal
 from typing import TypedDict
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -12,7 +13,7 @@ class SalesOrderCreate(BaseModel):
     store_id: str | None = Field(default=None, min_length=1, max_length=64)
     order_id: str = Field(min_length=1, max_length=64)
     paid_at: datetime
-    paid_amount: float = 0
+    paid_amount: Decimal = Field(default=Decimal("0.00"), max_digits=18, decimal_places=2)
     payment_status: str = Field(default="paid", min_length=1, max_length=32)
 
 
@@ -25,7 +26,7 @@ class SalesOrderRead(BaseModel):
     store_id: str | None
     order_id: str
     paid_at: datetime
-    paid_amount: float
+    paid_amount: Decimal
     payment_status: str
     created_at: datetime
     updated_at: datetime
@@ -37,7 +38,7 @@ class SalesOrderUpdate(BaseModel):
     capture_batch_id: str | None = Field(default=None, min_length=1, max_length=64)
     store_id: str | None = Field(default=None, min_length=1, max_length=64)
     paid_at: datetime | None = None
-    paid_amount: float | None = None
+    paid_amount: Decimal | None = Field(default=None, max_digits=18, decimal_places=2)
     payment_status: str | None = Field(default=None, min_length=1, max_length=32)
 
 

@@ -65,8 +65,10 @@ Current purpose:
 
 Current guardrails:
 - `analysis_batch_id`, `order_id`, `paid_at`, and `paid_amount` are required at the current minimal persistence stage
+- `paid_amount` is stored as PostgreSQL `NUMERIC(18,2)` and is exposed through the current schemas as `Decimal`
 - `capture_batch_id` and `store_id` stay nullable
 - `payment_status` defaults to `paid`
+- under the current minimal persistence boundary, that default is a temporary persisted placeholder, not a finalized serving business contract or filter policy
 
 ### `sales_order_items`
 
@@ -90,6 +92,8 @@ Current purpose:
 Current guardrails:
 - `analysis_batch_id`, `order_id`, `sku_id`, and `quantity` are required at the current minimal persistence stage
 - `capture_batch_id`, `style_code`, `color_code`, and `size_code` stay nullable
+- `order_id` is currently a non-enforced business reference that is intended to correspond to `sales_orders.order_id` when both tables are populated
+- the current boundary does not enforce that correspondence with a foreign key, uniqueness rule, or joined-read contract
 
 ## Code Locations
 

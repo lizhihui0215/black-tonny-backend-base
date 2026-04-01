@@ -25,7 +25,7 @@ def upgrade() -> None:
         sa.Column("store_id", sa.String(length=64), nullable=True),
         sa.Column("order_id", sa.String(length=64), nullable=False),
         sa.Column("paid_at", sa.DateTime(timezone=True), nullable=False),
-        sa.Column("paid_amount", sa.Float(), nullable=False),
+        sa.Column("paid_amount", sa.Numeric(precision=18, scale=2), nullable=False),
         sa.Column("payment_status", sa.String(length=32), nullable=False),
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
         sa.Column("updated_at", sa.DateTime(timezone=True), nullable=False),

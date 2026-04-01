@@ -49,7 +49,7 @@ formal truth 仍以以下文档为准：
 - `analysis_batch_id` 先作为 serving persistence side 的 required linkage fact
 - `capture_batch_id` 保持 nullable
 - 先不加 FK
-- `sales_orders.payment_status` 默认值是 `paid`
+- `sales_orders.payment_status` 当前默认值是 `paid`，但只作为 minimal persistence placeholder，不代表已完成 serving business contract 定义
 - 这包只落 persistence contract，不提前定义 projection identity / upsert policy
 - 只有当 current truth 会失真时，才最小同步 formal docs
 
