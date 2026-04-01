@@ -34,6 +34,7 @@ def get_version_table(target: AlembicTarget) -> str:
 
 def load_target_metadata(target: AlembicTarget) -> MetaDataType:
     if target == "capture":
+        from ..models.analysis_batch import AnalysisBatch  # noqa: F401
         from ..models.capture_batch import CaptureBatch  # noqa: F401
         from ..models.capture_endpoint_payload import CaptureEndpointPayload  # noqa: F401
 
