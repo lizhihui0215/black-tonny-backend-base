@@ -53,25 +53,6 @@ formal truth 仍以以下文档为准：
 - `transformed_at` 在这包里只表示 persisted fact
 - 只有当 current truth 会失真时，才最小同步 [capture-minimal-boundary.md](./capture-minimal-boundary.md)
 
-当前包 changed files：
-- `src/app/models/analysis_batch.py`
-- `src/app/schemas/analysis.py`
-- `src/app/crud/crud_analysis_batches.py`
-- `src/migrations/capture_versions/20260401_01_add_analysis_batches_table.py`
-- `tests/test_analysis_batches_formal_surface.py`
-- `docs/capture-minimal-boundary.md`
-
-当前包 validation：
-- `.venv/bin/ruff check src/app/models/analysis_batch.py src/app/schemas/analysis.py src/app/crud/crud_analysis_batches.py src/migrations/capture_versions/20260401_01_add_analysis_batches_table.py tests/test_analysis_batches_formal_surface.py`
-  - `All checks passed!`
-- `.venv/bin/mypy src --config-file pyproject.toml`
-  - `Success: no issues found in 86 source files`
-- `.venv/bin/pytest tests/test_analysis_batches_formal_surface.py -q`
-  - `3 passed, 4 warnings`
-
-当前包 PR：
-- `#45 feat: add analysis batches formal surface`
-
 ## 第 8-11 包最终执行底稿
 
 这一节只服务后半段行为链执行，不覆盖 formal docs。
