@@ -22,9 +22,12 @@ def test_transform_input_boundary_keeps_capture_side_candidate_floor() -> None:
 def test_admitted_transform_input_boundary_keeps_analysis_optional_and_status_non_admitting() -> None:
     text = read_doc("admitted-transform-input-boundary.md")
 
+    assert "A minimal admitted transform input selector is now implemented in `black-tonny-backend-base`." in text
     assert "`analysis_batches` is not a current minimum prerequisite for admitted transform input." in text
     assert "No current `batch_status` value, including `captured`, is by itself a formal admission marker." in text
     assert "Current admitted-input minimums also do not reinterpret `transformed_at` as admission proof." in text
+    assert "- does not gate on `batch_status`" in text
+    assert "- does not gate on `transformed_at`" in text
 
 
 def test_transform_readiness_boundary_keeps_structural_floor_without_execution_claims() -> None:
