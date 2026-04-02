@@ -47,6 +47,10 @@ post-route planning 另行记录在：
   - `menu / source-surface completeness`
 - `hardening-first` 不再单独作为唯一主线，而是新的 completeness 结构中的一个子轨
 - 第 11 包之后的新主线候选、优先级、拆包方式与风险，统一收口到新的 post-route planning note
+- 当前 post-route planning 的第一包输出是：
+  - [domain-migration-completeness-map.md](./domain-migration-completeness-map.md)
+- 当前下一包候选是：
+  - `docs: map source-surface completeness`
 
 ## 第 8-11 包最终执行底稿
 
