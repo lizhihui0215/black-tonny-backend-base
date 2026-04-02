@@ -9,6 +9,9 @@ formal truth 仍以以下文档为准：
 - [docs/README.md](./README.md)
 - [docs/](./README.md) 下各 formal boundary docs
 
+当前新的 milestone 路线 authoritative 起点另行记录在：
+- [clean-mainline-charter.md](./clean-mainline-charter.md)
+
 这份文档只回答：11 包主路线收口后，下一轮 mainline 应如何更明确地朝“完整迁移”靠拢。
 
 ## 结论摘要
