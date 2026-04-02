@@ -40,6 +40,10 @@ Internal planning, reference, and archive material can stay in Chinese when it i
   - Minimal formal serving projection boundary across models, schemas, CRUD helpers, and migration targets
   - Language: English
   - Status: `Source of truth`
+- [`sales-orders-projection-contract.md`](./sales-orders-projection-contract.md)
+  - First `sales_orders` serving projection contract layered on top of the broader serving persistence surface
+  - Language: English
+  - Status: `Source of truth`
 - [`transform-input-boundary.md`](./transform-input-boundary.md)
   - Minimal future transform input boundary derived from the current formal capture boundary
   - Language: English

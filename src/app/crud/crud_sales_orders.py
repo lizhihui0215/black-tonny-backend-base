@@ -1,6 +1,7 @@
 from typing import cast
 
 from fastcrud import FastCRUD
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..models.sales_order import SalesOrder
@@ -28,6 +29,25 @@ async def get_sales_order_read(
         schema_to_select=SalesOrderRead,
         return_as_model=True,
     )
+
+
+async def get_sales_order_read_by_projection_key(
+    db: AsyncSession,
+    *,
+    analysis_batch_id: str,
+    order_id: str,
+) -> SalesOrderRead | None:
+    result = await db.execute(
+        select(SalesOrder).where(
+            SalesOrder.analysis_batch_id == analysis_batch_id,
+            SalesOrder.order_id == order_id,
+        )
+    )
+    row = result.scalar_one_or_none()
+    if row is None:
+        return None
+
+    return SalesOrderRead.model_validate(row)
 
 
 async def list_sales_order_reads(
