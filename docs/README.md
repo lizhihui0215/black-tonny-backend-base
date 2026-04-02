@@ -44,6 +44,10 @@ Internal planning, reference, and archive material can stay in Chinese when it i
   - First `sales_orders` serving projection contract layered on top of the broader serving persistence surface
   - Language: English
   - Status: `Source of truth`
+- [`capture-to-sales-orders-path.md`](./capture-to-sales-orders-path.md)
+  - First minimal `capture -> transform -> serving` path for the `sales_orders` slice
+  - Language: English
+  - Status: `Source of truth`
 - [`transform-input-boundary.md`](./transform-input-boundary.md)
   - Minimal future transform input boundary derived from the current formal capture boundary
   - Language: English

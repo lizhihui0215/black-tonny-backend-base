@@ -5,6 +5,7 @@ This document defines the current first `sales_orders` serving projection contra
 For the broader serving persistence surface that this contract narrows, use [serving-projection-minimal-boundary.md](./serving-projection-minimal-boundary.md).
 For the current transform readiness edge that stays upstream of this contract, use [transform-readiness-boundary.md](./transform-readiness-boundary.md).
 For the current transform state-transition edge that stays adjacent to this contract, use [transform-state-transition-boundary.md](./transform-state-transition-boundary.md).
+For the current first minimal end-to-end path that now invokes this contract, use [capture-to-sales-orders-path.md](./capture-to-sales-orders-path.md).
 For the repository docs index, use [docs/README.md](./README.md).
 
 ## Current Truth
@@ -100,6 +101,7 @@ This narrower contract adds:
 
 The generic CRUD helpers remain broader than this contract.
 They are not the current first-slice contract helper, and they are not a capture-to-serving runtime path by themselves.
+The current first capture-to-serving path now calls this contract through a separate narrower path service.
 
 ## Current Code Locations
 
@@ -128,7 +130,7 @@ The current verification files are:
 
 The following points are intentionally left to a later scoped migration:
 - how transform-ready normalized facts are produced end to end from the current capture-side inputs
-- how the current first-slice contract is invoked from a runtime or orchestration path
+- how broader runtime or orchestration entry points invoke the current first-slice path
 - whether `sales_order_items` adopts a parallel contract and, if so, with what identity and overwrite policy
 - whether later slices reuse this identity pattern or require different keys
 - whether retry, replay, resume, or scheduling rules affect serving writes
