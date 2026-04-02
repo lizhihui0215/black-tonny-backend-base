@@ -94,6 +94,10 @@ Internal planning, reference, and archive material can stay in Chinese when it i
   - PR-1 inventory, classification, old-path to new-path mapping, capture scope list, and research/runtime boundary notes
   - Language: Chinese working doc
   - Status: `Source of truth for PR-1 migration planning`
+- [`post-route-mainline-planning.md`](./post-route-mainline-planning.md)
+  - Post-route planning note for the next mainline after the completed 11-package path
+  - Language: Chinese working doc
+  - Status: `Source of truth for current post-route planning`
 
 ## Reference Docs
 

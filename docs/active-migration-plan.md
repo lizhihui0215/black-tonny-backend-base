@@ -25,36 +25,23 @@ formal truth 仍以以下文档为准：
 | 8 | `feat: add admitted transform input selector` | `merged` | 已基于 formal persisted facts 增加第一条 admitted input selector。 |
 | 9 | `feat: add transform readiness evaluator and batch lifecycle helper` | `merged` | 已增加第一条 readiness evaluator 与窄职责 lifecycle helper。 |
 | 10 | `feat: add first serving projection contract` | `merged` | 已增加第一条最窄 slice 的 serving projection contract。 |
-| 11 | `feat: add first capture-to-serving projection path` | `in-progress` | 打通第一条最窄的 `capture -> transform -> serving` 正式行为链。 |
+| 11 | `feat: add first capture-to-serving projection path` | `merged` | 已打通第一条最窄的 `capture -> transform -> serving` 正式行为链。 |
 
-## 当前包
+## 当前状态
 
-当前包：
-- `#11 feat: add first capture-to-serving projection path`
+当前 11 包主路线状态：
+- 已完成并收口
+- 当前 formal truth 已包含：
+  - 第一条 `sales_orders` serving projection contract
+  - 第一条最窄 `capture -> transform -> serving` path
+  - 对应 rollback / failure docs guardrail
 
-目标：
-- 打通第一条最窄的 `capture -> transform -> serving` 正式行为链，只覆盖 `sales_orders` first slice。
+post-route planning 另行记录在：
+- [post-route-mainline-planning.md](./post-route-mainline-planning.md)
 
-边界：
-- 只落第一条最窄 `capture -> transform -> serving` path
-- 只落 `sales_orders`
-- 不扩到 `sales_order_items`
-- 不扩到 inventory
-- 不引入 broader orchestration
-- 不引入 scheduler / retry / reopen / resume
-- 不引入 route registry
-- 不引入 maturity board
-- 不引入 batch orchestration service
-
-当前已拍板规则：
-- 优先最小闭环，不预埋大设计
-- path 只串 admitted selector、readiness evaluator、lifecycle helper 与 `sales_orders` contract
-- selector 返回 `None` 时必须显式走 no-op，不偷带失败写
-- readiness 不通过时必须显式返回 non-ready，不偷带 serving write 或 lifecycle write
-- 成功时先 apply `sales_orders` contract，再写 `captured -> transformed`
-- post-ready failure 只允许按当前 helper contract 写 `captured -> failed`
-- 不提前定义这条 11 包路线之外的 multi-slice / retry / scheduling contract
-- 只有当 current truth 会失真时，才最小同步 formal docs
+当前 planning-only 结论：
+- 这份文档不再继续拆第 11 包之后的实现包
+- 第 11 包之后的新主线候选、优先级、拆包方式与风险，统一收口到新的 post-route planning note
 
 ## 第 8-11 包最终执行底稿
 
@@ -239,8 +226,9 @@ admitted source status 真源约束：
 
 ## 下一步候选
 
-- 当前 11 包主路线在 `#11` 合并后即告一段落
-  - 如需继续推进，应新开 post-route planning note，单独评估更广的 multi-slice、runtime、或历史数据 hardening 范围
+- 当前 11 包主路线已完成
+  - 后续如继续推进，先按 [post-route-mainline-planning.md](./post-route-mainline-planning.md) 做新的 planning-only 小包
+  - 不直接进入新的实现 PR
 
 ## 明确禁区 / 不做事项
 
