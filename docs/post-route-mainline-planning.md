@@ -9,9 +9,28 @@ formal truth 仍以以下文档为准：
 - [docs/README.md](./README.md)
 - [docs/](./README.md) 下各 formal boundary docs
 
-这份文档只回答：11 包主路线收口后，下一轮 mainline 应如何更明确地朝“完整迁移”靠拢。
+当前新的 milestone 路线 authoritative 起点另行记录在：
+- [clean-mainline-charter.md](./clean-mainline-charter.md)
+
+这份文档当前只保留为：
+- high-level framing
+- historical post-route context
+- retained background planning context
+
+它当前不再承担：
+- 当前 milestone 编号起点
+- 当前 next package sequencing 的单独决定权
+
+当前路线的 authoritative 起点、默认顺序和 package 入口统一以：
+- [clean-mainline-charter.md](./clean-mainline-charter.md)
+- 为准
+
+换句话说，这份文档现在只回答：11 包主路线收口后，历史上的 post-route framing 曾如何组织“更完整迁移”的背景问题。
 
 ## 结论摘要
+
+以下结论保留为 historical framing / background planning context，
+不再作为当前 milestone 编号或 next package sequencing 的 authoritative 顺序。
 
 推荐的 next mainline：
 - `migration-completeness mainline`
@@ -171,6 +190,10 @@ formal truth 仍以以下文档为准：
 
 ## 新推荐拆包顺序
 
+以下拆包顺序保留为 background planning context，
+用于解释 post-route 阶段当时如何组织问题，不再单独决定当前 milestone 路线的 next package sequencing。
+当前路线编号入口与默认顺序统一以 [clean-mainline-charter.md](./clean-mainline-charter.md) 为准。
+
 建议拆成 5 个小包。
 
 ### 包 1
@@ -310,6 +333,10 @@ formal truth 仍以以下文档为准：
 - post-route 现在更该先盘“还有什么没迁完”，而不是先做协调层设计
 
 ## 最推荐的下一包提示词
+
+这一节保留为 historical prompt / retained background planning context，
+不再作为当前 milestone 路线的 authoritative next package 指令。
+当前 route entry 已由 [clean-mainline-charter.md](./clean-mainline-charter.md) 取代。
 
 ```text
 请基于 black-tonny-backend-base 当前最新 main，只做 planning-only / docs-only 工作，推进 post-route mainline 的第一包：

@@ -90,6 +90,10 @@ Internal planning, reference, and archive material can stay in Chinese when it i
 
 ## Migration Planning
 
+- [`clean-mainline-charter.md`](./clean-mainline-charter.md)
+  - Authoritative starting-point charter for the new milestone route that restarts numbering from `M1-PR1` on top of the current `main`
+  - Language: Chinese working doc
+  - Status: `Source of truth for the current milestone-route starting point`
 - [`legacy-backend-migration-mapping.md`](./legacy-backend-migration-mapping.md)
   - PR-1 inventory, classification, old-path to new-path mapping, capture scope list, and research/runtime boundary notes
   - Language: Chinese working doc
