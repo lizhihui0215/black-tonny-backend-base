@@ -41,6 +41,11 @@ post-route planning 另行记录在：
 
 当前 planning-only 结论：
 - 这份文档不再继续拆第 11 包之后的实现包
+- 第 11 包之后的新主线已改为更贴近完整迁移的 `migration-completeness mainline`
+- 这条新主线拆成两条 planning 子轨：
+  - `database / domain migration completeness`
+  - `menu / source-surface completeness`
+- `hardening-first` 不再单独作为唯一主线，而是新的 completeness 结构中的一个子轨
 - 第 11 包之后的新主线候选、优先级、拆包方式与风险，统一收口到新的 post-route planning note
 
 ## 第 8-11 包最终执行底稿
@@ -228,7 +233,7 @@ admitted source status 真源约束：
 
 - 当前 11 包主路线已完成
   - 后续如继续推进，先按 [post-route-mainline-planning.md](./post-route-mainline-planning.md) 做新的 planning-only 小包
-  - 不直接进入新的实现 PR
+  - 推荐先做 completeness mapping docs，而不是直接进入新的实现 PR
 
 ## 明确禁区 / 不做事项
 

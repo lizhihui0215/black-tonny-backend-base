@@ -9,333 +9,335 @@ formal truth 仍以以下文档为准：
 - [docs/README.md](./README.md)
 - [docs/](./README.md) 下各 formal boundary docs
 
-这份文档只回答：11 包主路线收口后，下一轮 mainline 应先往哪里走。
+这份文档只回答：11 包主路线收口后，下一轮 mainline 应如何更明确地朝“完整迁移”靠拢。
 
 ## 结论摘要
 
 推荐的 next mainline：
-- `hardening-first mainline`
+- `migration-completeness mainline`
 
-推荐顺序：
-1. 先收紧当前 first path 的 hardening 边界
-2. 再补 PostgreSQL 和 dual-db 相关 smoke / guardrail
-3. 再回答 replay / dedupe / observability minimums
-4. 最后再决定是否需要正式 internal entrypoint
+这条主线不再把 `hardening-first` 当唯一主线。
+新的 post-route 结构改为两条并行规划、串行落包的子轨：
+1. `database / domain migration completeness track`
+2. `menu / source-surface completeness track`
 
-当前不建议直接进入：
-- `sales_order_items` projection contract/path
-- inventory projection contract/path
-- runtime route 级触发入口
-- scheduler / reservation / locking / broader orchestration
+`hardening-first` 的位置调整为：
+- `database / domain migration completeness track` 里的一个子轨
+- 它仍然重要，但不再单独代表 post-route 全局方向
 
-当前最自然的后续扩展候选是：
-- 在 hardening mainline 收口后，再推进 `sales_order_items`
+## 什么叫“完整迁移”的最小定义
 
-## 为什么先做 Hardening
+在当前 repo 里，“完整迁移”不等于一次性把所有 legacy runtime 全搬过来。
 
-当前 repo 已经具备第一条最窄正式行为链：
-- admitted selector
-- readiness evaluator
-- lifecycle helper
-- `sales_orders` serving projection contract
+当前更现实的最小定义是：
+- repo 已经不仅有一条最小正式行为链
+- repo 还对剩余待迁移的数据库 / domain surfaces 给出明确盘点和归类
+- repo 还对剩余待探索的菜单 / endpoint / payload / slice 给出明确盘点和归类
+- 每一块尚未落地的内容，都被明确标成以下之一：
+  - 已正式落地
+  - 只到 persistence surface
+  - 只到 planning / reference
+  - 尚未探索完成
+  - 明确 deferred / non-goal
+
+换句话说：
+- 当前 first `sales_orders` path 证明“正式行为链已经可以落地”
+- 但只有当剩余 domain surfaces 和 source surfaces 也被系统性盘点、映射、排序后，repo 才开始更接近“完整迁移”
+
+## 当前已完成的最小正式行为链
+
+当前已完成并可作为 post-route 起点的最小正式行为链是：
+- admitted transform input selector
+- first-slice readiness evaluator
+- narrow capture-batch lifecycle helper
+- first `sales_orders` serving projection contract
 - first `capture -> transform -> serving` path
 
-但当前第一条 path 仍有几个明显“已落地、但尚未 harden”的特点：
-- 当前主验证仍以 formal-layer SQLite tests 为主
-- 真实 serving/capture 目标数据库前提是 PostgreSQL
-- capture side 与 serving side 仍是双库，当前成功语义不是分布式原子事务
-- replay / dedupe / observability 仍只有局部 contract，没有形成 post-route 明确主线
-- runtime/internal 触发入口还不存在，当前 path 仍是 repo-internal service
+它当前只覆盖：
+- `/erp/orders`
+- `sales_orders`
 
-如果现在直接扩 `sales_order_items` 或 inventory，会把这些语义空白复制到第二条、第三条 slice。
-如果现在直接补 runtime/internal entrypoint，会把当前 first path 过早抬升成更显性的操作入口，但 replay、failure semantics、observability 还没先说清。
+它当前不代表：
+- `sales_order_items` 已迁移完成
+- inventory 已迁移完成
+- source surface 已盘点完成
+- runtime/internal entrypoint 已定稿
+- broader orchestration 已开始
 
-所以更稳的顺序是：
-- 先 harden 当前 first slice
-- 再决定是否公开 internal trigger
-- 再扩第二条 slice
+## 当前缺口：两类问题
 
-## 方向排序
+### 1. Database / Domain Migration Completeness
 
-### 1. Hardening
+这一类关注的是：
+- 哪些 domain surfaces 只有 persistence surface，还没有 contract/path
+- 哪些已落地 contract/path 还缺 hardening
+- 哪些 serving / transform / dual-db 语义还没盘点完成
 
-推荐优先级：
-- `最高`
+当前主要缺口：
+- `sales_order_items` 只有 persistence surface，没有 serving projection contract，也没有 path
+- `inventory_current` / `inventory_daily_snapshot` 只有 persistence surface，没有 contract，也没有 path
+- 当前 first `sales_orders` path 的 hardening 仍未形成完整 post-route 盘点
+- dual-db success/failure / replay / observability 仍只覆盖局部 truth
+- “数据库已落地对象”和“domain 已完成迁移对象”之间还没有一份明确 completeness map
 
-原因：
-- 当前 first path 已经是 formal behavior，值得先验证和收紧
-- 风险主要集中在 dual-db semantics、数据库前提、replay / failure visibility
-- 这条主线不会扩大业务面，但能降低后续每一条 slice 的复制风险
+### 2. Menu / Source Exploration Completeness
 
-### 2. `sales_order_items`
+这一类关注的是：
+- 上游菜单 / endpoint / payload family 是否已探索完成
+- 哪些 source surfaces 已经被 current first path 吸收
+- 哪些 source surfaces 只是 reference / research
+- 哪些还没有进入正式 mapping
 
-推荐优先级：
-- `第二顺位`
+当前主要缺口：
+- `/erp/orders` 之外，还没有一份 repo-owned source-surface completeness map
+- 当前缺少“menu -> endpoint -> payload -> slice”系统盘点文档
+- 当前 research support 只有 minimal skeleton，不等于 source exploration 已完成
+- 当前 legacy reference 里有很多菜单、台账、runbook、capture 路线资料，但 repo 里还没有把它们整理成新的 completeness track
 
-原因：
-- 它和当前 `/erp/orders` source slice 最接近
-- 已经有 persistence surface
-- 未来最容易复用当前 admitted input / readiness / analysis linkage
+## 为什么新结构更贴近完整迁移
 
-为什么不是第一顺位：
-- `sales_order_items` 还没有正式 contract
-- `sales_order_items.order_id` 目前只是 non-enforced business reference
-- 如果在 hardening 之前就推进，容易把 dual-db failure / replay / observability 的不确定性复制到 item slice
+如果 post-route 只盯着 hardening 当前 first path，会有两个问题：
+- 它会把注意力集中在“让已落地的一条链更稳”，但不会自然逼出“还有哪些 domain/source surface 没迁完”
+- 它会让 `sales_order_items`、inventory、菜单盘点、payload 盘点看起来像零散 side quest，而不是完整迁移主线的一部分
 
-### 3. Runtime / Internal Entrypoint
+改成两条子轨后：
+- `database / domain migration completeness track` 负责回答“数据库与业务域还差哪些正式 contract/path”
+- `menu / source-surface completeness track` 负责回答“上游菜单、endpoint、payload、slice 还有哪些没探索/没映射”
 
-推荐优先级：
-- `第三顺位`
+这样后续每个实现包都会更清楚自己服务的是哪一块“完整迁移缺口”，而不只是“继续补一点当前 first path”
 
-原因：
-- repo 现在只有 sample queue/task skeleton，没有与 first path 对齐的正式 internal trigger
-- 这条线最终很可能需要，但不宜先于 hardening
+## 新的 planning 结构
 
-为什么不是第一顺位：
-- 一旦出现正式入口，operator-facing 语义就会更敏感
-- 当前 replay / failure / observability minimums 还没先定稿
-- 太早推进容易逼出 scheduler / orchestration 讨论
+### 主线名称
 
-### 4. Inventory
+- `migration-completeness mainline`
 
-推荐优先级：
-- `第四顺位`
+### 子轨 A：database / domain migration completeness
 
-原因：
-- inventory persistence surface 已存在
-- 但 inventory 不是当前 first `/erp/orders` slice 的自然延伸
-- 它更可能需要新的 source completeness、snapshot/window、classification flag 解释
+目标：
+- 建立 repo 内“已落地 / persistence-only / contract-missing / path-missing / deferred”的 domain completeness 盘点
 
-为什么不是第一顺位：
-- 它和当前 first path 共用的 contract 较少
-- 新语义面比 `sales_order_items` 更宽
-- 在 current mainline 上更像“开第二条业务主线”，而不是“延长现有最窄 slice”
+当前应覆盖：
+- `sales_orders`
+- `sales_order_items`
+- `inventory_current`
+- `inventory_daily_snapshot`
+- current first path 的 hardening gap
 
-### 5. Broader Orchestration
+### 子轨 B：menu / source-surface completeness
 
-推荐优先级：
-- `当前不推荐进入主线`
+目标：
+- 建立 repo 内“已探索 / 已映射 / reference-only / 待探索”的 source completeness 盘点
 
-原因：
-- formal docs 现在仍明确禁止 broader orchestration
-- 现在直接谈 scheduler / reservation / locking，会把 current minimal path 过早拉成 system design 题
+当前应覆盖：
+- menu
+- endpoint
+- payload family
+- slice mapping
+- 哪些 source 只存在于 legacy reference / research support skeleton
 
-当前建议：
-- 继续保持“无 broader orchestration”
-- 如果必须引入协调层，也只允许在更后面定义一层更窄的 internal coordination，而不是 scheduler-first
+## 下一轮 planning 先该产出什么文档
 
-## 不推荐先做的方向
+推荐先产出两份盘点 / mapping 文档，再进入新的实现包。
 
-### 不推荐先做 `sales_order_items`
+### 文档 1
 
-原因：
-- 它是很自然的下一条 projection slice，但不是最先该补的基础能力
-- 当前 first path 的 hardening 空白还没先补齐
-- `order_id` 对 `sales_orders.order_id` 的关系仍只是当前 non-enforced business reference
+文档名建议：
+- `domain-migration-completeness-map.md`
 
-### 不推荐先做 inventory
+作用：
+- 盘点当前数据库 / domain surfaces 的迁移完成度
 
-原因：
-- inventory 需要新的 completeness / snapshot / policy 解释
-- 相比 `sales_order_items`，它更不像当前 first path 的自然延长
-- 会显著拉宽主线范围
+至少回答：
+- 哪些对象只是 persistence surface
+- 哪些对象已经有 serving projection contract
+- 哪些对象已经有 capture-to-serving path
+- 哪些对象已经 hardening 到什么程度
+- 哪些对象明确 deferred
 
-### 不推荐先做 runtime route 级入口
+### 文档 2
 
-原因：
-- 这会改变当前“repo-internal path only”的操作地位
-- 也会逼近 public/runtime behavior，而这不是 post-route 的第一步
+文档名建议：
+- `source-surface-completeness-map.md`
 
-### 不推荐先做 broader orchestration
+作用：
+- 盘点当前 menu / endpoint / payload / slice 的探索完成度
 
-原因：
-- 当前 formal docs 仍没有为 scheduler / reservation / locking 提供正式入口
-- 太早推进会让 path / helper / contract / runtime coordination 混层
+至少回答：
+- 哪些 source/menu 已被 repo-owned docs 明确记录
+- 哪些 endpoint/payload family 已映射到 current slice
+- 哪些 source surface 还停留在 legacy reference / research support
+- 哪些 source completeness 仍然空白
 
-## 推荐 Mainline 拆包
+## 新推荐拆包顺序
 
-建议拆成 4 个包。
+建议拆成 5 个小包。
 
 ### 包 1
+
+包名：
+- `docs: map domain migration completeness`
+
+一句话目标：
+- 先把 database / domain migration completeness 盘清楚。
+
+边界：
+- docs-only
+- 不改 formal truth
+- 不新增 behavior
+
+输入：
+- 当前 formal docs
+- 当前已落地 model/schema/crud/service/migration surface
+
+输出：
+- 一份 domain completeness map
+
+风险：
+- 容易把 persistence surface 误写成 behavior completeness
+
+### 包 2
+
+包名：
+- `docs: map source-surface completeness`
+
+一句话目标：
+- 把 menu / endpoint / payload / slice 的 source completeness 盘清楚。
+
+边界：
+- docs-only
+- 不改 formal truth
+- 不新增 behavior
+
+输入：
+- 当前 formal docs
+- legacy reference index
+- research support current surface
+
+输出：
+- 一份 source-surface completeness map
+
+风险：
+- 容易把 reference 资料误写成 current formal truth
+
+### 包 3
 
 包名：
 - `docs: answer first-path hardening minimums`
 
 一句话目标：
-- 把 current first path 的 dual-db、failure surface、non-atomic success edge、internal-only boundary 说清楚。
-
-边界：
-- docs-only
-- 不新增 behavior
-- 不新增 runtime/internal entrypoint
-- 不新增 migration/model/schema/crud/service
-
-输入：
-- 当前 first path formal docs
-- 当前 first path code / tests
-
-输出：
-- 一组明确的 hardening minimum docs truth
-- 对当前 success / failure / non-goals 的显式边界
-
-风险：
-- 容易把未来 retry / orchestration 过早写死
-- 需要控制在“解释 current minimum”，而不是“设计 future system”
-
-### 包 2
-
-包名：
-- `test: add PostgreSQL migration and first-path smoke`
-
-一句话目标：
-- 让 current first path 的关键 migration/apply/path 行为至少在 PostgreSQL smoke 层面被验证一次。
-
-边界：
-- tests/tooling only
-- 不改 public/runtime API
-- 不扩多 slice
-- 不引入 orchestration
-
-输入：
-- capture/serving migration heads
-- current first path services
-- current `sales_orders` contract
-
-输出：
-- PostgreSQL migration/apply smoke
-- first path smoke
-- 更接近真实数据库前提的 guardrail
-
-风险：
-- CI / local test harness 复杂度上升
-- 容易把 test infra 变成新的次级主题
-
-### 包 3
-
-包名：
-- `docs: answer first-path replay and observability minimums`
-
-一句话目标：
-- 收紧 current first path 的 replay、dedupe、failure visibility、minimal operator-facing evidence 规则。
+- 把 current first path 的 dual-db / failure / replay / observability minimums 收紧成 repo-owned truth。
 
 边界：
 - docs-only 或 docs+guardrail-only
-- 不新增 scheduler
-- 不新增 runtime route
-- 不引入 broader retry/resume behavior
+- 不新增 behavior
 
 输入：
-- current first path result shapes
-- current `sales_orders` identity / upsert rules
-- dual-db failure model
+- current first path docs / tests / code
+- 前两份 completeness maps
 
 输出：
-- replay minimums
-- dedupe / rerun non-goals
-- minimal observability / failure-trace requirements
+- hardening minimums
 
 风险：
-- 容易把未来 retry / recovery policy 说得过宽
-- 如果写得太细，会提前锁死后续 internal trigger 设计
+- 容易提前写死 broader retry / orchestration
 
 ### 包 4
+
+包名：
+- `feat: add sales_order_items serving projection contract`
+
+一句话目标：
+- 在 completeness maps 和 hardening minimums 之后，优先推进最接近 current first slice 的下一条 domain contract。
+
+边界：
+- 只做 `sales_order_items`
+- 不扩 inventory
+- 不做 broader runtime/orchestration
+
+输入：
+- `/erp/orders` domain context
+- existing `sales_order_items` persistence surface
+
+输出：
+- first `sales_order_items` serving projection contract
+
+风险：
+- `order_id` 与 `sales_orders` 的关系仍需收紧说明
+
+### 包 5
 
 包名：
 - `feat: add first internal projection run entrypoint`
 
 一句话目标：
-- 在 hardening minimums 已明确后，增加一个 internal-only 的 first path 调用入口。
+- 在 current first path 已被 harden 且下一条 domain contract 已开局后，再引入 internal-only trigger。
 
 边界：
 - internal-only
 - 不做 public runtime API
 - 不做 scheduler / reservation / locking
-- 不做 multi-slice
-- 不做 broader orchestration
 
 输入：
-- `capture_batch_id`
-- current first path service
-- current first path result shape
+- current first path
+- hardening minimums
 
 输出：
-- 一个正式 internal trigger
-- 明确的调用边界
-- 可测的 run result surface
+- 一个正式 internal entrypoint
 
 风险：
-- 名字和落点如果不收敛，容易滑向 orchestration root
-- 如果 replay / observability minimums 还不够清楚，这包会被迫带入额外决策
+- 如果放得太早，会把 coordination 问题提前抬上来
 
-## 当前最不建议先开的实现方向
+## 当前不推荐先做的方向
 
-最不建议先开：
-- inventory contract/path
+### 不推荐先直接开 inventory 主线
 
 原因：
-- 它会立刻打开新的 completeness 和 classification 语义面
-- 和 current first `/erp/orders` slice 复用度不如 `sales_order_items`
-- 不是收紧 post-route 主线的最短路径
+- inventory 更像第二条独立 domain mainline
+- 它需要新的 completeness / snapshot / policy 解释
+- 它不如 `sales_order_items` 那样自然延续 current `/erp/orders` slice
 
-## Hardening Mainline 之后的首个扩展候选
-
-如果 hardening mainline 完成，最推荐的下一条扩展线是：
-- `sales_order_items`
+### 不推荐先直接开 runtime route 入口
 
 原因：
-- 同属当前 `/erp/orders` source domain
-- 已有 persistence surface
-- 最可能共享 current admitted input / readiness / analysis linkage
+- 当前 repo 里还没有把 source completeness 和 domain completeness 盘清楚
+- 过早加入口，会让 current first path 过早承担更强的 operator-facing 语义
 
-建议拆法：
-1. `feat: add sales_order_items serving projection contract`
-2. `feat: add first sales_order_items capture-to-serving path`
+### 不推荐先开始 broader orchestration
 
-在那之前，不建议直接把 `sales_order_items` 偷带进现有 `sales_orders` path。
-
-## 当前对 Coordination 的建议
-
-当前建议继续保持：
-- 不引入 broader orchestration
-
-如果 future work 确实需要一层协调逻辑，建议只允许：
-- single-run
-- single-slice
-- internal-only
-- 不带 scheduler / reservation / locking
-
-换句话说：
-- 可以讨论更窄的 internal coordination
-- 但当前不建议把它提升为新的 mainline
+原因：
+- formal docs 当前仍明确限制 broader orchestration
+- post-route 现在更该先盘“还有什么没迁完”，而不是先做协调层设计
 
 ## 最推荐的下一包提示词
 
 ```text
-请基于 black-tonny-backend-base 当前最新 main，只做 planning-only / docs-only 工作，推进下一轮 post-route mainline 的第一包：
+请基于 black-tonny-backend-base 当前最新 main，只做 planning-only / docs-only 工作，推进 post-route mainline 的第一包：
 
 包名：
-docs: answer first-path hardening minimums
+docs: map domain migration completeness
 
 目标：
 在不新增 behavior、runtime API、migration、model、schema、crud、service 的前提下，
-把 current first capture-to-serving path 的 hardening minimums 写清楚，重点收紧：
-- dual-db success/failure semantics
-- current non-atomic edge
-- internal-only invocation boundary
-- current no-op / non-ready / failed / succeeded 的最小操作语义
-- explicit non-goals
+盘点当前 repo 在 database / domain migration completeness 上的真实状态。
+
+重点回答：
+- 哪些对象只是 persistence surface
+- 哪些对象已经有 projection contract
+- 哪些对象已经有 capture-to-serving path
+- 哪些对象仍缺 contract/path/hardening
+- 哪些对象明确 deferred
 
 边界：
 - docs-only
-- 不改 formal truth 之外的 runtime behavior
-- 不引入 scheduler / reservation / locking / broader orchestration
-- 不提前定义 replay / retry / resume 的完整策略，除非 current minimum truth 必须说清
+- 不改 formal boundary docs
+- 不把 reference / archive 材料写成 current truth
 
 完成后请给出低 token planning handoff：
 1. PR 基本信息
 2. 一句话目标
-3. 收紧了哪些 minimums
+3. 盘清了哪些 completeness gap
 4. 仍未定稿的点
 5. 风险自检
-6. 一组可 pbcopy 的本地审查命令
+6. 一组 pbcopy 审查命令
 ```
