@@ -13,6 +13,12 @@ def test_sales_orders_projection_contract_doc_keeps_first_slice_identity_and_ove
     assert "A minimal first-slice `sales_orders` serving projection contract is now implemented" in text
     assert "- one `sales_orders` projection row per `analysis_batch_id + order_id`" in text
     assert "- `sales_orders` now keeps a unique constraint on `analysis_batch_id + order_id`" in text
+    assert (
+        "the current serving migration assumes the existing `sales_orders` table does not already contain duplicate "
+        "`analysis_batch_id + order_id` pairs"
+        in text
+    )
+    assert "a dedicated dedupe migration must run before the current unique constraint can be applied safely" in text
     assert "the last fact in input order wins" in text
     assert "- the current contract requires callers to provide `payment_status` explicitly" in text
     assert "- overwrite `capture_batch_id`" in text
@@ -33,5 +39,10 @@ def test_serving_projection_minimal_boundary_points_to_first_sales_orders_contra
     assert "no upsert helpers beyond the current first `sales_orders` contract helper" in text
     assert (
         "any projection identity or upsert contract beyond the current first `sales_orders` slice is finalized"
+        in text
+    )
+    assert (
+        "the current first-slice identity migration assumes the existing `sales_orders` table does not already "
+        "contain duplicate `analysis_batch_id + order_id` pairs"
         in text
     )

@@ -54,6 +54,10 @@ Current upsert key:
 Current persistence constraint:
 - `sales_orders` now keeps a unique constraint on `analysis_batch_id + order_id`
 
+Current migration assumption:
+- the current serving migration assumes the existing `sales_orders` table does not already contain duplicate `analysis_batch_id + order_id` pairs
+- if historical duplicates ever exist in a real serving database, a dedicated dedupe migration must run before the current unique constraint can be applied safely
+
 `capture_batch_id` is part of the current normalized fact input and persisted output, but it is not part of the current identity or upsert key.
 `store_id` is also not part of the current identity or upsert key.
 

@@ -76,6 +76,7 @@ Current guardrails:
 - `payment_status` defaults to `paid`
 - under the current minimal persistence boundary, that default is a temporary persisted placeholder, not a finalized serving business contract or filter policy
 - the narrower first-slice `sales_orders` contract now defines one explicit identity, upsert key, dedupe rule, and overwrite rule through [sales-orders-projection-contract.md](./sales-orders-projection-contract.md)
+- the current first-slice identity migration assumes the existing `sales_orders` table does not already contain duplicate `analysis_batch_id + order_id` pairs; if historical duplicates exist, a dedicated dedupe migration is still required first
 
 ### `sales_order_items`
 
