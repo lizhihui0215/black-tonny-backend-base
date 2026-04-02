@@ -14,6 +14,13 @@ formal truth 仍以以下文档为准：
 当前新路线的 authoritative 起点另行记录在：
 - [clean-mainline-charter.md](./clean-mainline-charter.md)
 
+这份文档当前主要保留为：
+- 旧 11 包路线记录
+- 既有执行底稿
+- existing planning assets / inputs 的收口说明
+
+它不是新 milestone 路线的 authoritative 编号入口。
+
 ## 当前 11 包迁移路线
 
 | # | Package | Status | 一句话目标 |
@@ -46,6 +53,7 @@ post-route planning 另行记录在：
 - 当前 `main` 上的 11 包成果保留为 `既有行为资产`
 - 它们是新路线的基线，不是新 milestone 编号的一部分
 - 新 milestone 编号从 [clean-mainline-charter.md](./clean-mainline-charter.md) 定义的 `M1-PR1` 重新开始
+- 新路线编号、默认顺序与 package 起点统一以 [clean-mainline-charter.md](./clean-mainline-charter.md) 为准
 - 这份文档不再继续拆第 11 包之后的实现包
 - 第 11 包之后的新主线已改为更贴近完整迁移的 `migration-completeness mainline`
 - 这条新主线拆成两条 planning 子轨：
@@ -59,6 +67,8 @@ post-route planning 另行记录在：
   - [source-surface-completeness-map.md](./source-surface-completeness-map.md)
 - 当前针对 landed first path 的 hardening planning 输出是：
   - [first-path-hardening-minimums.md](./first-path-hardening-minimums.md)
+- 上述 post-route outputs 当前只保留为 existing planning assets / inputs
+- 它们不是当前 milestone 路线里的已编号包序列
 - 当前如需继续推进新的 milestone 路线：
   - 先从 [clean-mainline-charter.md](./clean-mainline-charter.md) 开始
   - 不再直接从这份文档续写新的 milestone 编号或 next package 编号
@@ -247,8 +257,9 @@ admitted source status 真源约束：
 ## 下一步候选
 
 - 当前 11 包主路线已完成
-  - 后续如继续推进，先按 [post-route-mainline-planning.md](./post-route-mainline-planning.md) 做新的 planning-only 小包
-  - 推荐先做 completeness mapping docs，而不是直接进入新的实现 PR
+  - 后续如继续推进当前 milestone 路线，先从 [clean-mainline-charter.md](./clean-mainline-charter.md) 进入
+  - [post-route-mainline-planning.md](./post-route-mainline-planning.md) 当前只保留为 framing / historical context，不再单独决定 next package sequencing
+  - 现有 completeness / hardening docs 仅作为 existing planning assets / inputs 使用
 
 ## 明确禁区 / 不做事项
 
