@@ -23,35 +23,35 @@ formal truth 仍以以下文档为准：
 | 6 | `docs: answer transform admission and readiness minimums` | `merged` | 已在行为代码开始前把 admitted input 与 readiness 的最小 docs truth 收紧。 |
 | 7 | `docs: answer transform lifecycle transition minimums` | `merged` | 已在行为代码开始前把 transform lifecycle transition 的最小 docs truth 收紧。 |
 | 8 | `feat: add admitted transform input selector` | `merged` | 已基于 formal persisted facts 增加第一条 admitted input selector。 |
-| 9 | `feat: add transform readiness evaluator and batch lifecycle helper` | `in-progress` | 增加第一条 readiness evaluator 与窄职责 lifecycle helper。 |
-| 10 | `feat: add first serving projection contract` | `planning` | 增加第一条最窄 slice 的 serving projection contract。 |
+| 9 | `feat: add transform readiness evaluator and batch lifecycle helper` | `merged` | 已增加第一条 readiness evaluator 与窄职责 lifecycle helper。 |
+| 10 | `feat: add first serving projection contract` | `in-progress` | 增加第一条最窄 slice 的 serving projection contract。 |
 | 11 | `feat: add first capture-to-serving projection path` | `planning` | 打通第一条最窄的 `capture -> transform -> serving` 正式行为链。 |
 
 ## 当前包
 
 当前包：
-- `#9 feat: add transform readiness evaluator and batch lifecycle helper`
+- `#10 feat: add first serving projection contract`
 
 目标：
-- 基于 admitted transform input selector 的输出，落第一条最窄 slice 的 readiness evaluator 与 batch lifecycle helper。
+- 为第一条最窄 `sales_orders` slice 落正式 serving projection contract。
 
 边界：
-- 只落 readiness evaluator 与 batch lifecycle helper 的最小行为闭环
-- 不引入 lifecycle executor
-- 不引入 orchestration
-- 不引入 serving behavior
+- 只落 `sales_orders` 的 first-slice serving projection contract
+- 不扩到 `sales_order_items`
+- 不扩到 inventory
+- 不引入 full serving writer orchestration
+- 不引入 end-to-end capture -> transform -> serving path
 - 不引入 route registry
 - 不引入 maturity board
 - 不引入 batch orchestration service
 
 当前已拍板规则：
 - 优先最小闭环，不预埋大设计
-- readiness evaluator 只回答 admitted input 是否足以进入第一条最窄 `sales_orders` slice
-- lifecycle helper 只允许 `captured -> transformed` 与 `captured -> failed` 两条当前已拍板窄写边
-- 成功写入只写 `batch_status = "transformed"` 与 `transformed_at = now`，且不清空 `error_message`
-- 失败写入只写 `batch_status = "failed"` 与最新 `error_message`，且不写 `transformed_at`
-- selector / evaluator / helper 职责必须分开，不偷带 serving / retry / orchestration contract
-- 不提前定义第 10/11 包之后才应定稿的 serving / end-to-end contract
+- 这包只做 `sales_orders`
+- 必须显式定稿 current first-slice identity / upsert key / 最小 dedupe-overwrite strategy
+- contract helper 不能偷带 full serving writer orchestration
+- 如果某个 contract 假设成立，必须写进 formal docs，不得只藏在 helper 行为里
+- 不提前定义第 11 包之后才应定稿的 end-to-end retry / resume / scheduling / multi-slice contract
 - 只有当 current truth 会失真时，才最小同步 formal docs
 
 ## 第 8-11 包最终执行底稿
@@ -237,9 +237,9 @@ admitted source status 真源约束：
 
 ## 下一步候选
 
-- `#10 feat: add first serving projection contract`
-  - 基于当前 first-slice readiness truth，增加 `sales_orders` 的最窄 serving projection contract
-  - 仍保持 serving contract-only，不打通 end-to-end path
+- `#11 feat: add first capture-to-serving projection path`
+  - 基于 admitted selector、readiness evaluator、lifecycle helper 与 `sales_orders` contract 打通第一条最窄 end-to-end path
+  - 仍保持 single-slice，不扩到 `sales_order_items` / inventory / dashboard runtime
 
 ## 明确禁区 / 不做事项
 

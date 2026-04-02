@@ -5,6 +5,7 @@ This document defines the minimal formal serving projection boundary currently l
 For the current dual-database split, use [capture-serving-boundary.md](./capture-serving-boundary.md).
 For the repository runtime structure, use [runtime-boundaries.md](./runtime-boundaries.md).
 For the current capture formal boundary, use [capture-minimal-boundary.md](./capture-minimal-boundary.md).
+For the current first `sales_orders` serving projection contract layered on top of this persistence surface, use [sales-orders-projection-contract.md](./sales-orders-projection-contract.md).
 For the repository docs index, use [docs/README.md](./README.md).
 
 The current repository database premise for this formal serving projection boundary is PostgreSQL.
@@ -16,13 +17,14 @@ It only formalizes:
 - serving-side ORM models
 - serving-side schemas and CRUD helpers
 - serving Alembic migration targets
+- the first `sales_orders` serving projection contract helper and its persistence constraint
 
 It does not introduce:
 - runtime routers
 - runtime serving APIs
 - transform behavior
 - serving projection executors
-- projection identity or upsert policy
+- any projection identity or upsert policy beyond the current first `sales_orders` slice
 
 ## Formal Ownership
 
@@ -30,6 +32,7 @@ The current formal ownership is:
 - `src/app/models/`
 - `src/app/schemas/`
 - `src/app/crud/`
+- `src/app/services/sales_orders_projection_contract.py`
 - `src/app/core/migration_targets.py`
 - `src/migrations/serving_versions/`
 
@@ -64,6 +67,7 @@ Current purpose:
 - persist one minimal sales-order projection row
 - keep batch linkage as persisted facts only
 - avoid admitting transform execution or runtime serving behavior into the boundary itself
+- support one narrower first-slice `sales_orders` projection contract without expanding to broader serving behavior
 
 Current guardrails:
 - `analysis_batch_id`, `order_id`, `paid_at`, and `paid_amount` are required at the current minimal persistence stage
@@ -71,6 +75,7 @@ Current guardrails:
 - `capture_batch_id` and `store_id` stay nullable
 - `payment_status` defaults to `paid`
 - under the current minimal persistence boundary, that default is a temporary persisted placeholder, not a finalized serving business contract or filter policy
+- the narrower first-slice `sales_orders` contract now defines one explicit identity, upsert key, dedupe rule, and overwrite rule through [sales-orders-projection-contract.md](./sales-orders-projection-contract.md)
 
 ### `sales_order_items`
 
@@ -171,9 +176,11 @@ The current formal serving projection boundary is implemented in:
 - `src/app/crud/crud_inventory_daily_snapshots.py`
 - `src/app/crud/crud_sales_orders.py`
 - `src/app/crud/crud_sales_order_items.py`
+- `src/app/services/sales_orders_projection_contract.py`
 - `src/app/core/migration_targets.py`
 - `src/migrations/serving_versions/20260401_02_add_sales_projection_tables.py`
 - `src/migrations/serving_versions/20260401_03_add_inventory_projection_tables.py`
+- `src/migrations/serving_versions/20260402_04_add_sales_orders_projection_contract.py`
 
 ## Current Read/List Boundary
 
@@ -183,6 +190,7 @@ Current formal read helpers:
 - `get_inventory_daily_snapshot_read`
 - `list_inventory_daily_snapshot_reads`
 - `get_sales_order_read`
+- `get_sales_order_read_by_projection_key`
 - `list_sales_order_reads`
 - `get_sales_order_item_read`
 - `list_sales_order_item_reads`
@@ -195,13 +203,14 @@ Current list-read shape:
 Supported query boundary:
 - `list_inventory_current_reads` supports equality filters on `analysis_batch_id`, `store_id`, and `sku_id`
 - `list_inventory_daily_snapshot_reads` supports equality filters on `analysis_batch_id`, `snapshot_date`, and `sku_id`
+- `get_sales_order_read_by_projection_key` supports one exact-match read on `analysis_batch_id + order_id`
 - `list_sales_order_reads` supports equality filters on `analysis_batch_id` and `order_id`
 - `list_sales_order_item_reads` supports equality filters on `analysis_batch_id`, `order_id`, and `sku_id`
 
 Unsupported query boundary:
 - no joined reads
-- no upsert helpers
-- no projection overwrite policy
+- no upsert helpers beyond the current first `sales_orders` contract helper
+- no projection overwrite policy beyond the current first `sales_orders` slice
 - no caller-supplied sort overrides
 - no runtime summary queries
 
@@ -218,19 +227,23 @@ The current coverage exercises:
 - list filtered `sales_orders` rows with stable pagination and empty-result shape
 - create, read, and update one `sales_order_items` row through the formal CRUD path
 - list filtered `sales_order_items` rows with stable pagination and empty-result shape
+- apply the current first `sales_orders` projection contract through the dedicated helper
+- enforce the current first `sales_orders` identity at the persistence layer
 - verify minimal defaults and field-length constraints for all current serving projection tables
 - verify serving migration target metadata includes these tables while capture metadata does not
 
 The current verification files are:
 - `tests/test_inventory_projection_formal_surface.py`
 - `tests/test_sales_projection_formal_surface.py`
+- `tests/test_sales_orders_projection_contract.py`
+- `tests/test_serving_projection_contract_docs.py`
 - `tests/test_migration_targets.py`
 
 ## Explicit Non-Goals
 
 This document does not claim that:
 - a serving projection runtime path is implemented
-- a projection identity or upsert contract is finalized
+- any projection identity or upsert contract beyond the current first `sales_orders` slice is finalized
 - transform writes into these tables are implemented
 - dashboard or summary runtime APIs read these tables yet
 - low-stock, seasonal, target-size, or active-sale policy is finalized

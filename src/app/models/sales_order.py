@@ -1,7 +1,7 @@
 from datetime import UTC, datetime
 from decimal import Decimal
 
-from sqlalchemy import DateTime, Integer, Numeric, String
+from sqlalchemy import DateTime, Integer, Numeric, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from ..core.db.database import ServingBase
@@ -9,6 +9,13 @@ from ..core.db.database import ServingBase
 
 class SalesOrder(ServingBase):
     __tablename__ = "sales_orders"
+    __table_args__ = (
+        UniqueConstraint(
+            "analysis_batch_id",
+            "order_id",
+            name="uq_sales_orders_analysis_batch_id_order_id",
+        ),
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, init=False)
     analysis_batch_id: Mapped[str] = mapped_column(String(64), index=True)

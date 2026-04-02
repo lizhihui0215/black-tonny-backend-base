@@ -1,6 +1,6 @@
 from datetime import datetime
 from decimal import Decimal
-from typing import TypedDict
+from typing import Literal, TypedDict
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -45,6 +45,27 @@ class SalesOrderUpdate(BaseModel):
 class SalesOrderReadListResponse(TypedDict):
     data: list[SalesOrderRead]
     total_count: int
+
+
+class SalesOrderProjectionFact(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    analysis_batch_id: str = Field(min_length=1, max_length=64)
+    capture_batch_id: str = Field(min_length=1, max_length=64)
+    store_id: str | None = Field(default=None, min_length=1, max_length=64)
+    order_id: str = Field(min_length=1, max_length=64)
+    paid_at: datetime
+    paid_amount: Decimal = Field(max_digits=18, decimal_places=2)
+    payment_status: str = Field(min_length=1, max_length=32)
+
+
+class SalesOrderProjectionContractResult(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    slice_name: Literal["sales_orders"]
+    applied_count: int
+    inserted_count: int
+    updated_count: int
 
 
 class SalesOrderItemCreate(BaseModel):
