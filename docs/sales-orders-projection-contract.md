@@ -67,6 +67,10 @@ Current migration assumption:
 Current in-call dedupe strategy:
 - when multiple input facts in one apply call share the same upsert key, the last fact in input order wins
 
+Current apply-transaction rule:
+- one current contract apply call runs inside one serving-side transaction
+- if any current create or update step raises before the apply call finishes, the helper rolls back the current serving-side writes from that apply call before it re-raises the failure
+
 Current overwrite strategy for an existing row matched by the current upsert key:
 - keep the existing row identity and `created_at`
 - overwrite `capture_batch_id`
@@ -121,6 +125,7 @@ The current coverage exercises:
 - update one existing row through the current upsert key while preserving row identity
 - dedupe duplicate input facts within one apply call by keeping the last fact in input order
 - enforce the current unique key at the persistence layer
+- roll back serving-side writes from one apply call when a later write in the same call fails
 
 The current verification files are:
 - `tests/test_sales_orders_projection_contract.py`

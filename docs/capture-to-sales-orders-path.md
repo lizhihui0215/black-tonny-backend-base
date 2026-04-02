@@ -140,6 +140,9 @@ Current failure-write behavior:
   - `/erp/orders` payload JSON cannot be normalized into the current first-slice row shape
   - the downstream `sales_orders` contract apply raises an exception
 
+Current serving-side cleanup rule:
+- when the downstream `sales_orders` contract apply raises, the current path rolls back the current serving-side transaction before it writes `captured -> failed` on the capture side
+
 In that case, the path returns:
 - `status = "failed"`
 - one current failure `reason`
@@ -172,6 +175,7 @@ The current coverage exercises:
 - return a non-ready result without writes
 - mark the batch as `failed` when linked analysis context is missing after readiness
 - mark the batch as `failed` when the downstream contract apply raises
+- roll back serving-side partial writes before marking the batch as `failed` when the downstream contract apply fails mid-call
 
 The current verification files are:
 - `tests/test_capture_to_sales_orders_path.py`

@@ -255,6 +255,7 @@ async def run_capture_to_sales_orders_path(
             facts=projection_facts,
         )
     except Exception as exc:
+        await serving_db.rollback()
         return await _build_failed_result(
             capture_db,
             capture_batch_id=capture_batch_id,

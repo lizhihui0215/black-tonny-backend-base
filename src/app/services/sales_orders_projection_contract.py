@@ -42,41 +42,49 @@ async def apply_sales_orders_projection_contract(
     updated_count = 0
     deduped_facts = _dedupe_projection_facts(facts)
 
-    for fact in deduped_facts:
-        existing_row = await get_sales_order_read_by_projection_key(
-            db=db,
-            analysis_batch_id=fact.analysis_batch_id,
-            order_id=fact.order_id,
-        )
-        if existing_row is None:
-            await crud_sales_orders.create(
+    try:
+        for fact in deduped_facts:
+            existing_row = await get_sales_order_read_by_projection_key(
                 db=db,
-                object=SalesOrderCreate(
-                    analysis_batch_id=fact.analysis_batch_id,
+                analysis_batch_id=fact.analysis_batch_id,
+                order_id=fact.order_id,
+            )
+            if existing_row is None:
+                await crud_sales_orders.create(
+                    db=db,
+                    object=SalesOrderCreate(
+                        analysis_batch_id=fact.analysis_batch_id,
+                        capture_batch_id=fact.capture_batch_id,
+                        store_id=fact.store_id,
+                        order_id=fact.order_id,
+                        paid_at=fact.paid_at,
+                        paid_amount=fact.paid_amount,
+                        payment_status=fact.payment_status,
+                    ),
+                    commit=False,
+                    schema_to_select=SalesOrderRead,
+                )
+                inserted_count += 1
+                continue
+
+            await crud_sales_orders.update(
+                db=db,
+                object=SalesOrderUpdate(
                     capture_batch_id=fact.capture_batch_id,
                     store_id=fact.store_id,
-                    order_id=fact.order_id,
                     paid_at=fact.paid_at,
                     paid_amount=fact.paid_amount,
                     payment_status=fact.payment_status,
                 ),
-                schema_to_select=SalesOrderRead,
+                id=existing_row.id,
+                commit=False,
             )
-            inserted_count += 1
-            continue
+            updated_count += 1
+    except Exception:
+        await db.rollback()
+        raise
 
-        await crud_sales_orders.update(
-            db=db,
-            object=SalesOrderUpdate(
-                capture_batch_id=fact.capture_batch_id,
-                store_id=fact.store_id,
-                paid_at=fact.paid_at,
-                paid_amount=fact.paid_amount,
-                payment_status=fact.payment_status,
-            ),
-            id=existing_row.id,
-        )
-        updated_count += 1
+    await db.commit()
 
     return SalesOrderProjectionContractResult(
         slice_name=_SALES_ORDERS_SLICE_NAME,

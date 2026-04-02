@@ -22,6 +22,16 @@ def test_capture_to_sales_orders_path_doc_keeps_first_path_noop_non_ready_and_fa
     assert "- writes `captured -> transformed` on the capture batch through the narrow lifecycle helper" in text
     assert "- no linked `analysis_batches` row is readable" in text
     assert "- the downstream `sales_orders` contract apply raises an exception" in text
+    assert (
+        "the current path rolls back the current serving-side transaction before it writes "
+        "`captured -> failed` on the capture side"
+        in text
+    )
+    assert (
+        "- roll back serving-side partial writes before marking the batch as `failed` when the downstream contract "
+        "apply fails mid-call"
+        in text
+    )
 
 
 def test_capture_serving_boundary_and_sales_orders_contract_point_to_first_path() -> None:

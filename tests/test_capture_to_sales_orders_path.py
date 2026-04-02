@@ -9,6 +9,7 @@ import pytest_asyncio
 from sqlalchemy import event
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
+import src.app.services.sales_orders_projection_contract as sales_orders_projection_contract
 from src.app.core.db.database import CaptureBase, ServingBase
 from src.app.crud.crud_analysis_batches import crud_analysis_batches
 from src.app.crud.crud_capture_batches import crud_capture_batches, get_capture_batch_read
@@ -446,6 +447,91 @@ async def test_capture_to_sales_orders_path_marks_failed_when_projection_contrac
     assert result.lifecycle_batch.batch_status == "failed"
     assert result.failure_message is not None
     assert "contract exploded" in result.failure_message
+    assert failed_batch is not None
+    assert failed_batch.batch_status == "failed"
+    assert failed_batch.transformed_at is None
+    assert failed_batch.error_message == result.failure_message
+    assert sales_rows["data"] == []
+    assert sales_rows["total_count"] == 0
+
+
+@pytest.mark.asyncio
+async def test_capture_to_sales_orders_path_rolls_back_serving_partial_writes_when_contract_apply_fails(
+    capture_db_session: AsyncSession,
+    serving_db_session: AsyncSession,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    await create_capture_batch(
+        capture_db_session,
+        capture_batch_id="capture-contract-partial-failure",
+        batch_status="captured",
+    )
+    await create_analysis_batch(
+        capture_db_session,
+        analysis_batch_id="analysis-001",
+        capture_batch_id="capture-contract-partial-failure",
+    )
+    await append_payload(
+        capture_db_session,
+        capture_batch_id="capture-contract-partial-failure",
+        source_endpoint="/erp/orders",
+        payload={
+            "rows": [
+                {
+                    "order_id": "order-001",
+                    "paid_at": "2026-04-22T00:00:00+00:00",
+                    "paid_amount": "100.00",
+                    "payment_status": "paid",
+                },
+                {
+                    "order_id": "order-002",
+                    "paid_at": "2026-04-22T08:00:00+00:00",
+                    "paid_amount": "80.00",
+                    "payment_status": "paid",
+                },
+            ]
+        },
+        pulled_at=datetime(2026, 4, 22, tzinfo=UTC),
+    )
+
+    original_create = sales_orders_projection_contract.crud_sales_orders.create
+    create_call_count = 0
+
+    async def _create_then_raise(*args: object, **kwargs: object) -> object:
+        nonlocal create_call_count
+        if create_call_count == 0:
+            create_call_count += 1
+            return await original_create(*args, **kwargs)
+
+        raise RuntimeError("contract exploded after one flush")
+
+    monkeypatch.setattr(
+        sales_orders_projection_contract.crud_sales_orders,
+        "create",
+        _create_then_raise,
+    )
+
+    result = await run_capture_to_sales_orders_path(
+        capture_db_session,
+        serving_db_session,
+        capture_batch_id="capture-contract-partial-failure",
+    )
+    failed_batch = await get_capture_batch_read(
+        db=capture_db_session,
+        capture_batch_id="capture-contract-partial-failure",
+    )
+    sales_rows = await list_sales_order_reads(serving_db_session, limit=None)
+
+    assert result.status == "failed"
+    assert result.reason == "projection_contract_apply_failed"
+    assert result.readiness_decision is not None
+    assert result.readiness_decision.reason == "ready"
+    assert result.analysis_batch_id == "analysis-001"
+    assert result.projection_result is None
+    assert result.lifecycle_batch is not None
+    assert result.lifecycle_batch.batch_status == "failed"
+    assert result.failure_message is not None
+    assert "contract exploded after one flush" in result.failure_message
     assert failed_batch is not None
     assert failed_batch.batch_status == "failed"
     assert failed_batch.transformed_at is None
