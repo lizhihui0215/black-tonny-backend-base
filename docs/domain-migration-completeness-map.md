@@ -174,6 +174,9 @@ formal truth 仍以以下文档为准：
 - capture-side persisted context
 - not current contract/path target
 
+这里把 `analysis_batches` 标成 `persistence-only`，只是在这张 map 里说明它已 landed 到 persistence completeness。
+这不表示它是当前自然下一步要补 serving contract/path 的 domain backlog。
+
 而不是：
 - missing-serving-contract bug
 - next path candidate
