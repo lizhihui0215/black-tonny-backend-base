@@ -51,8 +51,10 @@ post-route planning 另行记录在：
   - [domain-migration-completeness-map.md](./domain-migration-completeness-map.md)
 - 当前 post-route planning 的第二包输出是：
   - [source-surface-completeness-map.md](./source-surface-completeness-map.md)
+- 当前针对 landed first path 的 hardening planning 输出是：
+  - [first-path-hardening-minimums.md](./first-path-hardening-minimums.md)
 - 当前下一包候选是：
-  - `docs: answer first-path hardening minimums`
+  - `feat: add sales_order_items serving projection contract`
 
 ## 第 8-11 包最终执行底稿
 
