@@ -24,34 +24,36 @@ formal truth 仍以以下文档为准：
 | 7 | `docs: answer transform lifecycle transition minimums` | `merged` | 已在行为代码开始前把 transform lifecycle transition 的最小 docs truth 收紧。 |
 | 8 | `feat: add admitted transform input selector` | `merged` | 已基于 formal persisted facts 增加第一条 admitted input selector。 |
 | 9 | `feat: add transform readiness evaluator and batch lifecycle helper` | `merged` | 已增加第一条 readiness evaluator 与窄职责 lifecycle helper。 |
-| 10 | `feat: add first serving projection contract` | `in-progress` | 增加第一条最窄 slice 的 serving projection contract。 |
-| 11 | `feat: add first capture-to-serving projection path` | `planning` | 打通第一条最窄的 `capture -> transform -> serving` 正式行为链。 |
+| 10 | `feat: add first serving projection contract` | `merged` | 已增加第一条最窄 slice 的 serving projection contract。 |
+| 11 | `feat: add first capture-to-serving projection path` | `in-progress` | 打通第一条最窄的 `capture -> transform -> serving` 正式行为链。 |
 
 ## 当前包
 
 当前包：
-- `#10 feat: add first serving projection contract`
+- `#11 feat: add first capture-to-serving projection path`
 
 目标：
-- 为第一条最窄 `sales_orders` slice 落正式 serving projection contract。
+- 打通第一条最窄的 `capture -> transform -> serving` 正式行为链，只覆盖 `sales_orders` first slice。
 
 边界：
-- 只落 `sales_orders` 的 first-slice serving projection contract
+- 只落第一条最窄 `capture -> transform -> serving` path
+- 只落 `sales_orders`
 - 不扩到 `sales_order_items`
 - 不扩到 inventory
-- 不引入 full serving writer orchestration
-- 不引入 end-to-end capture -> transform -> serving path
+- 不引入 broader orchestration
+- 不引入 scheduler / retry / reopen / resume
 - 不引入 route registry
 - 不引入 maturity board
 - 不引入 batch orchestration service
 
 当前已拍板规则：
 - 优先最小闭环，不预埋大设计
-- 这包只做 `sales_orders`
-- 必须显式定稿 current first-slice identity / upsert key / 最小 dedupe-overwrite strategy
-- contract helper 不能偷带 full serving writer orchestration
-- 如果某个 contract 假设成立，必须写进 formal docs，不得只藏在 helper 行为里
-- 不提前定义第 11 包之后才应定稿的 end-to-end retry / resume / scheduling / multi-slice contract
+- path 只串 admitted selector、readiness evaluator、lifecycle helper 与 `sales_orders` contract
+- selector 返回 `None` 时必须显式走 no-op，不偷带失败写
+- readiness 不通过时必须显式返回 non-ready，不偷带 serving write 或 lifecycle write
+- 成功时先 apply `sales_orders` contract，再写 `captured -> transformed`
+- post-ready failure 只允许按当前 helper contract 写 `captured -> failed`
+- 不提前定义这条 11 包路线之外的 multi-slice / retry / scheduling contract
 - 只有当 current truth 会失真时，才最小同步 formal docs
 
 ## 第 8-11 包最终执行底稿
@@ -237,9 +239,8 @@ admitted source status 真源约束：
 
 ## 下一步候选
 
-- `#11 feat: add first capture-to-serving projection path`
-  - 基于 admitted selector、readiness evaluator、lifecycle helper 与 `sales_orders` contract 打通第一条最窄 end-to-end path
-  - 仍保持 single-slice，不扩到 `sales_order_items` / inventory / dashboard runtime
+- 当前 11 包主路线在 `#11` 合并后即告一段落
+  - 如需继续推进，应新开 post-route planning note，单独评估更广的 multi-slice、runtime、或历史数据 hardening 范围
 
 ## 明确禁区 / 不做事项
 

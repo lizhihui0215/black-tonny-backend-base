@@ -6,6 +6,7 @@ For the overall runtime structure, use [runtime-boundaries.md](./runtime-boundar
 For the full docs index, use [docs/README.md](./README.md).
 For the minimal capture persistence boundary, use [capture-minimal-boundary.md](./capture-minimal-boundary.md).
 For the minimal serving projection persistence boundary, use [serving-projection-minimal-boundary.md](./serving-projection-minimal-boundary.md).
+For the current first minimal `capture -> transform -> serving` path, use [capture-to-sales-orders-path.md](./capture-to-sales-orders-path.md).
 For the future transform input edge, use [transform-input-boundary.md](./transform-input-boundary.md).
 
 ## Current Truth
@@ -19,6 +20,7 @@ The current repository facts are:
 - the capture migration target now contains the minimal formal capture tables
 - the serving migration target already contains the current runtime tables
 - the current auth and management-style runtime APIs use serving database sessions
+- a minimal first `capture -> transform -> serving` path now exists in repo code for the `sales_orders` slice without adding any runtime route
 
 Current capture-side formal tables include:
 - `analysis_batches`
@@ -47,7 +49,8 @@ The current boundary is:
 - capture now has a minimal formal boundary for raw or near-raw intake metadata
 - serving is the runtime database for the repository's current auth and management APIs
 - runtime and business-serving APIs read serving, not capture
-- future transform or projection paths may read capture and write serving only after a later scoped migration
+- the current first `sales_orders` path may read capture and write serving through repo-internal services only
+- broader future transform or projection paths still require later scoped migration work
 
 This document does not define the future transform input shape by itself.
 That input edge is scoped separately in [transform-input-boundary.md](./transform-input-boundary.md) so current serving truth and future transform scope do not get conflated.

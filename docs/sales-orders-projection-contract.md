@@ -5,6 +5,7 @@ This document defines the current first `sales_orders` serving projection contra
 For the broader serving persistence surface that this contract narrows, use [serving-projection-minimal-boundary.md](./serving-projection-minimal-boundary.md).
 For the current transform readiness edge that stays upstream of this contract, use [transform-readiness-boundary.md](./transform-readiness-boundary.md).
 For the current transform state-transition edge that stays adjacent to this contract, use [transform-state-transition-boundary.md](./transform-state-transition-boundary.md).
+For the current first minimal end-to-end path that now invokes this contract, use [capture-to-sales-orders-path.md](./capture-to-sales-orders-path.md).
 For the repository docs index, use [docs/README.md](./README.md).
 
 ## Current Truth
@@ -66,6 +67,10 @@ Current migration assumption:
 Current in-call dedupe strategy:
 - when multiple input facts in one apply call share the same upsert key, the last fact in input order wins
 
+Current apply-transaction rule:
+- one current contract apply call runs inside one serving-side transaction
+- if any current create or update step raises before the apply call finishes, the helper rolls back the current serving-side writes from that apply call before it re-raises the failure
+
 Current overwrite strategy for an existing row matched by the current upsert key:
 - keep the existing row identity and `created_at`
 - overwrite `capture_batch_id`
@@ -100,6 +105,7 @@ This narrower contract adds:
 
 The generic CRUD helpers remain broader than this contract.
 They are not the current first-slice contract helper, and they are not a capture-to-serving runtime path by themselves.
+The current first capture-to-serving path now calls this contract through a separate narrower path service.
 
 ## Current Code Locations
 
@@ -119,6 +125,7 @@ The current coverage exercises:
 - update one existing row through the current upsert key while preserving row identity
 - dedupe duplicate input facts within one apply call by keeping the last fact in input order
 - enforce the current unique key at the persistence layer
+- roll back serving-side writes from one apply call when a later write in the same call fails
 
 The current verification files are:
 - `tests/test_sales_orders_projection_contract.py`
@@ -128,7 +135,7 @@ The current verification files are:
 
 The following points are intentionally left to a later scoped migration:
 - how transform-ready normalized facts are produced end to end from the current capture-side inputs
-- how the current first-slice contract is invoked from a runtime or orchestration path
+- how broader runtime or orchestration entry points invoke the current first-slice path
 - whether `sales_order_items` adopts a parallel contract and, if so, with what identity and overwrite policy
 - whether later slices reuse this identity pattern or require different keys
 - whether retry, replay, resume, or scheduling rules affect serving writes
