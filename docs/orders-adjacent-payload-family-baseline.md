@@ -164,7 +164,6 @@ formal truth 仍以以下对象为准：
 这份文档是 [source-surface-completeness-map.md](./source-surface-completeness-map.md) 的下游细化包，
 只细化其中这一条：
 
-- `/erp/orders` adjacent non-`sales_orders` payload families`
 - `/erp/orders` adjacent non-`sales_orders` payload families
 
 它不替代：
