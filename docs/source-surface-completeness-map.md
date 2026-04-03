@@ -4,273 +4,206 @@
 
 这份文档不是 formal source of truth。
 
-formal truth 仍以以下文档为准：
+formal truth 仍以以下对象为准：
 - [README.md](../README.md)
 - [docs/README.md](./README.md)
 - [docs/](./README.md) 下各 formal boundary docs
+- 当前 `main` 上已经 landed 的 `src/app/**`、`src/migrations/**`、`tests/**`
 
-这份文档只盘点当前 repo 在 menu / endpoint / payload / slice 维度上的 source-surface completeness。
-它不替代 post-route mainline 规划，也不替代 domain migration completeness 盘点。
+当前 milestone 路线的 authoritative 起点仍然是：
+- [clean-mainline-charter.md](./clean-mainline-charter.md)
 
-## Scope And Purpose
+当前 shared planning vocabulary 仍然以：
+- [formal-planning-reference-boundary-and-exploration-taxonomy.md](./formal-planning-reference-boundary-and-exploration-taxonomy.md)
+- 为准
 
-这份文档当前只回答：
-- 当前 repo-owned formal behavior 实际吸收了哪些 source surface
-- 哪些 menu / endpoint / payload family 已进入 current `sales_orders` first path
-- 哪些 source 目前只存在于 legacy reference 或 research support skeleton
-- 哪些 source/menu 还没有被系统盘点
-- 哪些 source completeness gap 会影响后续 `sales_order_items`、inventory、internal entrypoint 的推进顺序
+这份文档当前服务的是：
+- `M2-PR1 | docs: map repo-owned source inventory baseline`
+- 当前 repo-owned `menu / page / endpoint / payload family` inventory baseline
+- 后续 payload semantics / accuracy / migration completeness planning 的输入
 
-这份文档当前不回答：
-- 新的 runtime behavior
-- 新的 contract / path / orchestration
-- domain migration completeness
-- inventory 或 `sales_order_items` 的具体 contract 细节
+这份文档不做：
+- 不新增 behavior
+- 不新增 contract/path/capture ingress
+- 不新增 payload field semantics 细节结论
+- 不新增 accuracy matrix、checksum 规则、cross-table reconciliation
+- 不提前定义 scheduler / orchestration / retry / reservation / locking
 
-它还要明确：
-- source completeness 和 domain completeness 不是同一张表
-- legacy/reference/research material 可以作为盘点输入，但不是 current formal truth
+## Scope And Reading Rule
 
-## Completeness Definitions
+这份文档只盘：
+- 当前 repo 已知的 `menu`
+- 当前 repo 已知的 `page`
+- 当前 repo 已知的 `endpoint`
+- 当前 repo 已知的 `payload family`
 
-### Core Terms
-
-`menu surface`：
-- 上游 ERP 的菜单、页面入口或 page/menu 归属线索
-
-`endpoint`：
-- 当前 capture-side persisted payload 上可识别的 `source_endpoint`
-- 或 legacy/reference 中可识别的上游接口路径
-
-`payload family`：
-- 同一条 endpoint 之下、可被认为属于同一类结构的 payload shape
-
-`slice mapping`：
-- 某条 source surface 当前是否已被 repo-owned formal behavior 吸收进更窄的 transform / serving slice
-
-### Important Distinction
-
-下列表述必须分开：
-- `source evidence exists`
-- `source completeness mapped`
-- `mapped to current behavior`
-
-在当前 repo 里：
-- `source evidence exists` 只表示 repo 里能找到参考资料、research skeleton、或当前代码读取线索
-- `source completeness mapped` 表示 repo 已把 menu / endpoint / payload family / slice 的关系盘点成可追踪结构
-- `mapped to current behavior` 则要求这条 source surface 已被当前 formal behavior 真正吸收
-
-因此：
-- 有 reference，不代表有 repo-owned mapping
-- 有 research skeleton，不代表 source exploration 已完成
-- 有 persistence surface，也不代表 source-side completeness 已完成
-
-### Classification Enum
-
-当前文档只使用这一组收敛枚举：
-- `mapped-to-current-behavior`
-- `mapped-to-persistence-only`
-- `reference-only`
-- `partially-explored`
-- `unexplored`
+每条对象当前只用以下 taxonomy 标状态：
+- `未发现`
+- `已发现但未盘清`
+- `已盘清但未正式映射`
+- `已映射但未进入 behavior`
 - `deferred`
 
-当前判定规则：
-- 只有当 source surface 已进入 current formal behavior，才标 `mapped-to-current-behavior`
-- 如果已知存在下游 persistence surface，但 source-side contract/path 仍未正式映射，标 `mapped-to-persistence-only`
-- 如果 repo 里只有 research support skeleton 或局部探查接口，没有完整 mapping，标 `partially-explored`
-- 如果当前只存在于 legacy/reference 输入，标 `reference-only`
-- 如果 repo 里连稳定的 menu / endpoint / payload family inventory 都还没有，标 `unexplored`
-- 如果 source line 已知存在，但当前主线不建议优先推进，标 `deferred`
+这里的“状态”指的是：
+- 当前 source inventory baseline 的完成度
 
-## Current Source Inventory
+它不是在说：
+- formal behavior 是否已经存在
+- payload field semantics 是否已经明确
+- source completeness 是否已经彻底完成
 
-### Current First-Path Source Surface
+因此，某些对象即使已经被 current `main` 的 formal behavior 局部吸收，
+在这份 baseline 里仍可能只被标为：
+- `已发现但未盘清`
+- 或 `已盘清但未正式映射`
 
-当前 repo-owned formal behavior 只明确吸收了一条 source surface：
-- endpoint: `/erp/orders`
-- payload family: one JSON object with a top-level `rows` list
-- current slice mapping: `sales_orders`
+原因是：
+- 这份文档要回答的是 source inventory baseline 还缺什么
+- 不是把现有 behavior 直接误写成 source completeness 已完成
 
-当前已明确进入 first path 的 only current source rule 是：
-- 只有 `source_endpoint == "/erp/orders"` 的 admitted payload snapshots 会参与当前 first path
+## Current Formal Anchors This Baseline May Reuse
 
-当前还没有 repo-owned formal menu mapping 去回答：
-- `/erp/orders` 对应哪个正式 menu line
-- 同一菜单线下还有哪些 sibling endpoints / payload families
+在不越界升级的前提下，这份 planning baseline 当前可以直接复用的 formal anchors 只有：
 
-所以：
-- current first path 已吸收 endpoint/payload/slice 关系
-- 但 menu-side completeness 仍未收口
+1. 当前 formal behavior 只明确吸收了一条 source-adjacent line：
+   - admitted payload snapshots where `source_endpoint == "/erp/orders"`
+   - current first `sales_orders` slice
 
-### Repo-Owned Research Skeleton
+2. 当前 first path 只明确要求一种最窄 payload family 形状：
+   - one JSON object with a top-level `rows` list
 
-当前 repo 已有最小 research support skeleton：
-- `MenuCoverageSnapshot`
-- `PageResearchSnapshot`
-- `ERPResearchSupportSnapshot`
+3. 当前 repo 已有 minimal research support skeleton：
+   - `MenuCoverageSnapshot`
+   - `PageResearchSnapshot`
+   - `ERPResearchSupportSnapshot`
 
-这些 skeleton 说明：
-- repo 已承认 menu/page research 是一条独立 planning 输入
-- repo 能记录 `stub` / `noted` / `partial` / `collected` 这类最小研究状态
+这些 formal anchors 当前最多只能说明：
+- `/erp/orders` 是 current first path 的唯一 repo-owned endpoint anchor
+- repo 已承认 menu/page research support 是一条 formal support surface
 
-但这不表示：
-- menu inventory 已经盘完
-- endpoint family 已经盘完
-- source completeness 已经 formalized
+这些 formal anchors 当前还不能直接推出：
+- orders line 的 menu mapping 已完成
+- orders line 的 page mapping 已完成
+- `/erp/orders` 的 sibling payload families 已盘清
+- inventory source line 已盘清
+- payload field semantics 已明确
 
-### Legacy Reference Source Inputs
+## Evidence Layer Rule
 
-当前 legacy/reference 里已经明确保留为盘点输入的 source-side 材料包括：
-- ERP 台账类文档
-- API maturity board
-- capture ingestion roadmap
-- capture route registry
-- page research runbook
+这份文档里的每条对象都必须注明证据来自哪一层：
+- `formal truth`
+- `planning`
+- `reference`
 
-它们当前只能作为：
-- source completeness 的 planning 输入
-- 后续 source inventory 的参考来源
+这里的含义必须保持稳定：
 
-它们当前不能作为：
-- repo-owned current truth
-- 新 contract / path 的自动真源
+- `formal truth`
+  - 只能来自 formal docs、当前 `main` 上已落地 code/tests/migrations
+- `planning`
+  - 只能来自当前 repo-owned planning docs
+- `reference`
+  - 只能来自 `docs/reference/**`、legacy reference bridge、以及当前 repo 保留的 reference navigation
 
-## Menu -> Endpoint -> Payload Family -> Slice Mapping Matrix
+如果一条对象只能被 `reference` 支撑，
+就不能把它写成 current truth。
 
-| menu surface | endpoint | payload family | slice mapping | current repo evidence | current classification | notes / next step |
-| --- | --- | --- | --- | --- | --- | --- |
-| repo-owned menu mapping not yet landed for the current orders line | `/erp/orders` | one JSON object with a top-level `rows` list for current order-level rows | `sales_orders` | current first path docs and readiness docs | `mapped-to-current-behavior` | 当前 formal behavior 只吸收这条 endpoint/payload/slice 关系；menu 层仍未成为 repo-owned mapping |
-| current orders line beyond the landed `sales_orders` first slice | `/erp/orders` | adjacent non-`sales_orders` facts on the same orders line | none yet | current first path exclusions plus landed `sales_order_items` persistence surface | `mapped-to-persistence-only` | `sales_order_items` 在 domain 上最接近，但 source-side completeness 仍未正式盘清 |
-| repo-owned menu/page research skeleton | none yet | snapshot-only menu/page research metadata | none | `research-support-current-surface.md` and `src/app/services/research/` | `partially-explored` | 当前只有 skeleton，不等于 menu -> endpoint -> payload family inventory 已建立 |
-| legacy ERP source research line | multiple legacy-only or not yet repo-owned | ledger / registry / runbook / maturity-board families | none | `docs/reference/legacy-backend/README.md` and `docs/legacy-backend-migration-mapping.md` | `reference-only` | 这些资料可以喂给 planning，但不能直接升级为 current truth |
-| inventory-related source family | not yet repo-owned | inventory current / snapshot families not yet mapped in repo-owned docs | none | landed inventory persistence surfaces plus legacy reference inputs | `deferred` | inventory 不能因为已有 persistence surface 就假装 source exploration 已完成 |
-| menus/endpoints/payload families beyond the rows above | unknown | unknown | none | no repo-owned completeness map yet | `unexplored` | 这部分空白正是当前包要显式暴露出来的 completeness gap |
+如果一条对象只有字段名、payload key、persistence surface 或 research skeleton，
+也不能把它写成字段语义已明确或 source completeness 已完成。
 
-## Mapped Vs Reference-Only Vs Unexplored
+## Repo-Owned Source Inventory Baseline
 
-### Mapped To Current Behavior
+### Menu Objects
 
-当前只有一条 source surface 明确进入 current formal behavior：
-- `/erp/orders`
-- 当前 order-level `rows` payload family
-- `sales_orders` first slice
+| 对象名称 | 类别 | 当前状态 | 证据层级 | 当前 repo 证据 | 当前最多能说明什么 | 当前还不能推出什么 | 下一步最小需要什么 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| current `/erp/orders` line 的 repo-owned menu mapping | `menu` | `已发现但未盘清` | `formal truth + planning` | current first path formal docs；research support skeleton；本仓 planning docs | 当前 orders line 明确存在一条 repo-owned source-adjacent line，但 menu mapping 还没在 repo 里落成可复查 inventory | 不能推出正式 menu key/title/tree；不能推出 sibling menu entries；不能推出 source completeness 已完成 | 先补 repo-owned menu inventory note，把 current `/erp/orders` line 的 menu 归属线索单独落出来 |
+| inventory-related repo-owned menu mapping | `menu` | `deferred` | `planning + reference` | clean charter；domain/source planning docs；legacy reference navigation | inventory 是已知存在的后续 source line，当前不应因为 persistence surface 已有就提前当成 menu mapping 已齐 | 不能推出 inventory menu key；不能推出 inventory source line ready；不能推出 inventory completeness 已完成 | 后续先回答 inventory line entry conditions，再决定是否继续盘 menu 侧证据 |
+| other repo-unrecorded menu lines beyond the rows above | `menu` | `未发现` | `planning` | 当前 repo-owned inventory baseline 仍未稳定命名这些 menu lines | 当前 baseline 还没有把更多 menu lines 稳定命名进 repo-owned 语境 | 不能仅凭 reference 资料量大就假定这些 menu lines 已被 repo 发现 | 后续 source inventory passes 再显式命名并分类 |
 
-这条映射已经足以支撑：
-- admitted selector 之后的 first readiness evaluator
-- first `capture -> transform -> serving` path
+### Page Objects
 
-但它仍然不表示：
-- menu completeness 已完成
-- `sales_order_items` source completeness 已完成
-- inventory source completeness 已完成
+| 对象名称 | 类别 | 当前状态 | 证据层级 | 当前 repo 证据 | 当前最多能说明什么 | 当前还不能推出什么 | 下一步最小需要什么 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| current `/erp/orders` line 的 repo-owned page mapping | `page` | `已发现但未盘清` | `formal truth + planning` | `research-support-current-surface.md`；`src/app/services/research/**`；current first path docs | repo 已有 page research support surface，且 current orders line 明确存在一条 source-adjacent line | 不能推出 page key、page title、页面入口、page-to-endpoint mapping 已固定 | 先补 page-level inventory note，把 current orders line 的 page 归属线索单独盘出来 |
+| inventory-related repo-owned page mapping | `page` | `deferred` | `planning + reference` | clean charter；legacy reference navigation；planning docs | inventory page line 已知存在且当前不应抢跑 | 不能推出 inventory page identity；不能推出 inventory source-side completeness 已完成 | 后续先明确 inventory 进入条件，再决定 page 侧盘点深度 |
+| other repo-unrecorded page lines beyond the rows above | `page` | `未发现` | `planning` | 当前 repo-owned inventory baseline 还没有稳定命名更多 page lines | 只能说明当前 baseline 对这部分仍是空白 | 不能从 generic research skeleton 直接推出这些 page lines 已被系统盘清 | 后续 source inventory passes 再显式命名并分类 |
 
-### Reference-Only
+### Endpoint Objects
 
-当前 legacy/reference 输入可以说明：
-- 上游还有更多 menu / ledger / route / runbook 资料
-- source completeness 不能只靠 current first path 推断
+| 对象名称 | 类别 | 当前状态 | 证据层级 | 当前 repo 证据 | 当前最多能说明什么 | 当前还不能推出什么 | 下一步最小需要什么 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `/erp/orders` current first-path endpoint line | `endpoint` | `已盘清但未正式映射` | `formal truth + planning` | admitted selector、readiness evaluator、first path docs/code/tests | 当前 repo 已正式证明 `/erp/orders` 是 first `sales_orders` path 的唯一 endpoint anchor | 不能推出它对应的 menu/page mapping 已完成；不能推出 sibling source families 已盘清；不能推出整个 orders source line 已完成 | 先把 `/erp/orders` 放进 repo-owned source inventory baseline，并补 sibling family 边界说明 |
+| inventory-related repo-owned endpoint family | `endpoint` | `deferred` | `planning + reference` | clean charter；planning docs；legacy reference navigation | inventory source line 在路线里已被明确识别，但当前不应越过 orders line 先补 endpoint 行为或细节盘点 | 不能推出 inventory endpoint path；不能推出 inventory endpoint 已 repo-owned mapped | 后续先回答 inventory entry conditions，再决定 endpoint baseline 是否展开 |
+| other repo-unrecorded endpoint families beyond the rows above | `endpoint` | `未发现` | `planning` | 当前 repo-owned inventory baseline 还没有稳定命名更多 endpoint families | 只能说明 repo 当前没有形成更完整的 endpoint inventory | 不能凭 reference 里可能存在更多接口就把它们升级成 current baseline | 后续 source inventory passes 再显式命名并分类 |
 
-但 reference-only 仍然只是：
-- planning 输入
-- 研究导航
+### Payload Family Objects
 
-而不是：
-- current runtime truth
-- 当前 formal contract
+| 对象名称 | 类别 | 当前状态 | 证据层级 | 当前 repo 证据 | 当前最多能说明什么 | 当前还不能推出什么 | 下一步最小需要什么 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `/erp/orders` top-level `rows` family for the current `sales_orders` slice | `payload family` | `已盘清但未正式映射` | `formal truth + planning` | current first path docs/code/tests；admitted/readiness docs | 当前 repo 已证明 first path 读取的是一个 top-level object with `rows` list 的最窄 payload family | 不能把 `rows` 下字段名直接写成字段语义已明确；不能推出 `sales_order_items` family 已盘清；不能推出 payload glossary 已完成 | 下一包需要单独做 payload semantics / evidence 盘点，而不是在这包里偷跑字段结论 |
+| `/erp/orders` adjacent non-`sales_orders` payload families | `payload family` | `已发现但未盘清` | `formal truth + planning` | current first path exclusions；`sales_order_items` persistence surface；planning docs | 当前 orders line 除了 landed `sales_orders` slice 之外，显然还存在邻近 payload family 候选 | 不能推出 item-level payload boundary；不能推出 item field semantics；不能推出可以直接接 path | 先单独回答 orders-adjacent payload family baseline，再进入 payload semantics 或 contract 工作 |
+| inventory-related payload families | `payload family` | `deferred` | `planning + reference` | inventory persistence surfaces；clean charter；legacy reference navigation | inventory payload families 是已知后续对象，但当前不应因为表已存在就假装 payload family 已盘清 | 不能推出 inventory payload shape；不能推出 inventory field semantics；不能推出 inventory behavior ready | 先回答 inventory entry conditions，再决定是否盘 payload family |
+| other repo-unrecorded payload families beyond the rows above | `payload family` | `未发现` | `planning` | 当前 repo-owned inventory baseline 还没有稳定命名更多 payload families | 只能说明 current baseline 仍有显式空白 | 不能从字段名、sample、截图或 generic reference 直接推出这些 payload families 已确定 | 后续 source inventory passes 再显式命名并分类 |
 
-### Partially-Explored
+## What This Baseline Makes Explicit
 
-当前 repo-owned research support 只证明：
-- menu/page research 有了最小 skeleton
-- repo 可以记录“看过 / noted / partial”的状态
+基于上面的 inventory baseline，当前至少可以明确三件事：
 
-它没有证明：
-- source family inventory 已经建立
-- menu -> endpoint -> payload family -> slice 的系统 mapping 已经落地
+1. current `main` 只正式吸收了：
+   - `/erp/orders`
+   - current top-level `rows` family
+   - current `sales_orders` slice
 
-所以：
-- `research support current surface != source exploration completed`
+2. current repo 已有：
+   - menu/page research support skeleton
+   - 但还没有把 current orders line 的 menu/page mapping 盘成 repo-owned baseline
 
-### Unexplored
+3. inventory 与更广 source family 虽然已被路线识别出来，
+   - 但当前只能保守地维持在 `deferred` 或 `未发现`
+   - 不能因为 persistence surface、reference 材料或 screenshot/raw sample 存在就升级成 source completeness 已完成
 
-当前仍未被系统盘点清楚的包括：
-- `/erp/orders` 当前 first slice 之外的 sibling source families
-- inventory line 的 repo-owned endpoints / payload families
-- 其他 menu / endpoint / payload families 的优先级和 completeness 状态
+## What This Baseline Explicitly Does Not Do
 
-这类空白如果不先盘清：
-- 后续 `sales_order_items` contract/path 容易只沿 domain 猜
-- inventory line 容易被 persistence surface 误导成“来源面也差不多齐了”
-- internal entrypoint 也会缺少“到底在触发哪一类 source line”的 planning 约束
-
-## Current Gaps Blocking Fuller Migration Completeness
-
-当前会阻塞 fuller migration completeness 的 source-side 缺口主要有四类：
-
-1. current first path 只有 endpoint/payload/slice mapping，没有 repo-owned menu mapping
-2. `sales_order_items` 虽然是最近的下一条 domain line，但 source-side completeness 仍未正式盘清
-3. inventory 只有 persistence surfaces，没有 repo-owned source family mapping
-4. repo 还缺一份系统 source inventory，去说明哪些 line 是 mapped、reference-only、partially-explored、unexplored
-
-这意味着：
-- 下一步不能只看 domain 表面就直接开实现
-- 也不能把 legacy research/reference 误当作“已经完成 source mapping”
-
-## Deferred / Non-Goals
-
-当前明确标成 deferred 的 source line：
-- inventory-related source family
-
-当前 deferred 的含义不是永久不做。
-这里只表示：
-- inventory 是已知存在的一条 source line
-- 但当前不建议在 `sales_order_items` source completeness 和 first-path hardening 之前优先推进
-
-这份文档当前的 non-goals：
-- 不定义新的 contract / path
-- 不回答 domain completeness
+这份 baseline 当前明确不做：
+- 不输出 payload field semantics glossary
+- 不给 `/erp/orders` 的字段名补业务含义
+- 不定义 checksum / page completeness / reconciliation 规则
+- 不定义 `sales_order_items` contract/path
+- 不定义 inventory contract/path
+- 不定义 capture ingress
 - 不定义 runtime/internal entrypoint
 - 不定义 broader orchestration
-- 不把 legacy/reference/archive 内容改写成 formal truth
 
-## Recommended Next Package Ordering
+## Downstream Planning Use
 
-基于当前 source-surface completeness 盘点，推荐顺序是：
+这份 baseline 从当前 `main` 往后，主要服务三类下游 planning 包：
 
-1. `docs: answer first-path hardening minimums`
-   - 先把当前唯一 landed first path 的 hardening truth 收口
-2. `feat: add sales_order_items serving projection contract`
-   - 前提是承认 source-side completeness 仍未收口，只先推进最接近的 domain contract line
-3. `docs/plan: answer sales_order_items source admission and mapping minimums`
-   - 在 item slice 真正接 path 前，把 source-side 假设单独收口
-4. `docs/plan: answer inventory line entry conditions`
-   - 单独回答 inventory source line 何时进入下一条 mainline
-5. `feat: add first internal projection run entrypoint`
-   - 放在更后面，避免在 source completeness 还模糊时提前固定入口
+1. payload semantics packages
+   - 只在这份 baseline 已经命名清楚的对象上继续盘字段与证据
 
-## Relationship To Post-Route Mainline Planning
+2. accuracy / cross-check packages
+   - 只在这份 baseline 已经显式暴露的 source coverage gaps 上继续补 guardrails
 
-这份文档是 `migration-completeness mainline` 的第二个 planning 子包输出。
+3. migration completeness / inventory entry packages
+   - 用这份 baseline 说明哪些 source lines 仍然只能保守地标 `deferred`、`未发现` 或 `已发现但未盘清`
 
-它只覆盖：
-- `menu / source-surface completeness track`
+这份文档本身不是：
+- payload semantics 包
+- accuracy 包
+- migration behavior 包
 
-它不覆盖：
-- `database / domain migration completeness track`
-- current first path hardening minimums
+## Relationship To Other Planning Docs
 
-## Relationship To Domain Migration Completeness Map
+这份文档当前应与以下两份文档一起阅读：
+- [clean-mainline-charter.md](./clean-mainline-charter.md)
+- [formal-planning-reference-boundary-and-exploration-taxonomy.md](./formal-planning-reference-boundary-and-exploration-taxonomy.md)
 
-这份文档和 [domain-migration-completeness-map.md](./domain-migration-completeness-map.md) 是并列关系。
+三者的分工应保持清楚：
+- charter 负责路线入口与默认顺序
+- boundary/taxonomy 文档负责三层边界与统一状态语言
+- 这份文档负责当前 repo-owned source inventory baseline
 
-两者的分工必须保持清楚：
-- `domain-migration-completeness-map.md` 回答“哪些表面已有 persistence / contract / path”
-- 这份文档回答“哪些上游 source line 已被系统探索、映射、吸收或仍然空白”
-
-因此：
-- `sales_order_items` 在 domain 上可以是下一条自然 contract 候选
-- 但 source-side completeness 仍然未盘清
-
-这正是为什么：
-- source completeness 和 domain completeness 不能混成同一张表
+它当前不替代：
+- payload semantics docs
+- accuracy docs
+- domain migration completeness docs

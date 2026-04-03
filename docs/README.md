@@ -107,9 +107,9 @@ Internal planning, reference, and archive material can stay in Chinese when it i
   - Language: Chinese working doc
   - Status: `Source of truth for current domain completeness planning`
 - [`source-surface-completeness-map.md`](./source-surface-completeness-map.md)
-  - Current planning map for menu, endpoint, payload-family, and slice completeness after the completed 11-package route
+  - Current planning baseline for repo-owned menu/page/endpoint/payload-family inventory on top of the current `main`
   - Language: Chinese working doc
-  - Status: `Source of truth for current source-surface completeness planning`
+  - Status: `Current planning baseline for repo-owned source inventory / source-surface mapping`
 - [`first-path-hardening-minimums.md`](./first-path-hardening-minimums.md)
   - Current planning note that tightens the hardening minimums for the landed first `sales_orders` capture-to-serving path
   - Language: Chinese working doc
