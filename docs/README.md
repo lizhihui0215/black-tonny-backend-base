@@ -94,6 +94,10 @@ Internal planning, reference, and archive material can stay in Chinese when it i
   - Authoritative starting-point charter for the new milestone route that restarts numbering from `M1-PR1` on top of the current `main`
   - Language: Chinese working doc
   - Status: `Source of truth for the current milestone-route starting point`
+- [`formal-planning-reference-boundary-and-exploration-taxonomy.md`](./formal-planning-reference-boundary-and-exploration-taxonomy.md)
+  - Shared working vocabulary for the current milestone route, defining the formal/planning/reference split and the unfinished-exploration taxonomy used by follow-up planning packages
+  - Language: Chinese working doc
+  - Status: `Source of truth for current boundary/taxonomy planning`
 - [`legacy-backend-migration-mapping.md`](./legacy-backend-migration-mapping.md)
   - PR-1 inventory, classification, old-path to new-path mapping, capture scope list, and research/runtime boundary notes
   - Language: Chinese working doc
@@ -111,9 +115,9 @@ Internal planning, reference, and archive material can stay in Chinese when it i
   - Language: Chinese working doc
   - Status: `Source of truth for current first-path hardening planning`
 - [`post-route-mainline-planning.md`](./post-route-mainline-planning.md)
-  - Post-route planning note that reorganizes the next mainline around migration completeness and source-surface completeness
+  - Historical framing note retained from the completed 11-package route and kept only as existing planning background
   - Language: Chinese working doc
-  - Status: `Source of truth for current post-route planning`
+  - Status: `Historical framing / existing planning asset`
 
 ## Reference Docs
 
