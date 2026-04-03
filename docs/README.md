@@ -110,6 +110,10 @@ Internal planning, reference, and archive material can stay in Chinese when it i
   - Current planning baseline for repo-owned menu/page/endpoint/payload-family inventory on top of the current `main`
   - Language: Chinese working doc
   - Status: `Current planning baseline for repo-owned source inventory / source-surface mapping`
+- [`orders-adjacent-payload-family-baseline.md`](./orders-adjacent-payload-family-baseline.md)
+  - Current planning baseline for the current `/erp/orders` line's adjacent payload-family candidates outside the landed `sales_orders` first slice
+  - Language: Chinese working doc
+  - Status: `Current planning baseline for /erp/orders adjacent payload-family candidates`
 - [`first-path-hardening-minimums.md`](./first-path-hardening-minimums.md)
   - Current planning note that tightens the hardening minimums for the landed first `sales_orders` capture-to-serving path
   - Language: Chinese working doc
