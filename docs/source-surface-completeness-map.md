@@ -145,6 +145,9 @@ formal truth 仍以以下对象为准：
 | inventory-related payload families | `payload family` | `deferred` | `planning + reference` | inventory persistence surfaces；clean charter；legacy reference navigation | inventory payload families 是已知后续对象，但当前不应因为表已存在就假装 payload family 已盘清 | 不能推出 inventory payload shape；不能推出 inventory field semantics；不能推出 inventory behavior ready | 先回答 inventory entry conditions，再决定是否盘 payload family |
 | other repo-unrecorded payload families beyond the rows above | `payload family` | `未发现` | `planning` | 当前 repo-owned inventory baseline 还没有稳定命名更多 payload families | 只能说明 current baseline 仍有显式空白 | 不能从字段名、sample、截图或 generic reference 直接推出这些 payload families 已确定 | 后续 source inventory passes 再显式命名并分类 |
 
+当前 `/erp/orders` adjacent payload-family baseline 另行维护在：
+- [orders-adjacent-payload-family-baseline.md](./orders-adjacent-payload-family-baseline.md)
+
 ## What This Baseline Makes Explicit
 
 基于上面的 inventory baseline，当前至少可以明确三件事：
