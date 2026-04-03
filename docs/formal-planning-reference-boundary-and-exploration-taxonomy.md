@@ -68,7 +68,7 @@ formal truth 仍以以下对象为准：
 
 在当前 repo 语境下，以下内容都不能单靠 formal truth 自动推出：
 - `sales_order_items` 字段语义已经盘清
-- inventory line 已经 ready 进入主线
+- inventory line 已可直接进入主线 behavior
 - source completeness 已经完成
 - research support skeleton 已经等于完整 research migration
 
@@ -127,10 +127,10 @@ reference 可以喂给 planning，但不能越过 planning 直接改写 formal t
 | 材料 | 当前最多能说明什么 | 当前不能直接说明什么 |
 | --- | --- | --- |
 | `docs/reference/**` | 历史上下文、探索线索、候选 mapping 输入 | current runtime / contract / path truth |
-| legacy raw payload、`tmp/**`、`output/**`、screenshots、`API-images/**` | 某个 source 或字段可能存在，或某条页面/接口值得继续盘 | payload semantics 已明确、字段语义已确认、runtime shape 已被 formalized |
+| legacy raw payload、`tmp/**`、`output/**`、screenshots、`API-images/**` | 某个 source 或字段可能存在，或某条页面/接口值得继续盘 | payload semantics 已明确、字段语义已确认、runtime shape 已被 current repo formal surface 固定 |
 | runbooks、ledgers、route registry、maturity board、evidence chain | 业务背景、研究流程、排障线索、历史分层 | current source completeness 已完成、current package 顺序已确定 |
 | `sales_order_items` / inventory 等已落地 persistence objects | 对应 persistence surface 已存在 | contract/path/hardening/field semantics 已完成 |
-| minimal research support skeleton | `MenuCoverageSnapshot`、`PageResearchSnapshot`、`ERPResearchSupportSnapshot` 这类最小 research support surface 已 formalized | menu / endpoint / payload family 已经被系统盘清 |
+| minimal research support skeleton | `MenuCoverageSnapshot`、`PageResearchSnapshot`、`ERPResearchSupportSnapshot` 这类最小 research support surface 已进入 current repo minimal formal surface | menu / endpoint / payload family 已经被系统盘清 |
 | payload key、列名、字段名本身 | 命名线索、候选粒度、候选 role | 具体业务含义、允许用途、跨表关系、serving contract identity |
 
 任何材料如果要从 planning input 升级为 formal truth，后续 package 仍然必须在当前 repo 内显式落：
@@ -154,7 +154,7 @@ reference 可以喂给 planning，但不能越过 planning 直接改写 formal t
 | --- | --- | --- | --- |
 | `未发现` | 当前 repo 里还没有稳定、可复查的 repo-owned 线索证明这条 source / field / slice 已被识别出来 | 没有明确 planning note，也没有稳定 reference lead 被记录进 repo-owned 语境 | 不能假设它已经存在、不能直接开 contract/path |
 | `已发现但未盘清` | 已知道它存在，或已经有 legacy/reference/research 线索，但 menu / endpoint / payload family / grain / filter / field role 还没说清 | `docs/reference/**`、runbook、ledger、raw sample、screenshot、research support skeleton 提示 | 不能说 source completeness 已完成；不能说字段语义已明确 |
-| `已盘清但未正式映射` | repo-owned planning 已能描述它来自哪里、主要 payload family/field family 是什么、还缺哪些证据，但还没写成正式 mapping 或 contract 前提 | planning doc、working glossary、evidence note | 不能说 runtime 已可消费；不能说 contract/path 已经 ready |
+| `已盘清但未正式映射` | repo-owned planning 已能描述它来自哪里、主要 payload family/field family 是什么、还缺哪些证据，但还没写成正式 mapping 或 contract 前提 | planning doc、working glossary、evidence note | 不能说 runtime 已可直接消费；不能说 contract/path 前提已成立 |
 | `已映射但未进入 behavior` | repo-owned planning 或 contract-prep doc 已经把它映到目标 slice / domain boundary，前置条件也基本明确，但还没有 landed behavior | mapping doc、contract-prep doc、package prerequisites | 不能说 capture ingress / transform / serving behavior 已存在 |
 | `deferred` | 已明确知道这条线存在且当前不做，或被其他前置条件阻塞，原因已经写清 | planning note 中的 deferred rationale、blocked-by 说明 | 不能因为 deferred 就把它当作不存在或已经解决 |
 
@@ -180,7 +180,7 @@ reference 可以喂给 planning，但不能越过 planning 直接改写 formal t
 
 在当前 repo 里，至少要避免以下误写：
 - `sales_order_items` 已有表，不等于 `sales_order_items` contract 已明确
-- inventory 已有 persistence surface，不等于 inventory line 已 ready 进入 behavior
+- inventory 已有 persistence surface，不等于 inventory line 已可直接进入 behavior
 - 已有 legacy ledger / runbook，不等于对应 source family 已经盘清
 - 已有 screenshot / raw payload，不等于字段语义或 checksum 规则已经成立
 - 已有 minimal research support skeleton，不等于 source inventory 已完成
@@ -197,7 +197,7 @@ reference 可以喂给 planning，但不能越过 planning 直接改写 formal t
    - 当前 truth
    - planning input
    - reference evidence candidate
-3. 不能把 `docs/reference/**`、legacy raw / output / tmp / screenshots / runbooks / ledgers 直接写成 current truth。
+3. 不能把 `docs/reference/**`、legacy raw / output / tmp / screenshots / runbooks / ledgers 直接写成 current formal truth。
 4. 不能把 research support skeleton 的存在直接写成“source exploration 已完成”。
 5. 不能把 payload key、列名、字段名直接写成“字段含义已明确”。
 6. 如果想把某个 reference 结论升级为 formal truth，必须在后续 package 里把对应 formal docs、code/tests/migrations 一起落到当前 repo。

@@ -54,7 +54,7 @@ post-route planning 另行记录在：
 - 它们是新路线的基线，不是新 milestone 编号的一部分
 - 新 milestone 编号从 [clean-mainline-charter.md](./clean-mainline-charter.md) 定义的 `M1-PR1` 重新开始
 - 新路线编号、默认顺序与 package 起点统一以 [clean-mainline-charter.md](./clean-mainline-charter.md) 为准
-- 当前新路线已经 landed 的共享语言 planning outputs 是：
+- 当前新路线应统一复用的 planning vocabulary 是：
   - [clean-mainline-charter.md](./clean-mainline-charter.md)
   - [formal-planning-reference-boundary-and-exploration-taxonomy.md](./formal-planning-reference-boundary-and-exploration-taxonomy.md)
 - 后续 source inventory、payload semantics、accuracy、migration planning 包都应复用这组 boundary / taxonomy 约束

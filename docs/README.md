@@ -97,7 +97,7 @@ Internal planning, reference, and archive material can stay in Chinese when it i
 - [`formal-planning-reference-boundary-and-exploration-taxonomy.md`](./formal-planning-reference-boundary-and-exploration-taxonomy.md)
   - Shared working vocabulary for the current milestone route, defining the formal/planning/reference split and the unfinished-exploration taxonomy used by follow-up planning packages
   - Language: Chinese working doc
-  - Status: `Source of truth for current boundary/taxonomy planning`
+  - Status: `Authoritative planning vocabulary for the current boundary/taxonomy baseline`
 - [`legacy-backend-migration-mapping.md`](./legacy-backend-migration-mapping.md)
   - PR-1 inventory, classification, old-path to new-path mapping, capture scope list, and research/runtime boundary notes
   - Language: Chinese working doc
