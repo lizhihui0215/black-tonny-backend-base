@@ -176,6 +176,9 @@ formal truth 仍以以下对象为准：
 
 这份 baseline 只服务后续更窄的 payload semantics packages。
 
+当前 `/erp/orders` adjacent payload semantics baseline 另行维护在：
+- [orders-adjacent-payload-semantics-baseline.md](./orders-adjacent-payload-semantics-baseline.md)
+
 后续 payload semantics 包只能在这里已经命名清楚的 family 边界上继续往下走：
 - `rows` anchor family
 - `rows`-adjacent non-`sales_orders` candidate family
