@@ -6,6 +6,7 @@ For the broader serving persistence surface that this contract narrows, use [ser
 For the current transform readiness edge that stays upstream of this contract, use [transform-readiness-boundary.md](./transform-readiness-boundary.md).
 For the current transform state-transition edge that stays adjacent to this contract, use [transform-state-transition-boundary.md](./transform-state-transition-boundary.md).
 For the current first minimal end-to-end path that now invokes this contract, use [capture-to-sales-orders-path.md](./capture-to-sales-orders-path.md).
+For the minimum future question list that a first adjacent `/erp/orders` contract must answer before it becomes formal repository behavior, use [orders-first-adjacent-contract-questions.md](./orders-first-adjacent-contract-questions.md).
 For the repository docs index, use [docs/README.md](./README.md).
 
 ## Current Truth
