@@ -171,6 +171,9 @@ formal truth 仍以以下对象为准：
 
 这份 baseline 只服务后续更窄的 contract/path planning。
 
+当前 `/erp/orders` adjacent contract-entry minimums baseline 另行维护在：
+- [orders-adjacent-contract-entry-minimums.md](./orders-adjacent-contract-entry-minimums.md)
+
 后续 packages 只能在这里已经保守命名的语义对象上继续往下走：
 - `order-level row anchor candidate`
 - `paid-state event cluster candidate`

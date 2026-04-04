@@ -63,6 +63,8 @@ post-route planning 另行记录在：
   - [orders-adjacent-payload-family-baseline.md](./orders-adjacent-payload-family-baseline.md)
 - 当前 `/erp/orders` adjacent payload semantics baseline 维护在：
   - [orders-adjacent-payload-semantics-baseline.md](./orders-adjacent-payload-semantics-baseline.md)
+- 当前 `/erp/orders` adjacent contract-entry minimums baseline 维护在：
+  - [orders-adjacent-contract-entry-minimums.md](./orders-adjacent-contract-entry-minimums.md)
 - 后续 source inventory、payload semantics、accuracy、migration planning 包都应复用这组 boundary / taxonomy 约束
 - 这份文档不再继续拆第 11 包之后的实现包
 - 第 11 包之后的新主线已改为更贴近完整迁移的 `migration-completeness mainline`
