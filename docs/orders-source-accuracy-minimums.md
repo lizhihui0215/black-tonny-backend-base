@@ -158,6 +158,9 @@ formal truth 仍以以下对象为准：
 当前 `/erp/orders` adjacent source-evidence baseline 另行维护在：
 - [orders-adjacent-source-evidence-baseline.md](./orders-adjacent-source-evidence-baseline.md)
 
+当前 `/erp/orders` source-accuracy revisit baseline 另行维护在：
+- [orders-source-accuracy-revisit.md](./orders-source-accuracy-revisit.md)
+
 在后续 package 里，如果要声称 current `/erp/orders` adjacent line 已经满足 source-accuracy minimums，至少要显式回答：
 - 哪些 source-side carriers 已被 repo-owned evidence 收口
 - 哪些 order-to-detail relation answers 已从 ambiguity 收口成可复查答案

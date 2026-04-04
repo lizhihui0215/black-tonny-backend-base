@@ -69,6 +69,8 @@ post-route planning 另行记录在：
   - [orders-source-accuracy-minimums.md](./orders-source-accuracy-minimums.md)
 - 当前 `/erp/orders` adjacent source-evidence baseline 维护在：
   - [orders-adjacent-source-evidence-baseline.md](./orders-adjacent-source-evidence-baseline.md)
+- 当前 `/erp/orders` source-accuracy revisit baseline 维护在：
+  - [orders-source-accuracy-revisit.md](./orders-source-accuracy-revisit.md)
 - 后续 source inventory、payload semantics、accuracy、migration planning 包都应复用这组 boundary / taxonomy 约束
 - 这份文档不再继续拆第 11 包之后的实现包
 - 第 11 包之后的新主线已改为更贴近完整迁移的 `migration-completeness mainline`
