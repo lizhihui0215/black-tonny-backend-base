@@ -72,6 +72,10 @@ Internal planning, reference, and archive material can stay in Chinese when it i
   - Minimum future question list that a scoped transform rule-set must answer explicitly
   - Language: English
   - Status: `Source of truth`
+- [`orders-first-adjacent-contract-questions.md`](./orders-first-adjacent-contract-questions.md)
+  - Minimum future question list that a scoped first adjacent `/erp/orders` contract must answer explicitly
+  - Language: English
+  - Status: `Source of truth`
 
 ## Current Surface Notes
 
