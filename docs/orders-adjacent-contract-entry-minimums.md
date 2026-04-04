@@ -142,6 +142,9 @@ formal truth 仍以以下对象为准：
 当前 `/erp/orders` adjacent source-evidence baseline 另行维护在：
 - [orders-adjacent-source-evidence-baseline.md](./orders-adjacent-source-evidence-baseline.md)
 
+当前 `/erp/orders` adjacent single-target mapping minimums baseline 另行维护在：
+- [orders-adjacent-single-target-mapping-minimums.md](./orders-adjacent-single-target-mapping-minimums.md)
+
 后续包在进入 contract/path 之前，至少要显式回答：
 - 哪些 reusable inputs 已足够复用
 - 哪些 evidence minimums 已被补齐

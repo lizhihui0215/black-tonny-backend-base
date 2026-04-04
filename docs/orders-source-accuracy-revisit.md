@@ -194,3 +194,5 @@ formal truth 仍以以下对象为准：
 - formal contract docs
 - formal path docs
 
+当前 `/erp/orders` adjacent single-target mapping minimums baseline 另行维护在：
+- [orders-adjacent-single-target-mapping-minimums.md](./orders-adjacent-single-target-mapping-minimums.md)
