@@ -80,6 +80,10 @@ Internal planning, reference, and archive material can stay in Chinese when it i
   - Current minimal formal baseline for any future first adjacent `/erp/orders` contract while no adjacent contract is yet implemented
   - Language: English
   - Status: `Source of truth`
+- [`orders-first-adjacent-scoped-contract-statement.md`](./orders-first-adjacent-scoped-contract-statement.md)
+  - Current narrow formal scoped contract statement for the future first adjacent `/erp/orders` contract while no adjacent contract is yet implemented
+  - Language: English
+  - Status: `Source of truth`
 
 ## Current Surface Notes
 
