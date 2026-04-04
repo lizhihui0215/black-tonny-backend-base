@@ -206,6 +206,9 @@ formal truth 仍以以下对象为准：
 - 后续 source-accuracy revisit
 - 后续 adjacent contract-entry revisit
 
+当前 `/erp/orders` source-accuracy revisit baseline 另行维护在：
+- [orders-source-accuracy-revisit.md](./orders-source-accuracy-revisit.md)
+
 它当前不直接服务：
 - single-target mapping 定稿
 - contract/path/behavior 落地
