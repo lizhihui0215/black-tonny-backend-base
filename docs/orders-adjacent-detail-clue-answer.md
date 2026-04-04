@@ -191,3 +191,6 @@ formal truth 仍以以下对象为准：
 - target-lane exclusion baseline
 - formal contract docs
 - formal path docs
+
+当前 `/erp/orders` first adjacent contract-prep preflight baseline 另行维护在：
+- [orders-first-adjacent-contract-prep-preflight.md](./orders-first-adjacent-contract-prep-preflight.md)

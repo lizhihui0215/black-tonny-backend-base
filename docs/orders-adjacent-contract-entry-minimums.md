@@ -156,3 +156,6 @@ formal truth 仍以以下对象为准：
 - planning / reference 不是 formal truth
 - 候选语义不等于已确认 contract identity
 - `sales_order_items` persistence surface 不等于 adjacent contract 已可直接 formalize
+
+当前 `/erp/orders` first adjacent contract-prep preflight baseline 另行维护在：
+- [orders-first-adjacent-contract-prep-preflight.md](./orders-first-adjacent-contract-prep-preflight.md)
