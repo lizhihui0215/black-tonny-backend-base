@@ -177,6 +177,7 @@ formal truth 仍以以下对象为准：
 - [orders-source-accuracy-revisit.md](./orders-source-accuracy-revisit.md)
 - [orders-adjacent-primary-carrier-answer.md](./orders-adjacent-primary-carrier-answer.md)
 - [orders-adjacent-relation-answer.md](./orders-adjacent-relation-answer.md)
+- [orders-adjacent-detail-clue-answer.md](./orders-adjacent-detail-clue-answer.md)
 
 它当前不替代：
 - source-accuracy minimums baseline
@@ -185,3 +186,6 @@ formal truth 仍以以下对象为准：
 - contract-entry minimums baseline
 - formal contract docs
 - formal path docs
+
+当前 `/erp/orders` adjacent source-side detail clue answer baseline 另行维护在：
+- [orders-adjacent-detail-clue-answer.md](./orders-adjacent-detail-clue-answer.md)
