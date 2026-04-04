@@ -209,6 +209,9 @@ formal truth 仍以以下对象为准：
 当前 `/erp/orders` source-accuracy revisit baseline 另行维护在：
 - [orders-source-accuracy-revisit.md](./orders-source-accuracy-revisit.md)
 
+当前 `/erp/orders` adjacent primary carrier answer baseline 另行维护在：
+- [orders-adjacent-primary-carrier-answer.md](./orders-adjacent-primary-carrier-answer.md)
+
 它当前不直接服务：
 - single-target mapping 定稿
 - contract/path/behavior 落地
