@@ -142,3 +142,5 @@ src/.env
 # Keep deployment templates versioned:
 !Dockerfile
 !docker-compose.yml
+.claude/settings.json
+.claude/settings.local.json

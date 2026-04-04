@@ -136,6 +136,9 @@ formal truth 仍以以下对象为准：
 
 这份 baseline 只服务后续首个 adjacent contract/path 包。
 
+当前 `/erp/orders` source-accuracy minimums baseline 另行维护在：
+- [orders-source-accuracy-minimums.md](./orders-source-accuracy-minimums.md)
+
 后续包在进入 contract/path 之前，至少要显式回答：
 - 哪些 reusable inputs 已足够复用
 - 哪些 evidence minimums 已被补齐
