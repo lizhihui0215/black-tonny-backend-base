@@ -186,3 +186,6 @@ formal truth 仍以以下对象为准：
 - single-target mapping minimums baseline
 - formal contract docs
 - formal path docs
+
+当前 `/erp/orders` first adjacent contract-prep boundary baseline 另行维护在：
+- [orders-first-adjacent-contract-prep-boundary-baseline.md](./orders-first-adjacent-contract-prep-boundary-baseline.md)
