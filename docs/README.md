@@ -118,6 +118,10 @@ Internal planning, reference, and archive material can stay in Chinese when it i
   - Current planning baseline for candidate semantics, pending semantics, and unresolved ambiguities inside the current `/erp/orders` line's named payload families
   - Language: Chinese working doc
   - Status: `Current planning baseline for /erp/orders adjacent payload semantics`
+- [`orders-adjacent-contract-entry-minimums.md`](./orders-adjacent-contract-entry-minimums.md)
+  - Current planning baseline for the minimum family / semantics / evidence / mapping / boundary conditions required before the first adjacent `/erp/orders` contract/path package may open
+  - Language: Chinese working doc
+  - Status: `Current planning baseline for /erp/orders adjacent contract-entry minimums`
 - [`first-path-hardening-minimums.md`](./first-path-hardening-minimums.md)
   - Current planning note that tightens the hardening minimums for the landed first `sales_orders` capture-to-serving path
   - Language: Chinese working doc
