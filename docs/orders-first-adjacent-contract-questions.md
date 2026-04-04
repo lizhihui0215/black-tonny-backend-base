@@ -3,6 +3,7 @@
 This document defines the minimum formal contract questions that a later scoped migration must answer before `black-tonny-backend-base` treats any first adjacent `/erp/orders` contract as formal repository behavior.
 
 For the current first `sales_orders` serving projection contract that remains the only landed orders contract, use [sales-orders-projection-contract.md](./sales-orders-projection-contract.md).
+For the current minimal formal baseline that still stops short of any adjacent contract implementation, use [orders-first-adjacent-contract-baseline.md](./orders-first-adjacent-contract-baseline.md).
 For the current first minimal `capture -> transform -> serving` path that stays limited to the `sales_orders` slice, use [capture-to-sales-orders-path.md](./capture-to-sales-orders-path.md).
 For the repository docs index, use [docs/README.md](./README.md).
 
