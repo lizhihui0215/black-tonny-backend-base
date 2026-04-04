@@ -4,6 +4,7 @@ This document defines the current minimal formal baseline for any future first a
 
 For the current first `sales_orders` serving projection contract that remains the only landed orders contract, use [sales-orders-projection-contract.md](./sales-orders-projection-contract.md).
 For the minimum future question list that a later first adjacent contract package must answer explicitly, use [orders-first-adjacent-contract-questions.md](./orders-first-adjacent-contract-questions.md).
+For the current narrower scoped contract statement that stays closer to a future adjacent contract while still stopping short of implementation truth, use [orders-first-adjacent-scoped-contract-statement.md](./orders-first-adjacent-scoped-contract-statement.md).
 For the current first minimal `capture -> transform -> serving` path that remains limited to the `sales_orders` slice, use [capture-to-sales-orders-path.md](./capture-to-sales-orders-path.md).
 For the repository docs index, use [docs/README.md](./README.md).
 
