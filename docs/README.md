@@ -122,6 +122,10 @@ Internal planning, reference, and archive material can stay in Chinese when it i
   - Current planning baseline for the minimum family / semantics / evidence / mapping / boundary conditions required before the first adjacent `/erp/orders` contract/path package may open
   - Language: Chinese working doc
   - Status: `Current planning baseline for /erp/orders adjacent contract-entry minimums`
+- [`orders-source-accuracy-minimums.md`](./orders-source-accuracy-minimums.md)
+  - Current planning baseline for the source-accuracy minimums that the current `/erp/orders` line must answer before adjacent contract-entry may be revisited
+  - Language: Chinese working doc
+  - Status: `Current planning baseline for /erp/orders source-accuracy minimums`
 - [`first-path-hardening-minimums.md`](./first-path-hardening-minimums.md)
   - Current planning note that tightens the hardening minimums for the landed first `sales_orders` capture-to-serving path
   - Language: Chinese working doc
