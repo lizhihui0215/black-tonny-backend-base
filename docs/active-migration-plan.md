@@ -75,6 +75,8 @@ post-route planning 另行记录在：
   - [orders-adjacent-single-target-mapping-minimums.md](./orders-adjacent-single-target-mapping-minimums.md)
 - 当前 `/erp/orders` adjacent primary carrier answer baseline 维护在：
   - [orders-adjacent-primary-carrier-answer.md](./orders-adjacent-primary-carrier-answer.md)
+- 当前 `/erp/orders` adjacent relation answer baseline 维护在：
+  - [orders-adjacent-relation-answer.md](./orders-adjacent-relation-answer.md)
 - 后续 source inventory、payload semantics、accuracy、migration planning 包都应复用这组 boundary / taxonomy 约束
 - 这份文档不再继续拆第 11 包之后的实现包
 - 第 11 包之后的新主线已改为更贴近完整迁移的 `migration-completeness mainline`

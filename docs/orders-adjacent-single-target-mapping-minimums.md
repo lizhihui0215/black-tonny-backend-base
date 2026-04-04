@@ -176,6 +176,7 @@ formal truth 仍以以下对象为准：
 - [orders-adjacent-source-evidence-baseline.md](./orders-adjacent-source-evidence-baseline.md)
 - [orders-source-accuracy-revisit.md](./orders-source-accuracy-revisit.md)
 - [orders-adjacent-primary-carrier-answer.md](./orders-adjacent-primary-carrier-answer.md)
+- [orders-adjacent-relation-answer.md](./orders-adjacent-relation-answer.md)
 
 它当前不替代：
 - source-accuracy minimums baseline

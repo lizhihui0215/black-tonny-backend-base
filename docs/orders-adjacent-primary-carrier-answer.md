@@ -171,3 +171,5 @@ formal truth 仍以以下对象为准：
 - formal contract docs
 - formal path docs
 
+当前 `/erp/orders` adjacent relation answer baseline 另行维护在：
+- [orders-adjacent-relation-answer.md](./orders-adjacent-relation-answer.md)
