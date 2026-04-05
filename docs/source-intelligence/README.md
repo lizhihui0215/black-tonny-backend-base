@@ -63,11 +63,15 @@ formal truth 仍以以下对象为准：
 - relation doc
 - serving-readiness doc
 
+当前也不应把未重写的 legacy extract 直接写进这些主输出位。
+未重写的 legacy 知识碎片，应先进入 [../reference/legacy-backend/extracts/README.md](../reference/legacy-backend/extracts/README.md) 定义的隔离区。
+
 ## Upstream Input Docs That Remain Outside This Subtree
 
 以下旧 docs 当前仍然是 source-intelligence 输入参考，
 但它们不是新的 source-intelligence 主输出位：
 
+- [../reference/legacy-backend/extracts/README.md](../reference/legacy-backend/extracts/README.md)
 - [source-surface-completeness-map.md](../source-surface-completeness-map.md)
 - [orders-adjacent-payload-family-baseline.md](../orders-adjacent-payload-family-baseline.md)
 - [orders-adjacent-payload-semantics-baseline.md](../orders-adjacent-payload-semantics-baseline.md)
@@ -82,9 +86,18 @@ formal truth 仍以以下对象为准：
 - planning input
 - adjacent evidence input
 
+其中 [../reference/legacy-backend/extracts/README.md](../reference/legacy-backend/extracts/README.md) 额外承担：
+- legacy knowledge fragment 的 quarantine / downgraded input lane
+- 在重写前承接窄范围 extract 的落点
+
 它们当前不应被误写成：
 - source-intelligence 主输出位
 - 已重写完成的 dossier / relation / serving-readiness asset
+
+[../reference/legacy-backend/extracts/README.md](../reference/legacy-backend/extracts/README.md) 下的 extract 文件同样不应被误写成：
+- formal truth
+- dossier / field dictionary / relation / serving-readiness output
+- serving-ready output
 
 ## Non-Goals
 
