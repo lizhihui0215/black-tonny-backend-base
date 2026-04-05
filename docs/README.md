@@ -106,6 +106,58 @@ Internal planning, reference, and archive material can stay in Chinese when it i
 
 ## Migration Planning
 
+- [`source-intelligence/README.md`](./source-intelligence/README.md)
+  - Entry index and minimal output structure for the new source-intelligence docs subtree, separating current output slots from older upstream input docs
+  - Language: Chinese working doc
+  - Status: `Current source-intelligence docs structure index`
+- [`source-intelligence/migration-charter.md`](./source-intelligence/migration-charter.md)
+  - Authoritative entry charter for the new source-intelligence mainline, defining migration target, evidence taxonomy, legacy-asset classification, deliverable types, and review guardrails
+  - Language: Chinese working doc
+  - Status: `Source of truth for the current source-intelligence route starting point`
+- [`source-intelligence/legacy-source-intelligence-inventory-baseline.md`](./source-intelligence/legacy-source-intelligence-inventory-baseline.md)
+  - First legacy source-intelligence inventory baseline, classifying which legacy knowledge assets are worth migrating next and what new-repo asset types they should become
+  - Language: Chinese working doc
+  - Status: `Current source-intelligence legacy inventory baseline`
+- [`source-intelligence/apis/erp-orders-api-dossier.md`](./source-intelligence/apis/erp-orders-api-dossier.md)
+  - First real source-intelligence API dossier sample for `/erp/orders`, rewriting current repo-owned endpoint knowledge into a reusable dossier structure with explicit evidence levels
+  - Language: Chinese working doc
+  - Status: `Current source-intelligence API dossier sample`
+- [`source-intelligence/apis/sales-list-selsalereport-api-dossier.md`](./source-intelligence/apis/sales-list-selsalereport-api-dossier.md)
+  - Second real source-intelligence API dossier sample, rewriting the legacy `sales list family` primary head endpoint `SelSaleReport` into a single-endpoint dossier while keeping the broader family out of scope
+  - Language: Chinese working doc
+  - Status: `Current source-intelligence API dossier sample`
+- [`source-intelligence/apis/sales-list-getdiyreportdata-e004001008-2-api-dossier.md`](./source-intelligence/apis/sales-list-getdiyreportdata-e004001008-2-api-dossier.md)
+  - Third real source-intelligence API dossier sample, rewriting the legacy `sales list family` line-side object `GetDIYReportData(E004001008_2)` into a single-object dossier without expanding into a whole family graph
+  - Language: Chinese working doc
+  - Status: `Current source-intelligence API dossier sample`
+- [`source-intelligence/fields/erp-orders-first-slice-field-dictionary.md`](./source-intelligence/fields/erp-orders-first-slice-field-dictionary.md)
+  - First real source-intelligence field dictionary sample for `/erp/orders`, covering the narrow first-slice fields that already carry the highest current serving value
+  - Language: Chinese working doc
+  - Status: `Current source-intelligence field dictionary sample`
+- [`source-intelligence/fields/selsalereport-core-field-dictionary.md`](./source-intelligence/fields/selsalereport-core-field-dictionary.md)
+  - First real source-intelligence field dictionary sample for `SelSaleReport`, covering a narrow head-like core field cluster without expanding into a whole sales-family glossary
+  - Language: Chinese working doc
+  - Status: `Current source-intelligence field dictionary sample`
+- [`source-intelligence/fields/sales-list-getdiyreportdata-e004001008-2-core-field-dictionary.md`](./source-intelligence/fields/sales-list-getdiyreportdata-e004001008-2-core-field-dictionary.md)
+  - Third real source-intelligence field dictionary sample, covering a narrow line-side core field cluster for `GetDIYReportData(E004001008_2)` without expanding into a whole line glossary
+  - Language: Chinese working doc
+  - Status: `Current source-intelligence field dictionary sample`
+- [`source-intelligence/relations/erp-orders-first-slice-relation-doc.md`](./source-intelligence/relations/erp-orders-first-slice-relation-doc.md)
+  - First real source-intelligence relation doc sample for `/erp/orders`, covering narrow first-slice field relations, injected-context boundaries, and conservative adjacent clue relation status
+  - Language: Chinese working doc
+  - Status: `Current source-intelligence relation doc sample`
+- [`source-intelligence/relations/selsalereport-head-line-boundary-relation-doc.md`](./source-intelligence/relations/selsalereport-head-line-boundary-relation-doc.md)
+  - First real source-intelligence relation doc sample for the `SelSaleReport` line, covering the narrow head-line boundary without expanding into a whole sales-family relation map
+  - Language: Chinese working doc
+  - Status: `Current source-intelligence relation doc sample`
+- [`source-intelligence/serving-readiness/erp-orders-first-slice-serving-readiness.md`](./source-intelligence/serving-readiness/erp-orders-first-slice-serving-readiness.md)
+  - First real source-intelligence serving-readiness sample for `/erp/orders`, defining what is ready now for the current first `sales_orders` slice and what still cannot be upgraded
+  - Language: Chinese working doc
+  - Status: `Current source-intelligence serving-readiness sample`
+- [`source-intelligence/serving-readiness/selsalereport-head-slice-serving-readiness.md`](./source-intelligence/serving-readiness/selsalereport-head-slice-serving-readiness.md)
+  - First real source-intelligence serving-readiness sample for `SelSaleReport`, defining what is ready now for the narrow head slice and why that still cannot be promoted into line-side, reconciliation, or whole-family readiness
+  - Language: Chinese working doc
+  - Status: `Current source-intelligence serving-readiness sample`
 - [`clean-mainline-charter.md`](./clean-mainline-charter.md)
   - Authoritative starting-point charter for the new milestone route that restarts numbering from `M1-PR1` on top of the current `main`
   - Language: Chinese working doc
