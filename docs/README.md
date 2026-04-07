@@ -110,6 +110,10 @@ Internal planning, reference, and archive material can stay in Chinese when it i
   - Entry index and minimal output structure for the new source-intelligence docs subtree, separating current output slots from older upstream input docs
   - Language: Chinese working doc
   - Status: `Current source-intelligence docs structure index`
+- [`source-intelligence/ops/README.md`](./source-intelligence/ops/README.md)
+  - Review, handoff, milestone, and quality-gate control-plane entry for the source-intelligence subtree; not a new dossier/field/relation/readiness output slot
+  - Language: Chinese working doc
+  - Status: `Current source-intelligence ops control-plane entry`
 - [`source-intelligence/migration-charter.md`](./source-intelligence/migration-charter.md)
   - Authoritative entry charter for the new source-intelligence mainline, defining migration target, evidence taxonomy, legacy-asset classification, deliverable types, and review guardrails
   - Language: Chinese working doc

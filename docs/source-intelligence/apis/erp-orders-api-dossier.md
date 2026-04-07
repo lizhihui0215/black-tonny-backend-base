@@ -220,7 +220,7 @@ evidence level:
 - [source-surface-completeness-map.md](../../source-surface-completeness-map.md)
 - [orders-adjacent-payload-family-baseline.md](../../orders-adjacent-payload-family-baseline.md)
 - [research-support-current-surface.md](../../research-support-current-surface.md)
-- [sales-order-items-projection-contract.md](../../sales-order-items-projection-contract.md)
+- [serving-projection-minimal-boundary.md](../../serving-projection-minimal-boundary.md)
 
 ### Explicitly Excluded As Current Truth Sources
 
@@ -242,7 +242,7 @@ evidence level:
 3. 它把 current first `sales_orders` slice 的 rows-level consumed boundary 写清，避免把 first-slice normalization rule 误写成整条 source line 的 full semantics。
 4. 它还能明确区分两种 downstream value：
    - `sales_orders` 已有 landed capture-to-serving path
-   - `sales_order_items` 已有 narrow serving projection contract，但当前还不是 source truth，也不是 landed path
+   - `sales_order_items` 当前只有 landed persistence surface 与 downstream vocabulary neighborhood，但当前还不是 source truth，也不是 landed path
 
 ## Unresolved Questions
 
@@ -254,7 +254,7 @@ evidence level:
 4. top-level `rows` 之外是否存在 repo-owned sibling carrier
 5. rows-adjacent non-`sales_orders` family 的真实 carrier/container 是什么
 6. source-side detail/item vocabulary 是否与当前 serving-side `sales_order_items` 命名一致
-7. `sales_order_items` narrow serving contract 是否以及如何由未来 source path 喂入
+7. `sales_order_items` downstream persistence surface 是否以及如何由未来 source path 喂入
 
 ## Non-Goals
 
