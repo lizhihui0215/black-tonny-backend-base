@@ -24,6 +24,7 @@ If context is incomplete, read this file and the directly related repository fil
 
 - Use the default sequence: implement -> review -> submit.
 - Keep follow-up work for an existing PR inside that PR's current goal unless the user explicitly approves a scope change or asks for a new PR.
+- For each completed round of repository changes, also sync the current execution state in `/Users/lizhihui/Workspace/black-tonny-workspace/black_tonny_source_intelligence_master_plan_2026-04-07.md`. Update the relevant milestone / PR / status snapshot so the plan remains traceable and ready for GPT review with the latest movement.
 - Do not commit, push, or create a PR until the user has clearly said the change is approved for submission.
 - If the current branch or worktree is dirty, prefer a clean branch or clean worktree for final PR preparation.
 
