@@ -114,6 +114,10 @@ Internal planning, reference, and archive material can stay in Chinese when it i
   - Review, handoff, milestone, and quality-gate control-plane entry for the source-intelligence subtree; not a new dossier/field/relation/readiness output slot
   - Language: Chinese working doc
   - Status: `Current source-intelligence ops control-plane entry`
+- [`source-intelligence/ops/full-migration-master-plan.md`](./source-intelligence/ops/full-migration-master-plan.md)
+  - Canonical full-migration master plan for the source-intelligence route, including current milestone / PR state, gate rules, review packets, and new-window recovery material
+  - Language: Chinese working doc
+  - Status: `Canonical source-intelligence control-plane master plan`
 - [`source-intelligence/migration-charter.md`](./source-intelligence/migration-charter.md)
   - Authoritative entry charter for the new source-intelligence mainline, defining migration target, evidence taxonomy, legacy-asset classification, deliverable types, and review guardrails
   - Language: Chinese working doc

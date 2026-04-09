@@ -40,6 +40,8 @@ formal truth 仍以以下对象为准：
 - [ops/README.md](./ops/README.md)
   - current main state / review gain ledger / milestone tracking / handoff / quality gates 的默认入口
   - 不是新的 dossier / field dictionary / relation / serving-readiness 正文输出位
+- [ops/full-migration-master-plan.md](./ops/full-migration-master-plan.md)
+  - source-intelligence 全量迁移主线的 canonical 总计划与当前状态真源
 
 当前已经落在这套结构里的资产只有：
 
