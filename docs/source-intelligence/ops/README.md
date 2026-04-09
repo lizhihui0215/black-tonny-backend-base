@@ -49,9 +49,12 @@ formal truth 仍以以下对象为准：
 - 新的正文输出位
 - 新的对象资产类型
 - 替代 `apis/`、`fields/`、`relations/`、`serving-readiness/` 的第五类正文槽位
+- 根目录外部工作稿的长期宿主
 
 ## File Map
 
+- [full-migration-master-plan.md](./full-migration-master-plan.md)
+  - source-intelligence 全量迁移主线的 canonical 总计划与最新状态真源
 - [current-main-state.md](./current-main-state.md)
   - 当前 main 最小真相
 - [review-gain-ledger.md](./review-gain-ledger.md)
@@ -65,14 +68,16 @@ formal truth 仍以以下对象为准：
 
 ## Use Order
 
-1. 开新包前先读 [current-main-state.md](./current-main-state.md)。
-2. 选题前再看 [milestone-board.md](./milestone-board.md)。
-3. 开写前过一遍 [quality-gates.md](./quality-gates.md)。
-4. 新会话先复用 [handoff-prompt.md](./handoff-prompt.md)。
-5. merge 后追加 [review-gain-ledger.md](./review-gain-ledger.md)。
+1. 先读 [full-migration-master-plan.md](./full-migration-master-plan.md)，确认当前 milestone / PR / 最新状态同步块。
+2. 开新包前再读 [current-main-state.md](./current-main-state.md)。
+3. 选题前再看 [milestone-board.md](./milestone-board.md)。
+4. 开写前过一遍 [quality-gates.md](./quality-gates.md)。
+5. 新会话先复用 [handoff-prompt.md](./handoff-prompt.md)。
+6. merge 后追加 [review-gain-ledger.md](./review-gain-ledger.md)。
 
 ## Merge Update Rule
 
+- 如果这次 merge 或状态纠偏轮改变了当前 milestone / PR / next allowed step，先更新 [full-migration-master-plan.md](./full-migration-master-plan.md) 第 0 节与最新状态同步块。
 - 如果这次 merge 改变了 source-intelligence 当前主线状态，更新 [current-main-state.md](./current-main-state.md)。
 - 每个相关 merge 后，都向 [review-gain-ledger.md](./review-gain-ledger.md) 追加一条记录。
 
@@ -81,6 +86,7 @@ formal truth 仍以以下对象为准：
 当前这个 `ops/` 子树的作用不是扩张知识资产面。
 
 当前它只负责：
+- 提供仓库内唯一 canonical 的 full-migration master plan
 - 让后续包知道现在 main 到了哪
 - 让 review 能回答“有没有新增 repo-owned 确定性”
 - 让主线在收益下降前及时停手或纠偏
